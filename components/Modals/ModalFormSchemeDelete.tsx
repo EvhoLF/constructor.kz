@@ -3,7 +3,7 @@
 import { enqueueSnackbar } from 'notistack';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { Scheme } from '@/app/generated/prisma';
+import { Scheme } from '.prisma/client';
 import BaseModalConfirm from './BaseModalConfirm';
 
 interface ModalFormSchemeDeleteProps {

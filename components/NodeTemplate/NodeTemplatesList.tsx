@@ -1,6 +1,6 @@
 import { Divider, Stack } from '@mui/material';
 import React from 'react';
-import { NodeTemplate } from '@/app/generated/prisma';
+import { NodeTemplate } from '.prisma/client';
 import NodeTemplateItem from './NodeTemplateItem';
 
 type NodeTemplatesListProps = {

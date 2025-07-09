@@ -3,7 +3,7 @@ import { Grid, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import Icon from '../UI/Icon'
 import Link from 'next/link'
-import { Scheme } from '@/app/generated/prisma'
+import { Scheme } from '.prisma/client'
 
 interface SchemeListItem extends Pick<Scheme, 'id' | 'title'> {
   onEdit: (id: string | number, title: string) => () => void;

@@ -1,15 +1,15 @@
 'use client'
 import { Button, Stack, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import InputText from '../UI/InputText';
 import axios from 'axios';
 import { useModal } from '@/hooks/useModal';
 import schemeFormTitleShema from '@/libs/validation/schemeFormTitleShema';
 import { useZodForm } from '@/hooks/useZodForm';
 import { useSession } from 'next-auth/react';
 import { useAsync } from '@/hooks/useAsync';
-import StackRow from '../UI/StackRow';
-import { Scheme } from '@/app/generated/prisma';
+import { Scheme } from '.prisma/client';
+import InputText from '@/components/UI/InputText';
+import StackRow from '@/components/UI/StackRow';
 
 interface ModalFormSchemeEdit {
   id: string | number,

@@ -21,7 +21,7 @@ import { useAsync } from '@/hooks/useAsync';
 import axios from 'axios';
 import { compress, decompress } from '@/utils/compress';
 import { enqueueSnackbar } from 'notistack';
-import { NodeTemplate } from '@/app/generated/prisma';
+import { NodeTemplate } from '.prisma/client';
 import Frame from '../UI/Frame';
 import Icon from '../UI/Icon';
 import HeaderButton from '../Header/HeaderButton';

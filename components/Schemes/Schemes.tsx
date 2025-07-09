@@ -10,7 +10,7 @@ import { useModal } from '@/hooks/useModal';
 import ModalFormSchemeCreate from '../Modals/ModalFormSchemeCreate';
 import ModalFormSchemeEdit from '../Modals/ModalFormSchemeEdit';
 import ModalFormSchemeDelete from '../Modals/ModalFormSchemeDelete';
-import { Scheme } from '@/app/generated/prisma';
+import { Scheme } from '.prisma/client';
 import Icon from '../UI/Icon';
 
 const Schemes = () => {

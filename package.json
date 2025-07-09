@@ -18,7 +18,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.1.1",
     "@mui/material-nextjs": "^7.1.1",
-    "@prisma/client": "^6.10.1",
+    "@prisma/client": "^6.11.1",
     "@xyflow/react": "^12.6.4",
     "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
@@ -43,7 +43,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
-    "prisma": "^6.10.1",
+    "prisma": "^6.11.1",
     "typescript": "^5"
   }
 }

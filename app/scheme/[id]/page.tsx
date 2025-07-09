@@ -11,7 +11,7 @@ import { Box } from "@mui/material";
 //   return !map ? { title: 'EDONs' } : { title: `${map?.label} - EDONs` };
 // }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   return (

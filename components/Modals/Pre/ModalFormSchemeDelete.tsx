@@ -5,8 +5,8 @@ import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { enqueueSnackbar } from 'notistack';
-import StackRow from '../UI/StackRow';
-import { Scheme } from '@/app/generated/prisma';
+import { Scheme } from '.prisma/client';
+import StackRow from '@/components/UI/StackRow';
 
 interface ModalFormSchemeDelete {
   id: string | number,

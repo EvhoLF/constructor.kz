@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 import BaseModalConfirm from './BaseModalConfirm';
-import { NodeTemplate } from '@/app/generated/prisma';
+import { NodeTemplate } from '.prisma/client';
 
 interface Props {
   id: number;

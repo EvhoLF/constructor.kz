@@ -6,7 +6,7 @@ import { enqueueSnackbar } from 'notistack';
 import { z } from 'zod';
 import InputText from '../UI/InputText';
 import BaseModalForm from './BaseModalForm';
-import { NodeTemplate } from '@/app/generated/prisma';
+import { NodeTemplate } from '.prisma/client';
 
 interface Props {
   setTemplates: React.Dispatch<React.SetStateAction<(NodeTemplate & { isNew: boolean })[]>>;

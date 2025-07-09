@@ -3,7 +3,7 @@ import { Grid, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import Icon from '../UI/Icon'
 import Link from 'next/link'
-import { NodeTemplate } from '@/app/generated/prisma'
+import { NodeTemplate } from '.prisma/client'
 
 interface NodeTemplateItemProps extends Pick<NodeTemplate, 'id' | 'title' | 'category'> {
   onEdit: (tpl: NodeTemplate) => void;

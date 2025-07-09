@@ -11,7 +11,7 @@ import { getLayout } from '@/utils/Map/getLayout';
 import PanelMapElementManager from './PanelMapElementManager';
 import { ParseGraphToFormula } from '@/utils/Formula/ParseGraphToFormula';
 import { defaultEdgeOptions } from './MapConfig';
-import { exportTemplate, importTemplate } from '@/utils/Map/TemplateHandler';
+// import { exportTemplate, importTemplate } from '@/utils/Map/TemplateHandler';
 import { rootNodeID } from '@/utils/Formula/FormulaConfig';
 import PanelNodes from './PanelNodes/PanelNodes';
 import { useFlowTableBuffer } from '@/hooks/useFlowTableBuffer';
@@ -22,7 +22,7 @@ import { useAsync } from '@/hooks/useAsync';
 import axios from 'axios';
 import { compress, decompress } from '@/utils/compress';
 import { enqueueSnackbar } from 'notistack';
-import { Scheme } from '@/app/generated/prisma';
+import { Scheme } from '.prisma/client';
 import Frame from '../UI/Frame';
 import Icon from '../UI/Icon';
 import HeaderButton from '../Header/HeaderButton';
@@ -30,7 +30,7 @@ import StackRow from '../UI/StackRow';
 
 const Map = ({ id }: { id: string }) => {
   const { asyncFn } = useAsync();
-  const { fitView, addNodes, addEdges } = useReactFlow();
+  const { fitView} = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { restoreData } = useFlowTableBuffer(nodes, edges);
@@ -114,16 +114,16 @@ const Map = ({ id }: { id: string }) => {
 
 
 
-  const [cp, setCP] = useState('');
+  // const [cp, setCP] = useState('');
 
-  const copy = () => {
-    const zxc = exportTemplate(nodes, edges);
-    setCP(zxc)
-  }
+  // const copy = () => {
+  //   const zxc = exportTemplate(nodes, edges);
+  //   setCP(zxc)
+  // }
 
-  const past = () => {
-    importTemplate(cp, addNodes, addEdges);
-  }
+  // const past = () => {
+  //   importTemplate(cp, addNodes, addEdges);
+  // }
 
   const takeScreenshot = useCallback(async () => {
     await fitView();

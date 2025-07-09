@@ -1,7 +1,7 @@
 import { Divider, Stack } from '@mui/material';
 import React, { Fragment } from 'react';
 import SchemeListItem from './SchemeListItem';
-import { Scheme } from '@/app/generated/prisma';
+import { Scheme } from '.prisma/client';
 
 type SchemeListProps = {
   schemes: (Scheme & { isNew: boolean })[];

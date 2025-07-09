@@ -4,7 +4,7 @@ import { Button, Stack, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import { NodeTemplate } from '@/app/generated/prisma';
+import { NodeTemplate } from '.prisma/client';
 import NodeTemplateFilterPanel, { NodeTemplateSortOption } from './NodeTemplateFilterPanel';
 import NodeTemplatesList from './NodeTemplatesList';
 import Icon from '../UI/Icon';

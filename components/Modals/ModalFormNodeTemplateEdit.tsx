@@ -6,7 +6,7 @@ import { enqueueSnackbar } from 'notistack';
 import { z } from 'zod';
 import BaseModalForm from './BaseModalForm';
 import InputText from '../UI/InputText';
-import { NodeTemplate } from '@/app/generated/prisma';
+import { NodeTemplate } from '.prisma/client';
 
 interface Props {
   id: number;
