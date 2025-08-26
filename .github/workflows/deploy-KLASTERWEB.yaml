@@ -22,7 +22,9 @@ jobs:
 
       # === ЭТАП 4. Сохраняем образ в tar ===
       - name: Save Docker image as tar
-        run: docker save konstruktor:latest -o konstruktor.tar
+        run: |
+          docker save konstruktor:latest -o konstruktor.tar
+          chmod 644 konstruktor.tar  # Даем права на чтение всем
 
       # === ЭТАП 5. Копируем образ на сервер ===
       - name: Copy image to server
