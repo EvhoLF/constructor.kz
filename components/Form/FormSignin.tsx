@@ -4,14 +4,12 @@ import React, { useState } from 'react'
 import InputText from '../UI/InputText'
 import { useZodForm } from '@/hooks/useZodForm';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import InputPassword from '../UI/InputPassword';
 import signinSchema from '@/libs/validation/signinSchema';
 import Frame from '../UI/Frame';
 import InputLink from '../UI/InputLink';
 
 const FormSignin = () => {
-  const router = useRouter();
   const [serverError, setServerError] = useState('');
   const { data, formField, validate } = useZodForm(signinSchema, { email: '', password: '', });
 
@@ -19,9 +17,8 @@ const FormSignin = () => {
     e.preventDefault();
     const valid = validate();
     if (!valid) return;
-    const res = await signIn('credentials', { ...data, redirect: false, });
-    if (res?.error) setServerError('Неверный email или пароль');
-    else router.push('/profile');
+    const res = await signIn('credentials', { ...data, redirect: true, callbackUrl: '/profile', });
+    if (res?.error) { setServerError('Неверный email или пароль'); }
   };
 
   return (

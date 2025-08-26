@@ -21,9 +21,7 @@ COPY . .
 
 # Генерация Prisma Client (путь: ../app/generated/prisma)
 RUN npx prisma generate
-
-# Применяем схему (для SQLite можно просто push, для прод миграции — deploy)
-RUN npx prisma db push
+RUN npx prisma db push  
 
 # Сборка проекта Next.js
 ENV NODE_OPTIONS="--max-old-space-size=2048"
@@ -55,6 +53,7 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/next.config.ts ./
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/.env ./.env
+COPY --from=build /app/.env.production ./.env.production
 
 # Порт по умолчанию
 ENV PORT=8080

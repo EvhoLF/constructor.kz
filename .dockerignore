@@ -1,6 +1,8 @@
-node_modules
-.next
+node_modules/
+constructor.tar
+.next/
 Dockerfile
 .dockerignore
 .env.local
 .env.development
+*.log
