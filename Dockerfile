@@ -51,8 +51,6 @@ COPY --from=build /app/public ./public
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/next.config.ts ./
 COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/.env ./.env
-COPY --from=build /app/.env.production ./.env.production
 
 # Порт по умолчанию
 ENV PORT=8080
