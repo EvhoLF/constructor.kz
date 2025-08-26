@@ -18,7 +18,7 @@ jobs:
 
       # === ЭТАП 3. Собираем образ ===
       - name: Build Docker image
-        run: docker build -t edons:latest .
+        run: docker build -t konstruktor:latest .
 
       # === ЭТАП 4. Сохраняем образ в tar ===
       - name: Save Docker image as tar
@@ -47,5 +47,5 @@ jobs:
             rm konstruktor.tar
             docker compose down
             docker compose up -d --force-recreate --remove-orphans
-            docker exec edons-app npx prisma migrate deploy
+            docker exec konstruktor-app npx prisma migrate deploy
             docker image prune -f
