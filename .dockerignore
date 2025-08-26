@@ -6,3 +6,4 @@ Dockerfile
 .env.local
 .env.development
 *.log
+prisma/dev.db

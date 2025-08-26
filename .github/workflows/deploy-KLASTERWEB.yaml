@@ -47,4 +47,5 @@ jobs:
             rm konstruktor.tar
             docker compose down
             docker compose up -d --force-recreate --remove-orphans
+            docker exec edons-app npx prisma migrate deploy
             docker image prune -f

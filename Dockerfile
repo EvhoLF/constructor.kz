@@ -35,7 +35,6 @@ RUN npm install --omit=dev
 
 # Копируем Prisma схему, чтобы сгенерировать клиент
 COPY prisma ./prisma
-RUN npx prisma generate
 
 # Сохраняем папку с node_modules
 RUN cp -R node_modules prod_node_modules

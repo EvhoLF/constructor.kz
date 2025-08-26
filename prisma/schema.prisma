@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql" // prod:mysql | dev:sqlite
   url      = env("DATABASE_URL")
 }
 
