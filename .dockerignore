@@ -7,3 +7,4 @@ Dockerfile
 .env.development
 *.log
 prisma/dev.db
+access.txt
