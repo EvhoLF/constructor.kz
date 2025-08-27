@@ -34,7 +34,8 @@ jobs:
           username: ${{ secrets.KLASTERWEB__SERVER_USER }}
           key: ${{ secrets.KLASTERWEB__SERVER_SSH_KEY }}
           source: "konstruktor.tar"
-          target: "/var/www/konstruktor__usr/data/konstructor.tar"
+          target: "/var/www/konstruktor__usr/data/konstruktor.tar"
+        strip_components: false
 
       # === ЭТАП 6. Разворачиваем на сервере через docker compose ===
       - name: Deploy on server
