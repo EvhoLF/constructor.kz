@@ -5,7 +5,6 @@ import Map from "@/components/MapComponents/Map";
 import { Box } from "@mui/material";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import { prisma } from '@/prisma/prisma';
-import { Params } from 'next/dist/server/request/params';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
