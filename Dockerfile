@@ -9,6 +9,7 @@ RUN apk add --no-cache openssl
 
 # Копируем package-файлы
 COPY package*.json ./
+COPY prisma ./prisma
 
 # -------- СБОРКА КОДА --------
 FROM base AS build
