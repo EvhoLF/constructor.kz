@@ -1,18 +1,20 @@
 'use client'
-import DnD from '@/components/DnD/DnD'
-import Frame from '@/components/UI/Frame'
-import { Box, Stack, Tooltip, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import IconNodes from './IconNodes'
-import { NodePoint } from '../Nodes'
-import { useAsync } from '@/hooks/useAsync'
-import axios from 'axios'
-import { decompress } from '@/utils/compress'
-import { NodeTemplate } from '.prisma/client'
-import DropdownMenu, { DropdownItem } from '@/components/UI/DropdownMenu'
-import { Edge } from '@xyflow/react'
-import { rootNodeID } from '@/utils/Formula/FormulaConfig'
-import Icon from '@/components/UI/Icon'
+import DnD from '@/components/DnD/DnD';
+import Frame from '@/components/UI/Frame';
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import IconNodes from './IconNodes';
+import { init_NodePoint, NodePoint } from '../Nodes';
+import { useAsync } from '@/hooks/useAsync';
+import axios from 'axios';
+import { decompress } from '@/utils/compress';
+import DropdownMenu, { DropdownItem } from '@/components/UI/DropdownMenu';
+import { Edge, useReactFlow } from '@xyflow/react';
+import { rootNodeID } from '@/utils/Formula/FormulaConfig';
+import Icon from '@/components/UI/Icon';
+import { v4 as uuidv4 } from 'uuid';
+import { SuperTemplate } from '@/global';
+import { useDiagramType } from '@/hooks/DiagramTypeContext';
 
 // type dataType = { id: string, label: string, props: { [key: string]: any, data: NodePointData } }[]
 
@@ -24,31 +26,38 @@ import Icon from '@/components/UI/Icon'
 const onDecompress = (data: string | null | undefined) => data ? decompress(data) : []
 
 const PanelNodes = () => {
+  const { templateApi } = useDiagramType();
   const [nodeTemplates, setNodeTemplates] = useState<DropdownItem[]>([]);
   const { asyncFn } = useAsync();
+
+  const { addNodes, screenToFlowPosition } = useReactFlow();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const createNodeTemplate = (id: string, label: string, group: string, type: string, data: any, props: any = {}) => ({
+    id, label, group, type, props: { props, type, data }
+  });
+
+  const addNewNode = () => {
+    addNodes({ ...init_NodePoint({ id: uuidv4(), position: screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 }), data: { label: 'zxc' } }), id: uuidv4() })
+  }
 
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(`/api/schemetemplate/`))
+        const res = await asyncFn(() => axios.get(templateApi))
         if (!res || !res.data) return;
-        const resData: NodeTemplate[] = res.data;
+        const resData: SuperTemplate[] = res.data;
         const result: DropdownItem[] = [];
         resData.forEach(e => {
           const decompressNodes: NodePoint[] = onDecompress(e.nodes);
           const decompressEdges: Edge[] = onDecompress(e.edges);
           decompressNodes.forEach(node => {
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const createNodeTemplate = (label: string, group: string, type: string, data: any, props: any = {}) => ({
-              id: node.id, label, group, type, props: { props, type, data }
-            });
             if (node.id == rootNodeID) {
-              const aaa = createNodeTemplate(`Схема`, e.title, 'ADD_SCHEME', { nodes: decompressNodes, edges: decompressEdges });
+              const aaa = createNodeTemplate(node.id, `Схема`, e.title, 'ADD_SCHEME', { nodes: decompressNodes, edges: decompressEdges });
               result.push(aaa);
             }
             else {
-              const aaa = createNodeTemplate(node.data.label, e.title, 'ADD_NODE', node.data, { width: node?.measured?.width });
+              const aaa = createNodeTemplate(node.id, node.data.label, e.title, 'ADD_NODE', node.data, { width: node?.measured?.width });
               result.push(aaa);
             }
           })
@@ -73,7 +82,7 @@ const PanelNodes = () => {
           <Tooltip title={itemLabel}>
             <Stack gap={.5}>
               <IconNodes {...nodeData} sx={{ width: '50px', height: '30px' }} />
-              <Typography textAlign='center' fontSize='.75rem' overflow='hidden' textOverflow='' noWrap>{itemLabel}</Typography>
+              <Typography width='100%' overflow='hidden' sx={{ textOverflow: 'ellipsis' }} textAlign='center' fontSize='.75rem' textOverflow='' noWrap>{itemLabel}</Typography>
             </Stack>
           </Tooltip>
         </DnD >
@@ -100,10 +109,19 @@ const PanelNodes = () => {
   }
 
   return (
-    <Frame sx={{ width: 'fit-content' }}>
-      <DropdownMenu data={nodeTemplates} displayItem={displayItem} onChange={(e) => { console.log(e) }}>
-        <Icon icon='function'/>
-      </DropdownMenu>
+    <Frame sx={{ width: 'fit-content', padding: '5px' }}>
+      <Stack direction='row'>
+        <Tooltip title='Создать из шаблона'>
+          <DropdownMenu data={nodeTemplates} displayItem={displayItem} onChange={() => { }}>
+            <Icon icon='function' />
+          </DropdownMenu>
+        </Tooltip>
+        <DnD props={{ type: "ADD_NODE", data: { label: 'Узел' } }}>
+          <Tooltip title='Создать узел'>
+            <IconButton color='inherit' onClick={addNewNode}><Icon icon='add' /></IconButton>
+          </Tooltip>
+        </DnD >
+      </Stack>
       {/* <Stack spacing={1}>
         {
           data.map(el => (
@@ -118,7 +136,7 @@ const PanelNodes = () => {
           ))
         }
       </Stack> */}
-    </Frame>
+    </Frame >
   )
 }
 

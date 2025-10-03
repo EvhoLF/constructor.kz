@@ -6,6 +6,7 @@ import {
   TextField,
   Collapse,
   Typography,
+  Button,
 } from "@mui/material";
 import Icon from "./Icon";
 import { IconName } from "@/Icons";
@@ -25,6 +26,7 @@ interface DropdownMenuProps {
   data?: DropdownItem[];
   children?: React.ReactNode;
   displayItem?: (item: DropdownItem) => React.ReactNode | undefined | null;
+  columns?: number | string
 }
 
 export default function DropdownMenu({
@@ -32,6 +34,7 @@ export default function DropdownMenu({
   data = [],
   displayItem,
   children,
+  columns = 'auto-fill',
 }: DropdownMenuProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -67,17 +70,17 @@ export default function DropdownMenu({
 
   const GridItem = (item: DropdownItem) => {
     const Default = (
-      <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
+      <Box display="flex" flexDirection="column" alignItems="center" gap={1} overflow='hidden'>
         <Icon icon={item?.icon || "default"} />
-        <Typography fontSize="0.75rem" align="center">{item.label}</Typography>
-      </Box>
+        <Typography fontSize="0.75rem" align="center" textOverflow='ellipsis' sx={{ width: '100%' }}>{item.label}</Typography>
+      </Box >
     )
     return displayItem ? displayItem(item) || Default : Default
   };
 
   return (
     <>
-      <IconButton onClick={handleOpen} color="primary" sx={{ background: menuOpen ? "#de216320" : "" }}>
+      <IconButton onClick={handleOpen} color="inherit" sx={{ background: menuOpen ? "#de216320" : "" }}>
         {children}
       </IconButton>
 
@@ -113,7 +116,10 @@ export default function DropdownMenu({
 
               return (
                 <Box key={group}>
-                  <Box
+                  <Button
+                    color='inherit'
+                    fullWidth
+                    variant='text'
                     onClick={() => toggleGroup(group)}
                     sx={{
                       px: 2,
@@ -127,13 +133,13 @@ export default function DropdownMenu({
                   >
                     {group}
                     <Icon icon={isOpen ? "arrowUpS" : "arrowDownS"} />
-                  </Box>
+                  </Button>
 
                   <Collapse in={isOpen} timeout="auto" unmountOnExit>
                     <Box
                       sx={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(50px, 1fr))",
+                        gridTemplateColumns: `repeat(${columns}, minmax(50px, 1fr))`,
                         gap: .5,
                         p: 1,
                       }}

@@ -11,11 +11,7 @@ export default function FunnelInsertButton({ onClick }: { onClick: () => void })
     <Box
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      sx={{
-        position: 'relative',
-        height: 12,
-        my: 1,
-      }}
+      sx={{ position: 'relative', height: 12, my: .75 }}
     >
       <Fade in={hovered}>
         <Box
@@ -32,7 +28,6 @@ export default function FunnelInsertButton({ onClick }: { onClick: () => void })
         />
       </Fade>
 
-      {/* Плавающая кнопка поверх линии */}
       <Fade in={hovered}>
         <IconButton
           onClick={onClick}
@@ -42,18 +37,12 @@ export default function FunnelInsertButton({ onClick }: { onClick: () => void })
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            bgcolor: '#fff',
-            // border: '1px dashed',
-            // borderColor: 'primary.main',
-            transition: 'all 0.3s',
-
-            zIndex: 10,
-            backgroundColor: 'primary.light',
+            bgcolor: 'primary.light',
             color: 'primary.contrastText',
-            '&:hover': {
-              backgroundColor: 'primary.dark',
-            },
-            boxShadow: 1, // аналог тени у contained
+            transition: 'all 0.3s',
+            zIndex: 10,
+            '&:hover': { backgroundColor: 'primary.dark' },
+            boxShadow: 1,
           }}
         >
           <Icon icon="add" />

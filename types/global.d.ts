@@ -65,6 +65,18 @@ export interface IFunnelBlock {
   order: number;
 }
 
+export interface KanbanCard {
+  id: string
+  title: string
+}
+
+export interface KanbanColumn {
+  id: string
+  title: string
+  cards: KanbanCard[]
+  color: string
+}
+
 
 import { TextFieldProps } from '@mui/material/TextField';
 import { Edge, Node } from '@xyflow/react';

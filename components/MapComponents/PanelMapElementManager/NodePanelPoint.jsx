@@ -1,92 +1,192 @@
 'use client'
-import React, { memo } from 'react';
-import InputText from '@/components/UI/InputText';
+import React, { memo, useMemo } from 'react';
 import Frame from '@/components/UI/Frame';
+import InputText from '@/components/UI/InputText';
+import InputColorText from '@/components/UI/InputColorText';
 import { useReactFlow, useStore } from '@xyflow/react';
-import { ButtonGroup, Grid, Stack, Switch, Typography } from '@mui/material';
-import DropdownSearchMenu from '@/components/UI/DropdownSearchMenu';
-import { IconsNames } from '@/Icons';
+import { ButtonGroup, Grid, Stack, Switch, Typography, Box, IconButton } from '@mui/material';
 import IconSwitch from '@/components/UI/IconSwitch';
 import NodeFitText from '@/utils/Map/NodeFitText';
 import { init_NodePoint_data } from '../Nodes';
-import InputColorText from '@/components/UI/InputColorText';
-
-const data_icons = IconsNames.slice(0, 10).map(e => ({ id: e, name: e, icon: e }));
+import DropdownMenu, { DropdownItem } from '@/components/UI/DropdownMenu';
+import Icon from '@/components/UI/Icon';
+import {
+  Default, Arrow, Buildings, Business, Design, Development,
+  Device, Document, Finance, Food, Logos, Media, Medical,
+  Movement, Others, System, User, Weather
+} from '@/Icons';
+import { DataIconsGrouped } from '@/Icons/IconsData';
 
 const NodePanelPoint = ({ setFormulaError, id }) => {
   const { updateNodeData, updateNode } = useReactFlow();
+
   const storeData = useStore(e => {
-    const res = e.nodes.find(n => n.id == id);
+    const res = e.nodes.find(n => n.id === id);
     if (!res) return null;
-    return res.data
+    return {
+      data: res.data,
+      width: res?.width || res.measured?.width,
+      height: res?.height || res.measured?.height
+    };
   });
   if (!storeData) return null;
-  const data = { ...init_NodePoint_data(), ...storeData }
+
+  const data = { ...init_NodePoint_data(), ...storeData.data };
+
+  // Формирование данных иконок с группами
+  // const data_icons_grouped = useMemo(() => {
+  //   const groups: DropdownItem[] = [];
+  //   const addGroup = (groupName, iconsObj) => {
+  //     Object.keys(iconsObj).forEach(icon => {
+  //       groups.push({ id: icon, label: icon, icon, group: groupName });
+  //     });
+  //   };
+
+  //   addGroup("Default", Default);
+  //   addGroup("Arrow", Arrow);
+  //   addGroup("Buildings", Buildings);
+  //   addGroup("Business", Business);
+  //   addGroup("Design", Design);
+  //   addGroup("Development", Development);
+  //   addGroup("Device", Device);
+  //   addGroup("Document", Document);
+  //   addGroup("Finance", Finance);
+  //   addGroup("Food", Food);
+  //   addGroup("Logos", Logos);
+  //   addGroup("Media", Media);
+  //   addGroup("Medical", Medical);
+  //   addGroup("Movement", Movement);
+  //   addGroup("Others", Others);
+  //   addGroup("System", System);
+  //   addGroup("User", User);
+  //   addGroup("Weather", Weather);
+
+  //   return groups;
+  // }, []);
 
   const updateData = (updateData) => updateNodeData(id, updateData);
 
   const FitText = (text) => {
     const res = NodeFitText({ text, icon: data.isIconVisible });
-    updateNode(id, { width: res })
-  }
+    updateNode(id, { width: res });
+  };
 
   const handleLabelChange = (e) => {
     const value = e.target.value.toUpperCase() ?? '';
     if (data.isAutoResize) FitText(value);
     if (setFormulaError) setFormulaError(null);
     updateData({ label: value });
-  }
+  };
 
   const handleAutoResize = (e) => {
     const value = e.target.checked ?? false;
     if (value) FitText(data.label);
     updateData({ isAutoResize: value });
-  }
+  };
 
   return (
     <Frame sx={{ padding: '1rem', maxWidth: '250px' }}>
-      <Stack spacing={1.5}>
-        <Typography variant='h6'>Параметры</Typography>
-        <Stack direction='row' gap={1}>
-          <InputText label='Заголовок' value={data.label} size='small' placeholder='Label' onChange={handleLabelChange} />
-          <IconSwitch brightnessOff={50} value={data.isLabelVisible} onClick={() => updateData({ isLabelVisible: !data.isLabelVisible })} />
+      <Stack spacing={0.25}>
+        <Stack spacing={2}>
+          <Typography variant='h6'>Параметры</Typography>
+          <Stack direction='row' gap={1}>
+            <InputText label='Заголовок' value={data.label} size='small' placeholder='Label' onChange={handleLabelChange} />
+            <IconSwitch brightnessOff={50} value={data.isLabelVisible} onClick={() => updateData({ isLabelVisible: !data.isLabelVisible })} />
+          </Stack>
         </Stack>
-        <Grid container spacing={1}>
+
+        <Grid container spacing={1} pt={1}>
           <Grid size={6}>
-            <InputColorText label='1й цвет' value={data.colorPrimary} pickColor={(e) => updateData({ colorPrimary: e })} setColor={(e) => updateData({ colorPrimary: e.target.value })} />
+            <InputColorText
+              label='1й цвет'
+              value={data.colorPrimary}
+              pickColor={(e) => updateData({ colorPrimary: e })}
+              setColor={(e) => updateData({ colorPrimary: e.target.value })}
+            />
           </Grid>
           <Grid size={6}>
-            <InputColorText label='2й цвет' value={data.colorSecondary} pickColor={(e) => updateData({ colorSecondary: e })} setColor={(e) => updateData({ colorSecondary: e.target.value })} />
+            <InputColorText
+              label='2й цвет'
+              value={data.colorSecondary}
+              pickColor={(e) => updateData({ colorSecondary: e })}
+              setColor={(e) => updateData({ colorSecondary: e.target.value })}
+            />
           </Grid>
         </Grid>
+
         <Stack direction='row' alignItems="center" justifyContent='space-between' gap={1}>
           <Typography>Иконка </Typography>
-          <ButtonGroup variant='outlined' sx={{ gap: 1 }} aria-label="Basic button group">
-            <DropdownSearchMenu value={data.icon} onChange={(e) => updateData({ icon: e })} data={data_icons} getLabel={(item) => item.name} getIcon={(item) => item.icon} />
-            <IconSwitch brightnessOff={75} value={data.isIconVisible} onClick={() => { updateData({ icon: data.icon ?? 'default', isIconVisible: !data.isIconVisible }); }} />
-          </ButtonGroup>
+          <ButtonGroup variant='outlined' sx={{ gap: 1 }}>
+            <DropdownMenu
+              columns={6}
+              data={DataIconsGrouped}
+              displayItem={(item) => (
+                <Box display="flex" flexDirection="column" alignItems="center">
+                  <IconButton onClick={() => updateData({ icon: item.id })} color='primary'>
+                    <Icon icon={item.icon} />
+                  </IconButton>
+                  <Typography fontSize="0.75rem" width='100%' textOverflow='ellipsis' overflow='hidden' align="center">{item.label}</Typography>
+                </Box>
+              )}
+            // onChange={(id) => updateData({ icon: id })}
+            >
+              <Icon icon={data.icon || "default"} />
+            </DropdownMenu>
 
+            <IconSwitch
+              brightnessOff={75}
+              value={data.isIconVisible}
+              onClick={() => updateData({ icon: data.icon ?? 'default', isIconVisible: !data.isIconVisible })}
+            />
+          </ButtonGroup>
         </Stack>
+
         <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-          <Typography>Обязательный</Typography>
-          <Switch checked={data.isRequired} onChange={e => updateData({ isRequired: e.target.checked })} />
+          <label htmlFor="required-switch" style={{ cursor: 'pointer' }}>
+            <Typography sx={{ userSelect: 'none' }}>Обязательный</Typography>
+          </label>
+          <Switch id="required-switch" checked={data.isRequired} onChange={e => updateData({ isRequired: e.target.checked })} />
         </Stack>
+
         <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-          <Typography>Обводка</Typography>
-          <Switch checked={data.isBorderVisible} onChange={e => updateData({ isBorderVisible: e.target.checked })} />
+          <label htmlFor="borderVisible-switch" style={{ cursor: 'pointer' }}>
+            <Typography sx={{ userSelect: 'none' }}>Обводка</Typography>
+          </label>
+          <Switch id='borderVisible-switch' checked={data.isBorderVisible} onChange={e => updateData({ isBorderVisible: e.target.checked })} />
         </Stack>
+
+        <Grid container spacing={1} pt={1}>
+          <Grid size={6}>
+            <InputText
+              label='Ширина'
+              value={storeData.width || ''}
+              onChange={(e) => updateNode(id, { width: parseInt(e.target.value) || 0 })}
+              size='small'
+              disabled={data.isAutoResize}
+            />
+          </Grid>
+          <Grid size={6}>
+            <InputText
+              label='Высота'
+              value={storeData.height || ''}
+              onChange={(e) => updateNode(id, { height: parseInt(e.target.value) || 0 })}
+              size='small'
+              disabled={data.isAutoResize}
+            />
+          </Grid>
+        </Grid>
+
         <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-          <Typography>Автоширина</Typography>
-          <Switch checked={data.isAutoResize} onChange={handleAutoResize} />
+          <label htmlFor="autoResize-switch" style={{ cursor: 'pointer' }}>
+            <Typography sx={{ userSelect: 'none' }}>Автоширина</Typography>
+          </label>
+          <Switch id='autoResize-switch' checked={data.isAutoResize} onChange={handleAutoResize} />
         </Stack>
+
         <InputText label='Описание' rows={5} multiline value={data.description || ''} onChange={(e) => updateData({ description: e.target.value })} />
       </Stack>
     </Frame>
   );
 };
 
-export default memo(NodePanelPoint, (prev, next) => {
-  return prev.id == next.id
-});
-
-// export default memo(NodePanelPoint)
+export default memo(NodePanelPoint, (prev, next) => prev.id === next.id);

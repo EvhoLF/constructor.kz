@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react';
 import LinkButton from '../UI/LinkButton';
 import StackRow from '../UI/StackRow';
 import Frame from '../UI/Frame';
-import { HeaderMenu, HeaderMenuAdmin, HeaderMenuItem } from './config';
+import { HeaderMenu, HeaderMenuAdmin, HeaderMenuItem } from '@/constants/pages';
 
 export default function Header({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
@@ -17,7 +17,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
 
   const isAdmin = session?.user?.role !== undefined && (session?.user?.role as string) === 'admin';
 
-  const getItems = (items: HeaderMenuItem[]) => items.map(({ label, ...props }) => <LinkButton key={label} label={label} {...props} />)
+  const getItems = (items: HeaderMenuItem[]) => items.map(({ id, label, ...props }) => <LinkButton key={id} label={label} {...props} />)
 
   return (
     <>
@@ -36,10 +36,10 @@ export default function Header({ children }: { children: React.ReactNode }) {
         >
           <Box height={'100%'} sx={{ overflow: 'auto' }}>
             <Stack gap={2} height='100%'>
-              <StackRow justifyContent='space-between' px={.5}>
+              <StackRow justifyContent='space-between' px={1}>
                 <StackRow>
-                  <Icon icon='robot' fontSize='large' />
-                  <Typography variant='h6'>Constructor</Typography>
+                  {/* <Icon icon='konstruktor' /> */}
+                  <Typography fontFamily='RighteousRegular' variant='h6' textTransform='uppercase' fontWeight='700'>konstruktor</Typography>
                 </StackRow>
                 <IconButton size='medium' color="inherit" edge="start" onClick={closeHeader}>
                   <Icon fontSize='medium' icon='close' />

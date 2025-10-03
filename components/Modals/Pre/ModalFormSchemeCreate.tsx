@@ -6,13 +6,13 @@ import { useModal } from '@/hooks/useModal';
 import { useZodForm } from '@/hooks/useZodForm';
 import { useSession } from 'next-auth/react';
 import { useAsync } from '@/hooks/useAsync';
-import { Scheme } from '.prisma/client';
+import { DiagramFormula } from '.prisma/client';
 import schemeFormTitleShema from '@/libs/validation/schemeFormTitleShema';
 import InputText from '@/components/UI/InputText';
 import StackRow from '@/components/UI/StackRow';
 
 interface ModalFormSchemeCreate {
-  setSchemes: React.Dispatch<React.SetStateAction<(Scheme & { isNew: boolean })[]>>,
+  setSchemes: React.Dispatch<React.SetStateAction<(DiagramFormula & { isNew: boolean })[]>>,
   closeModal?: () => void;
 }
 
@@ -28,7 +28,7 @@ const ModalFormSchemeCreate = ({ setSchemes, closeModal = () => { } }: ModalForm
     try {
       const isValid = validate();
       if (!isValid || !session?.user.id) return;
-      const res = await asyncFn(() => axios.post(`/api/scheme/`, { userId: session?.user.id, title: data.title }));
+      const res = await asyncFn(() => axios.post(`/api/diagram-formula/`, { userId: session?.user.id, title: data.title }));
       if (!res) return;
       if (res.data) {
         setSchemes((prev) => [...prev, { ...res.data, isNew: true }]);

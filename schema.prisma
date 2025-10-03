@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite" // prod:mysql | dev:sqlite
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  user
+  admin
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  role      Role     @default(user)
+  createdAt DateTime @default(now())
+  
+  // Relations
+  diagrams          Diagram[]
+  diagramsFormula   DiagramFormula[]
+  funnels           Funnel[]  
+  kanbans  Kanban[] 
+}
+
+model Diagram { 
+  id        Int      @id @default(autoincrement())
+  title     String
+  nodes     String?
+  edges     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model DiagramFormula { 
+  id        Int      @id @default(autoincrement())
+  title     String
+  formula   String   @default("") 
+  nodes     String?
+  edges     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Funnel {
+  id          Int      @id @default(autoincrement())
+  title       String
+  blocks      String?  // JSON string для массива IFunnelBlock
+  layoutMode  String   @default("bottomBig") // 'equal' | 'topBig' | 'bottomBig'
+  styleMode   String   @default("filled")    // 'filled' | 'outlined'
+  textAlign   String   @default("left")      // 'left' | 'center' | 'right'
+  toggles     String?  // JSON string для объекта toggles
+  blockWidth  Int      @default(100)
+  blockHeight Int      @default(70)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id]) // ← это отношение
+
+  @@map("funnels")
+}
+
+model TemplateDiagram { 
+  id       Int    @id @default(autoincrement())
+  title    String
+  category String
+  nodes    String?
+  edges    String?
+}
+
+model TemplateFormula { 
+  id       Int    @id @default(autoincrement())
+  title    String
+  category String
+  nodes    String?
+  edges    String?
+}
+
+model Kanban {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  title      String
+  columns    String?
+  blocks     String?
+  style      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Frame from '../UI/Frame'
 import StackRow from '../UI/StackRow'
+import Konstruktor from '@/Icons/Konstruktor'
 
 const HeaderBar = ({ spacing = false }: { spacing?: boolean }) => {
   const { data: session } = useSession();
@@ -18,8 +19,7 @@ const HeaderBar = ({ spacing = false }: { spacing?: boolean }) => {
           <Frame sx={{ width: '100%', padding: '0rem .25rem' }}>
             <Toolbar sx={{ minHeight: '50px !important', height: '100%', padding: '0 1rem !important', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box display="flex" alignItems="center" gap={1}>
-                <Icon icon='robot' fontSize="medium" />
-                <Typography variant='h6'>Constructor</Typography>
+                <Typography fontFamily='RighteousRegular' variant='h6' textTransform='uppercase' fontWeight='700'>konstruktor</Typography>
               </Box>
               {
                 session?.user

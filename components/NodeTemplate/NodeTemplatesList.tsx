@@ -1,12 +1,12 @@
 import { Divider, Stack } from '@mui/material';
 import React from 'react';
-import { NodeTemplate } from '.prisma/client';
 import NodeTemplateItem from './NodeTemplateItem';
+import { SuperTemplate } from '@/global';
 
 type NodeTemplatesListProps = {
-  nodeTemplates: (NodeTemplate & { isNew: boolean })[];
-  onEdit: (tpl: NodeTemplate) => void;
-  onDelete: (tpl: NodeTemplate) => void;
+  nodeTemplates: (SuperTemplate & { isNew: boolean })[];
+  onEdit: (tpl: SuperTemplate) => void;
+  onDelete: (tpl: SuperTemplate) => void;
 };
 
 const NodeTemplatesList: React.FC<NodeTemplatesListProps> = ({ nodeTemplates, onEdit = () => () => { }, onDelete = () => () => { } }) => {

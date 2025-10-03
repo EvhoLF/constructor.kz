@@ -3,7 +3,6 @@ import { EDGE_MODIFIERS, NODE_MODIFIERS, rootNodeID } from "./FormulaConfig";
 // Универсальная функция: находит ключ с максимальной длиной и совпадающими полями
 const getModifierKey = (item, modifiersMap) => {
   const entries = Object.entries(modifiersMap);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const matches = entries.filter(([_, expectedObj]) => {
     return Object.entries(expectedObj).every(([field, value]) => item?.[field] === value);
   });

@@ -6,13 +6,14 @@ import { enqueueSnackbar } from 'notistack';
 import { z } from 'zod';
 import BaseModalForm from './BaseModalForm';
 import InputText from '../UI/InputText';
-import { NodeTemplate } from '.prisma/client';
+import { SuperDiagram } from '@/global';
 
 interface Props {
+  api: string,
   id: number;
   title: string;
   category: string;
-  setTemplates: React.Dispatch<React.SetStateAction<(NodeTemplate & { isNew: boolean })[]>>;
+  setTemplates: React.Dispatch<React.SetStateAction<(SuperDiagram & { isNew: boolean })[]>>;
 }
 
 const schema = z.object({
@@ -20,7 +21,7 @@ const schema = z.object({
   category: z.string().min(1, 'Введите категорию'),
 });
 
-const ModalFormNodeTemplateEdit = ({ id, title, category, setTemplates }: Props) => {
+const ModalFormNodeTemplateEdit = ({api, id, title, category, setTemplates }: Props) => {
   const { data: session } = useSession({ required: true });
 
   return (
@@ -31,7 +32,7 @@ const ModalFormNodeTemplateEdit = ({ id, title, category, setTemplates }: Props)
       submitText="Обновить"
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет пользователя');
-        const res = await axios.put(`/api/node-template/${id}`, data);
+        const res = await axios.put(`${api}${id}`, data);
         return res.data;
       }}
       onSuccess={(updated) => {

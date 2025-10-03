@@ -2,7 +2,7 @@
 
 import { Box } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import { HeaderMenu, HeaderMenuAdmin, HeaderMenuItem } from './config';
+import { HeaderMenu, HeaderMenuAdmin, HeaderMenuItem } from '@/constants/pages';
 import LinkButtonIcon from '../UI/LinkButtonIcon';
 import Line from '../UI/Line';
 
@@ -10,8 +10,8 @@ export default function HeaderMenuSmall() {
   const { data: session } = useSession();
 
   const isAdmin = session?.user?.role !== undefined && (session?.user?.role as string) === 'admin';
-  const getItems = (items: HeaderMenuItem[]) => items.map(({ label, ...props }) =>
-    <LinkButtonIcon key={label} tooltip={label} {...props} />)
+  const getItems = (items: HeaderMenuItem[]) => items.map(({ id, label, ...props }) =>
+    <LinkButtonIcon key={id} tooltip={label} {...props} />)
 
   return (
     <Box alignItems='' sx={{

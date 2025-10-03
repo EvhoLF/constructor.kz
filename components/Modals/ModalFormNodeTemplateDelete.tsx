@@ -4,15 +4,16 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 import BaseModalConfirm from './BaseModalConfirm';
-import { NodeTemplate } from '.prisma/client';
+import { SuperDiagram } from '@/global';
 
 interface Props {
+  api: string,
   id: number;
   title: string;
-  setTemplates: React.Dispatch<React.SetStateAction<(NodeTemplate & { isNew: boolean })[]>>;
+  setTemplates: React.Dispatch<React.SetStateAction<(SuperDiagram & { isNew: boolean })[]>>;
 }
 
-const ModalFormNodeTemplateDelete = ({ id, title, setTemplates }: Props) => {
+const ModalFormNodeTemplateDelete = ({ api, id, title, setTemplates }: Props) => {
   const { data: session } = useSession({ required: true });
 
   return (
@@ -22,7 +23,7 @@ const ModalFormNodeTemplateDelete = ({ id, title, setTemplates }: Props) => {
       confirmText="Удалить"
       onConfirm={async () => {
         if (!session?.user.id) throw new Error('Нет пользователя');
-        const res = await axios.delete(`/api/node-template/${id}`);
+        const res = await axios.delete(`${api}${id}`);
         if (!res.data.success) throw new Error('Удаление не удалось');
         return res.data;
       }}

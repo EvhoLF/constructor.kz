@@ -51,6 +51,7 @@ const Design = {
   sortAlphabetAsc: <path d="M4.869 11H2.667L6 3h2l3.333 8H9.131l-.41-1H5.28l-.41 1Zm1.23-3h1.803L7 5.8 6.098 8Zm12.9 8V3h-2v13h-3l4 5 4-5h-3Zm-8-3H3v2h4.855L3 19v2h8v-2H6.146L11 15v-2Z" />,
   sortAlphabetDesc: <path d="M4.869 11H2.667L6 3h2l3.333 8H9.131l-.41-1H5.28l-.41 1Zm1.23-3h1.803L7 5.8 6.098 8Zm15.9 0-4-5-4 5h3v13h2V8h3Zm-11 5H3v2h4.855L3 19v2h8v-2H6.146L11 15v-2Z" />,
   square: <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1m1 2v14h14V5z" />,
+  squareFill: <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1" />,
   tBox: <path d="M5 5v14h14V5zM4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1m9 7v7h-2v-7H7V8h10v2z" />,
   table: <path d="M4 8h16V5H4zm10 11v-9h-4v9zm2 0h4v-9h-4zm-8 0v-9H4v9zM3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1" />,
   tools: <path d="M5.33 3.272a3.5 3.5 0 0 1 4.254 4.962l10.709 10.71-1.414 1.414-10.71-10.71a3.502 3.502 0 0 1-4.962-4.255L5.444 7.63a1.5 1.5 0 0 0 2.121-2.121zm10.367 1.883 3.182-1.768 1.414 1.415-1.768 3.182-1.768.353-2.12 2.121-1.415-1.414 2.121-2.121zm-6.718 8.132 1.415 1.414-5.304 5.303a1 1 0 0 1-1.492-1.327l.078-.087z" />,
@@ -58,4 +59,4 @@ const Design = {
 }
 export default Design
 
-export const IconNamesDesign = ['alignItemBottom', 'alignItemHorizontalCenter', 'alignItemLeft', 'alignItemRight', 'alignItemTop', 'alignItemVerticalCenter', 'artboard', 'blurOff', 'brush2', 'circle', 'collage', 'colorFilter', 'contrast', 'crop', 'dragDrop', 'drop', 'editBox', 'edit', 'eraser', 'flipHorizontal', 'flipVertical', 'focus', 'focus2', 'grid', 'hammer', 'hexagon', 'inputMethod', 'layoutColumn', 'layout', 'layoutRow', 'layout_tree', 'magic', 'markPen', 'octagon', 'paint', 'palette', 'pencil', 'pentagon', 'rectangle', 'ruler', 'scissors', 'screenshot2', 'shadow', 'shape', 'shapes', 'sip', 'slice', 'sortAsc', 'sortDesc', 'sortAlphabetAsc', 'sortAlphabetDesc', 'square', 'tBox', 'table', 'tools', 'triangle',] as const;
+export const IconNamesDesign = ['alignItemBottom', 'alignItemHorizontalCenter', 'alignItemLeft', 'alignItemRight', 'alignItemTop', 'alignItemVerticalCenter', 'artboard', 'blurOff', 'brush2', 'circle', 'collage', 'colorFilter', 'contrast', 'crop', 'dragDrop', 'drop', 'editBox', 'edit', 'eraser', 'flipHorizontal', 'flipVertical', 'focus', 'focus2', 'grid', 'hammer', 'hexagon', 'inputMethod', 'layoutColumn', 'layout', 'layoutRow', 'layout_tree', 'magic', 'markPen', 'octagon', 'paint', 'palette', 'pencil', 'pentagon', 'rectangle', 'ruler', 'scissors', 'screenshot2', 'shadow', 'shape', 'shapes', 'sip', 'slice', 'sortAsc', 'sortDesc', 'sortAlphabetAsc', 'sortAlphabetDesc', 'square', 'squareFill', 'tBox', 'table', 'tools', 'triangle',] as const;

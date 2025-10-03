@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Box, IconButton, Menu, MenuItem, TextField, SvgIcon, } from "@mui/material";
 import InputText from "./InputText";
 import Icon from "./Icon";
@@ -37,8 +37,14 @@ export default function DropdownSearchMenu({
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => { setAnchorEl(event.currentTarget); setMenuOpen(true); };
   const handleClose = () => { setMenuOpen(false); setAnchorEl(null); };
   const handleSelect = (id: string) => () => { onChange(id); handleClose(); };
-  const filteredItems = data.filter((item) => getLabel(item).toLowerCase().includes(searchQuery.toLowerCase()));
-  const currentItem = data.find((item) => item.id === value) ?? data[0];
+  const filteredItems = useMemo(
+    () => data.filter((item) => getLabel(item).toLowerCase().includes(searchQuery.toLowerCase())),
+    [data, searchQuery, getLabel]
+  );
+  const currentItem = useMemo(
+    () => data.find((item) => item.id === value) ?? data[0],
+    [data, value]
+  );
 
   return (
     <>

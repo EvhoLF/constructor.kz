@@ -5,15 +5,13 @@ import { addEdge, applyEdgeChanges, applyNodeChanges, Background, Connection, Ed
 import { init_root_NodePoint, nodeTypes } from './Nodes';
 import { edgeTypes } from './Edges';
 import { useFlowDnD } from '@/hooks/useFlowDnD';
-import { IconButton, Stack, TextField, Tooltip } from '@mui/material';
+import { Grid, IconButton, Stack, TextField, Tooltip } from '@mui/material';
 import { ParseFormulaToGraph } from '@/utils/Formula/ParseFormulaToGraph';
 import { getLayout } from '@/utils/Map/getLayout';
 import PanelMapElementManager from './PanelMapElementManager';
 import { ParseGraphToFormula } from '@/utils/Formula/ParseGraphToFormula';
 import { defaultEdgeOptions } from './MapConfig';
-// import { exportTemplate, importTemplate } from '@/utils/Map/TemplateHandler';
 import { rootNodeID } from '@/utils/Formula/FormulaConfig';
-import PanelNodes from './PanelNodes/PanelNodes';
 import { useFlowTableBuffer } from '@/hooks/useFlowTableBuffer';
 import { TakeImageMap, TakeImageMapDownload } from '@/utils/Map/ImageMap';
 import createPDF from '@/utils/Map/createPDF';
@@ -22,21 +20,24 @@ import { useAsync } from '@/hooks/useAsync';
 import axios from 'axios';
 import { compress, decompress } from '@/utils/compress';
 import { enqueueSnackbar } from 'notistack';
-import { Scheme } from '.prisma/client';
+import { DiagramFormula } from '.prisma/client';
 import Frame from '../UI/Frame';
 import Icon from '../UI/Icon';
 import HeaderButton from '../Header/HeaderButton';
 import StackRow from '../UI/StackRow';
+import { useDiagramType } from '@/hooks/DiagramTypeContext';
+import PanelNodes from './PanelNodes/PanelNodes';
 
 const Map = ({ id }: { id: string }) => {
+  const { api } = useDiagramType();
   const { asyncFn } = useAsync();
-  const { fitView} = useReactFlow();
+  const { fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { restoreData } = useFlowTableBuffer(nodes, edges);
   const { onDragOver, onDrop } = useFlowDnD();
 
-  const [formula, setFormula] = useState('*C1(*vk*inst+tg)*C2(*C2.1+C2.2)~*C3(*C3.1*C3.2)');
+  const [formula, setFormula] = useState('');
   const [formulaError, setFormulaError] = useState(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,9 +56,9 @@ const Map = ({ id }: { id: string }) => {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(`/api/scheme/${id}`))
+        const res = await asyncFn(() => axios.get(`${api}${id}`))
         if (!res || !res.data) return;
-        const resData: Scheme = res.data;
+        const resData: DiagramFormula = res.data;
         const resNodes = resData?.nodes ? decompress(resData?.nodes) : [init_root_NodePoint()];
         const resEdges = resData?.edges ? decompress(resData?.edges) : [];
         const resFormula = resData?.formula || '';
@@ -112,19 +113,6 @@ const Map = ({ id }: { id: string }) => {
     });
   };
 
-
-
-  // const [cp, setCP] = useState('');
-
-  // const copy = () => {
-  //   const zxc = exportTemplate(nodes, edges);
-  //   setCP(zxc)
-  // }
-
-  // const past = () => {
-  //   importTemplate(cp, addNodes, addEdges);
-  // }
-
   const takeScreenshot = useCallback(async () => {
     await fitView();
     await new Promise((r) => setTimeout(r, 500));
@@ -143,7 +131,7 @@ const Map = ({ id }: { id: string }) => {
     try {
       const strNodes = compress(nodes);
       const strEdges = compress(edges);
-      const res = await asyncFn(() => axios.put(`/api/scheme/${id}`, { formula, nodes: strNodes, edges: strEdges }));
+      const res = await asyncFn(() => axios.put(`${api}${id}`, { formula, nodes: strNodes, edges: strEdges }));
       if (res && res.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }
@@ -182,41 +170,54 @@ const Map = ({ id }: { id: string }) => {
         onlyRenderVisibleElements
       >
         <Background color="#222222" size={2} gap={40} />
-        <Panel position='top-left'>
-          <Stack gap={2}>
-            <Stack direction='row' gap={2}>
-              <HeaderButton />
-              <Frame sx={{ padding: '5px' }}>
-                <Stack direction='row' gap={1}>
-                  <Tooltip title='Сохранить'>
-                    <IconButton color='inherit' onClick={save}><Icon icon='save' /></IconButton>
-                  </Tooltip>
-                  <Tooltip title='Экспорт PDF'>
-                    <IconButton color='inherit' onClick={pdf}><Icon icon='filePdf2' /></IconButton>
-                  </Tooltip>
-                  <Tooltip title='Снимок схемы'>
-                    <IconButton color='inherit' onClick={takeScreenshot}><Icon icon='screenshot2' /></IconButton>
-                  </Tooltip>
+        <Panel position='top-center' style={{ width: '100%' }}>
+          <Grid container spacing={2} px={2}>
+            <Grid size={{ xs: 12, sm: 3, md: 2 }} sx={{ flexShrink: 0, minWidth: 'fit-content' }}>
+              <Stack gap={2}>
+                <Stack direction='row' gap={2}>
+                  <HeaderButton />
+                  <Frame sx={{ padding: '5px' }}>
+                    <Stack direction='row' gap={1}>
+                      <Tooltip title='Сохранить'>
+                        <IconButton color='inherit' onClick={save}><Icon icon='save' /></IconButton>
+                      </Tooltip>
+                      <Tooltip title='Экспорт PDF'>
+                        <IconButton color='inherit' onClick={pdf}><Icon icon='filePdf2' /></IconButton>
+                      </Tooltip>
+                      <Tooltip title='Снимок схемы'>
+                        <IconButton color='inherit' onClick={takeScreenshot}><Icon icon='screenshot2' /></IconButton>
+                      </Tooltip>
+                    </Stack>
+                  </Frame>
                 </Stack>
-              </Frame>
-            </Stack>
-            <PanelNodes />
-          </Stack>
-        </Panel>
-        <Panel position='top-center'>
-          <StackRow gap={2} overflow='initial'>
-            <Frame sx={{ padding: '5px' }}>
-              <TextField sx={{ width: '500px' }} size='small' variant='outlined' value={formula} onChange={handleInputFormula} error={!!formulaError} helperText={formulaError} />
-            </Frame>
-            <Frame sx={{ padding: '5px' }}>
-              <Tooltip title='Выравнить узлы'>
-                <IconButton color='inherit' onClick={() => setLayouted(nodes, edges)}><Icon icon='layout_tree' /></IconButton>
-              </Tooltip>
-              <Tooltip title='Показать всю схему'>
-                <IconButton color='inherit' onClick={() => fitView()}><Icon icon='focus2' /></IconButton>
-              </Tooltip>
-            </Frame>
-          </StackRow>
+                <Stack direction='row' gap={2}>
+                  <Frame sx={{ padding: '5px', width: 'fit-content' }}>
+                    <Stack direction='row'>
+                      <Tooltip title='Выравнить узлы'>
+                        <IconButton color='inherit' onClick={() => setLayouted(nodes, edges)}><Icon icon='layout_tree' /></IconButton>
+                      </Tooltip>
+                      <Tooltip title='Показать всю схему'>
+                        <IconButton color='inherit' onClick={() => fitView()}><Icon icon='focus2' /></IconButton>
+                      </Tooltip>
+                    </Stack>
+                  </Frame>
+                  <PanelNodes />
+                </Stack>
+              </Stack>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 8 }}>
+              <Stack width='100%' direction='row' gap={1} justifyContent='center' alignItems='center'>
+                <Stack gap={2} overflow='initial' justifyContent={'center'} sx={{ width: '100%', maxWidth: '500px' }}>
+                  <Frame sx={{ padding: '5px', }}>
+                    <TextField sx={{ width: '100%' }} size='small' variant='outlined' placeholder='C1+C2*C3' value={formula} onChange={handleInputFormula} error={!!formulaError} helperText={formulaError} />
+                  </Frame>
+                </Stack>
+              </Stack>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 3, md: 2 }}>
+              <Stack minWidth='212px'></Stack>
+            </Grid>
+          </Grid>
         </Panel>
         <Panel position="top-right" style={{ display: 'flex', flexDirection: 'column', gap: '10px', zIndex: '1000' }}>
           <PanelMapElementManager setFormulaError={setFormulaError} selectedElement={selectedElement} />

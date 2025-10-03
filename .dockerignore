@@ -1,5 +1,6 @@
 node_modules/
 constructor.tar
+konstruktor.tar
 .next/
 Dockerfile
 .dockerignore

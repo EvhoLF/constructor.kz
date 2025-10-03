@@ -5,13 +5,13 @@ import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { enqueueSnackbar } from 'notistack';
-import { Scheme } from '.prisma/client';
+import { DiagramFormula } from '.prisma/client';
 import StackRow from '@/components/UI/StackRow';
 
 interface ModalFormSchemeDelete {
   id: string | number,
   title: string,
-  setSchemes: React.Dispatch<React.SetStateAction<(Scheme & { isNew: boolean })[]>>,
+  setSchemes: React.Dispatch<React.SetStateAction<(DiagramFormula & { isNew: boolean })[]>>,
   closeModal?: () => void;
 }
 
@@ -25,9 +25,9 @@ const ModalFormSchemeDelete = ({ id, title, setSchemes, closeModal = () => { } }
   const handler = async () => {
     try {
       if (!session?.user.id) return;
-      const res = await asyncFn(() => axios.delete(`/api/scheme/${id}`));
+      const res = await asyncFn(() => axios.delete(`/api/diagram-formula/${id}`));
       if (!res || !res?.data.success) return
-      setSchemes(prev => prev.filter(scheme => scheme.id !== id));
+      setSchemes(prev => prev.filter(formulaDiagrams => formulaDiagrams.id !== id));
       onCloseModal();
       enqueueSnackbar('Cхема удалена успешно', { variant: 'success' });
     }

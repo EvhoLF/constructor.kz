@@ -4,7 +4,7 @@ import { useDnD } from "./DnDProvider";
 import { init_NodePoint } from "@/components/MapComponents/Nodes";
 import { v4 as uuidv4 } from 'uuid';
 import { useModal } from "@/hooks/useModal";
-import ModalFormSchemeImport from "@/components/Modals/ModalFormSchemeImport";
+import ModalFormSchemeImport from "@/components/Modals/ModalFormDiagramImport";
 
 interface SchemePayload {
   nodes: Node[];
@@ -57,22 +57,22 @@ export const useFlowDnD = () => {
         addNodes(newNode);
       }
       if (dnd.type === "ADD_SCHEME") {
-        const scheme = dnd.data as SchemePayload;
-        if (!scheme?.nodes || !scheme.edges) return;
+        const formulaDiagrams = dnd.data as SchemePayload;
+        if (!formulaDiagrams?.nodes || !formulaDiagrams.edges) return;
         showModal({
           content: (
             <ModalFormSchemeImport
               onCancel={() => { }}
               onSubmit={(baseName: string, autoRename: boolean) => {
-                const offsetX = position.x - (scheme.nodes[0]?.position?.x || 0);
-                const offsetY = position.y - (scheme.nodes[0]?.position?.y || 0);
-                const newNodes = scheme.nodes.map((node) => ({
+                const offsetX = position.x - (formulaDiagrams.nodes[0]?.position?.x || 0);
+                const offsetY = position.y - (formulaDiagrams.nodes[0]?.position?.y || 0);
+                const newNodes = formulaDiagrams.nodes.map((node) => ({
                   ...node, id: uuidv4(),
                   position: { x: node.position.x + offsetX, y: node.position.y + offsetY, },
                 }));
                 const oldToNewId: Record<string, string> = {};
-                scheme.nodes.forEach((old, idx) => { oldToNewId[old.id] = newNodes[idx].id; });
-                const newEdges = scheme.edges.map((edge) => ({
+                formulaDiagrams.nodes.forEach((old, idx) => { oldToNewId[old.id] = newNodes[idx].id; });
+                const newEdges = formulaDiagrams.edges.map((edge) => ({
                   ...edge,
                   id: uuidv4(),
                   source: oldToNewId[edge.source],

@@ -1,9 +1,13 @@
-"use client"
 import Icon from "@/components/UI/Icon";
 import { IconsNames } from "@/Icons";
 import { Stack, Typography } from "@mui/material";
 import Head from "next/head";
+import { PAGE_DATA } from '@/constants/pages';
 
+
+export const metadata = {
+  ...PAGE_DATA.icons
+}
 export default function Page() {
 
   return (

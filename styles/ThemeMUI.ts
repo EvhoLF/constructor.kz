@@ -27,7 +27,7 @@ const ThemeMUI = createTheme({
         },
       ],
     },
-  }
+  },
 });
 
 export default ThemeMUI;
