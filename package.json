@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prisma:generate": "prisma generate --schema=./schema.prisma",
     "dev": "next dev --turbopack -p 8080",
     "build": "next build",
     "start": "next start -p 8080",
@@ -46,5 +47,8 @@
     "eslint-config-next": "15.3.3",
     "prisma": "^6.11.1",
     "typescript": "^5"
+  },
+  "prisma": {
+    "schema": "./schema.prisma"
   }
 }
