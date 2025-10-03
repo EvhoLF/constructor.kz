@@ -7,7 +7,7 @@ import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import { prisma } from '@/prisma/prisma';
 import { Params } from 'next/dist/server/request/params';
 
-export async function generateMetadata({ params }: { params: Params }) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const diagram = await prisma.diagramFormula.findUnique({ where: { id: Number(id) } });
   return {
