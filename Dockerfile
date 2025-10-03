@@ -9,7 +9,6 @@ RUN apk add --no-cache openssl
 
 # Копируем package-файлы
 COPY package*.json ./
-COPY prisma ./prisma
 
 # -------- СБОРКА КОДА --------
 FROM base AS build
@@ -21,7 +20,7 @@ RUN npm install
 COPY . .
 
 # Генерация Prisma Client (путь: ../app/generated/prisma)
-RUN npx prisma generate
+RUN npx prisma generate --schema=./schema.prisma
 
 # Сборка проекта Next.js
 ENV NODE_OPTIONS="--max-old-space-size=2048"
