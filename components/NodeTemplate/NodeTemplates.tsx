@@ -14,12 +14,15 @@ import ModalFormNodeTemplateCreate from '../Modals/ModalFormNodeTemplateCreate';
 import { useDiagramType } from '@/hooks/DiagramTypeContext';
 import { SuperTemplate } from '@/global';
 
+// Создаем правильный тип для шаблонов
+type NodeTemplate = SuperTemplate & { isNew: boolean };
+
 const NodeTemplates = () => {
   const { templateApi } = useDiagramType();
   const { showModal } = useModal();
   const { data: session } = useSession({ required: true });
 
-  const [nodeTemplates, setNodeTemplates] = useState<(SuperTemplate & { isNew: boolean })[]>([]);
+  const [nodeTemplates, setNodeTemplates] = useState<NodeTemplate[]>([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [sortOption, setSortOption] = useState<NodeTemplateSortOption>('title_asc');
@@ -37,7 +40,14 @@ const NodeTemplates = () => {
     setError(null);
     axios
       .get(templateApi)
-      .then((res) => setNodeTemplates(res.data || []))
+      .then((res) => {
+        // Приводим данные к правильному типу
+        const templates: NodeTemplate[] = (res.data || []).map((template: any) => ({
+          ...template,
+          isNew: template.isNew || false
+        }));
+        setNodeTemplates(templates);
+      })
       .catch((err) => {
         console.error('Ошибка при загрузке:', err);
         setError('Не удалось загрузить шаблоны');
@@ -64,7 +74,12 @@ const NodeTemplates = () => {
 
   // --- Callbacks ---
   const showModalFormCreate = useCallback(() => {
-    showModal({ content: <ModalFormNodeTemplateCreate api={templateApi} setTemplates={setNodeTemplates} /> });
+    showModal({ 
+      content: <ModalFormNodeTemplateCreate 
+        api={templateApi} 
+        setTemplates={setNodeTemplates as any} 
+      /> 
+    });
   }, [showModal, templateApi]);
 
   const showModalFormEdit = useCallback((id: number, title: string, category: string) => {
@@ -75,7 +90,7 @@ const NodeTemplates = () => {
           id={id}
           title={title}
           category={category}
-          setTemplates={setNodeTemplates}
+          setTemplates={setNodeTemplates as any}
         />
       ),
     });
@@ -88,7 +103,7 @@ const NodeTemplates = () => {
           api={templateApi}
           id={id}
           title={title}
-          setTemplates={setNodeTemplates}
+          setTemplates={setNodeTemplates as any}
         />
       ),
     });
