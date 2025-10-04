@@ -45,9 +45,9 @@ jobs:
           key: ${{ secrets.KLASTERWEB__SERVER_SSH_KEY }}
           script: |
             cd /var/www/konstruktor__usr/data/
-            docker load -i konstruktor.tar
-            rm -r konstruktor.tar
             docker rm -f konstruktor-app || true
-            docker system prune -af --volumes || true
+            docker load -i konstruktor.tar
+            rm -f konstruktor.tar
+            docker image prune -af || true
             docker compose -p konstruktor up -d --force-recreate --remove-orphans
             docker exec konstruktor-app npx prisma migrate deploy
