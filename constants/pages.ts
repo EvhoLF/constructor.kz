@@ -42,7 +42,7 @@ export const PAGE_DATA = {
     description: 'Вороноки и пользовательские пути',
   },
   kanban: {
-    title: 'Доска',
+    title: 'Доски',
     description: 'Управление задачами и проектами с помощью канбан-досок',
   },
   icons: {
