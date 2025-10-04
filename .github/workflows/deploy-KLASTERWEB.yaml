@@ -48,6 +48,5 @@ jobs:
             docker rm -f konstruktor-app || true
             docker load -i konstruktor.tar
             rm -f konstruktor.tar
-            docker compose -p konstruktor up -d --force-recreate --remove-orphans
-            docker image prune -af || true
+            docker run -d --name konstruktor-app --env-file .env --network host konstruktor:latest
             docker exec konstruktor-app npx prisma migrate deploy
