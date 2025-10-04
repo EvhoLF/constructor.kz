@@ -47,6 +47,7 @@ jobs:
             cd /var/www/konstruktor__usr/data/
             docker load -i konstruktor.tar
             rm -r konstruktor.tar
-            docker compose -p konstruktor down
+            docker rm -f konstruktor-app || true
+            docker system prune -af --volumes || true
             docker compose -p konstruktor up -d --force-recreate --remove-orphans
-            docker compose -p konstruktor exec konstruktor-app npx prisma migrate deploy
+            docker exec konstruktor-app npx prisma migrate deploy
