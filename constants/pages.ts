@@ -43,7 +43,7 @@ export const PAGE_DATA = {
   },
   kanban: {
     title: 'Доски',
-    description: 'Управление задачами и проектами с помощью канбан-досок',
+    description: 'Страница с функционалом канбан-досок',
   },
   icons: {
     title: 'Иконки',
