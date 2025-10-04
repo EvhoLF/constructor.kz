@@ -49,4 +49,4 @@ jobs:
             rm -r konstruktor.tar
             docker compose -p konstruktor down
             docker compose -p konstruktor up -d --force-recreate --remove-orphans
-            docker exec konstruktor-app npx prisma migrate deploy
+            docker compose -p konstruktor exec konstruktor-app npx prisma migrate deploy
