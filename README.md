@@ -1,1 +1,1 @@
-Используется ORM PRISMA, скрипт миграции: npx prisma migrate dev --name NAME_TEXT
+Используется ORM PRISMA, скрипт миграции: npx prisma migrate dev --name NAME_TEXT;
