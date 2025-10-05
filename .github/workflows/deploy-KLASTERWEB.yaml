@@ -43,7 +43,7 @@ jobs:
             cd /var/www/konstruktor__usr/data/
             docker load -i konstruktor.tar
             rm -f konstruktor.tar
+            docker run --rm --network host --env-file .env konstruktor:latest npx prisma migrate deploy
             docker rm -f konstruktor-app || true
             docker compose -p konstruktor up -d --force-recreate --remove-orphans
-            docker run --rm --network host --env-file .env konstruktor:latest npx prisma migrate deploy
             docker image prune -af || true
