@@ -39,7 +39,7 @@ model diagram {
   @@index([userId], map: "Diagram_userId_fkey")
 }
 
-model diagramformula {
+model diagramFormula {
   id        Int      @id @default(autoincrement())
   title     String
   formula   String   @default("")
@@ -67,7 +67,7 @@ model kanban {
   @@index([userId], map: "Kanban_userId_fkey")
 }
 
-model templatediagram {
+model templateDiagram {
   id       Int     @id @default(autoincrement())
   title    String
   category String
@@ -75,7 +75,7 @@ model templatediagram {
   edges    String?
 }
 
-model templateformula {
+model templateFormula {
   id       Int     @id @default(autoincrement())
   title    String
   category String
@@ -91,7 +91,7 @@ model user {
   role           user_role        @default(user)
   createdAt      DateTime         @default(now())
   diagram        diagram[]
-  diagramformula diagramformula[]
+  diagramformula diagramFormula[]
   funnels        Funnel[]
   kanban         kanban[]
 }
