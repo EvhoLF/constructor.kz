@@ -49,5 +49,5 @@ jobs:
             rm -f konstruktor.tar
             docker compose -p konstruktor down || true
             docker compose -p konstruktor up -d --force-recreate --remove-orphans
-            docker run --rm --network host konstruktor:latest npx prisma migrate deploy
+            docker run --rm --network host --env-file .env konstruktor:latest npx prisma migrate deploy
             docker image prune -af || true
