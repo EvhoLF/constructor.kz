@@ -71,16 +71,16 @@ model TemplateDiagram {
   id       Int     @id @default(autoincrement())
   title    String
   category String
-  nodes    Json?
-  edges    Json?
+  nodes    String? @db.LongText 
+  edges    String? @db.LongText 
 }
 
 model TemplateFormula {
   id       Int     @id @default(autoincrement())
   title    String
   category String
-  nodes    Json?
-  edges    Json?
+  nodes    String? @db.LongText 
+  edges    String? @db.LongText 
 }
 
 model User {
