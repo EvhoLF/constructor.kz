@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Funnel {
+model funnel {
   id          Int      @id @default(autoincrement())
   title       String
   blocks      String?
@@ -20,13 +20,13 @@ model Funnel {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userId      Int
-  user        User     @relation(fields: [userId], references: [id])
+  user        user     @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "funnels_userId_fkey")
   @@map("funnels")
 }
 
-model Diagram {
+model diagram {
   id        Int      @id @default(autoincrement())
   title     String
   nodes     String?
@@ -34,12 +34,12 @@ model Diagram {
   createdAt DateTime @default(now())
   updatedAt DateTime
   userId    Int
-  user      User     @relation(fields: [userId], references: [id], map: "Diagram_userId_fkey")
+  user      user     @relation(fields: [userId], references: [id], map: "Diagram_userId_fkey")
 
   @@index([userId], map: "Diagram_userId_fkey")
 }
 
-model DiagramFormula {
+model diagramFormula {
   id        Int      @id @default(autoincrement())
   title     String
   formula   String   @default("")
@@ -48,12 +48,12 @@ model DiagramFormula {
   createdAt DateTime @default(now())
   updatedAt DateTime
   userId    Int
-  user      User     @relation(fields: [userId], references: [id], map: "DiagramFormula_userId_fkey")
+  user      user     @relation(fields: [userId], references: [id], map: "DiagramFormula_userId_fkey")
 
   @@index([userId], map: "DiagramFormula_userId_fkey")
 }
 
-model Kanban {
+model kanban {
   id        Int      @id @default(autoincrement())
   userId    Int
   title     String
@@ -62,38 +62,38 @@ model Kanban {
   style     String?
   createdAt DateTime @default(now())
   updatedAt DateTime
-  user      User     @relation(fields: [userId], references: [id], map: "Kanban_userId_fkey")
+  user      user     @relation(fields: [userId], references: [id], map: "Kanban_userId_fkey")
 
   @@index([userId], map: "Kanban_userId_fkey")
 }
 
-model TemplateDiagram {
+model templateDiagram {
   id       Int     @id @default(autoincrement())
   title    String
   category String
-  nodes    String?
-  edges    String?
+  nodes    Json?
+  edges    Json?
 }
 
-model TemplateFormula {
+model templateFormula {
   id       Int     @id @default(autoincrement())
   title    String
   category String
-  nodes    String?
-  edges    String?
+  nodes    Json?
+  edges    Json?
 }
 
-model User {
+model user {
   id             Int              @id @default(autoincrement())
   email          String           @unique(map: "User_email_key")
   name           String?
   password       String
   role           user_role        @default(user)
   createdAt      DateTime         @default(now())
-  diagram        Diagram[]
-  diagramformula DiagramFormula[]
-  funnels        Funnel[]
-  kanban         Kanban[]
+  diagram        diagram[]
+  diagramformula diagramFormula[]
+  funnels        funnel[]
+  kanban         kanban[]
 }
 
 enum user_role {
