@@ -38,7 +38,7 @@ const ModalFormFunnelCreate = ({ api, setFunnels }: ModalFormFunnelCreateProps) 
         });
       }}
       onSuccess={(res) => {
-        setFunnels(prev => [...prev, { ...res.data, isNew: true }]);
+        setFunnels(prev => [...prev, { ...res?.data, isNew: true }]);
         enqueueSnackbar('Воронка успешно создана', { variant: 'success' });
       }}
       renderForm={(formField, disabled) => (

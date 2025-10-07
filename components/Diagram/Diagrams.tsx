@@ -32,7 +32,7 @@ const Diagrams = () => {
     axios
       .get(`${api}/user/${session.user.id}`)
       .then((res) => {
-        if (res.data) setDiagrams(res.data);
+        if (res?.data) setDiagrams(res.data);
       })
       .catch((err) => {
         console.error('Ошибка при загрузке карт:', err);
@@ -45,7 +45,7 @@ const Diagrams = () => {
   const filteredAndSortedDiagrams = useMemo(() => {
     const [field, order] = sortOption.split('_') as ['title' | 'createdAt' | 'updatedAt', 'asc' | 'desc'];
 
-    const filtered = diagrams.filter((diagram) => diagram.title.toLowerCase().includes(search.toLowerCase()));
+    const filtered = diagrams.filter((diagram) => diagram?.title?.toLowerCase().includes(search?.toLowerCase()));
 
     const sorted = [...filtered].sort((a, b) => {
       let aValue: string | number;

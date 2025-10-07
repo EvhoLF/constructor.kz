@@ -30,8 +30,8 @@ const ModalFormSchemeCreate = ({ setSchemes, closeModal = () => { } }: ModalForm
       if (!isValid || !session?.user.id) return;
       const res = await asyncFn(() => axios.post(`/api/diagram-formula/`, { userId: session?.user.id, title: data.title }));
       if (!res) return;
-      if (res.data) {
-        setSchemes((prev) => [...prev, { ...res.data, isNew: true }]);
+      if (res?.data) {
+        setSchemes((prev) => [...prev, { ...res?.data, isNew: true }]);
         enqueueSnackbar('Cхема создана успешно', { variant: 'success' });
         onCloseModal();
       }

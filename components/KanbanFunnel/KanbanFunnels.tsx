@@ -30,8 +30,8 @@ const KanbanFunnels = () => {
     axios
       .get(`${API_BASE}/user/${session.user.id}`)
       .then((res) => {
-        if (res.data) {
-          const kanbansWithParsedData = res.data.map((kanban: any) => ({
+        if (res?.data) {
+          const kanbansWithParsedData = res.data?.map((kanban: any) => ({
             ...kanban,
             columns: kanban.columns ? JSON.parse(kanban.columns) : [],
             blocks: kanban.blocks ? JSON.parse(kanban.blocks) : [],

@@ -33,7 +33,7 @@ const ModalFormNodeTemplateEdit = ({api, id, title, category, setTemplates }: Pr
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет пользователя');
         const res = await axios.put(`${api}${id}`, data);
-        return res.data;
+        return res?.data;
       }}
       onSuccess={(updated) => {
         setTemplates((prev) =>

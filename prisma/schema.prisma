@@ -32,7 +32,7 @@ model Diagram {
   nodes     String? @db.LongText
   edges     String? @db.LongText
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   userId    Int
   user      User     @relation(fields: [userId], references: [id], map: "Diagram_userId_fkey")
 
@@ -46,7 +46,7 @@ model DiagramFormula {
   nodes     String? @db.LongText
   edges     String? @db.LongText
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   userId    Int
   user      User     @relation(fields: [userId], references: [id], map: "DiagramFormula_userId_fkey")
 
@@ -61,7 +61,7 @@ model Kanban {
   blocks    String?
   style     String?
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], map: "Kanban_userId_fkey")
 
   @@index([userId], map: "Kanban_userId_fkey")

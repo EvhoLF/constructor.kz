@@ -32,8 +32,8 @@ const ModalFormSchemeEdit = ({ id, title, setSchemes, closeModal = () => { } }: 
       if (!isValid || !session?.user.id) return;
       const res = await asyncFn(() => axios.put(`/api/diagram-formula/${id}`, { title: data.title }));
       if (!res) return;
-      if (res.data) {
-        setSchemes((formulaDiagrams) => formulaDiagrams.map(formulaDiagrams => formulaDiagrams.id == id ? { ...formulaDiagrams, ...res.data } : formulaDiagrams));
+      if (res?.data) {
+        setSchemes((formulaDiagrams) => formulaDiagrams.map(formulaDiagrams => formulaDiagrams.id == id ? { ...formulaDiagrams, ...res?.data } : formulaDiagrams));
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
         onCloseModal();
       }

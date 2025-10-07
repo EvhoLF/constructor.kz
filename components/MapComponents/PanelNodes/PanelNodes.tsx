@@ -45,8 +45,8 @@ const PanelNodes = () => {
     try {
       const fetch = async () => {
         const res = await asyncFn(() => axios.get(templateApi))
-        if (!res || !res.data) return;
-        const resData: SuperTemplate[] = res.data;
+        if (!res || !res?.data) return;
+        const resData: SuperTemplate[] = res?.data;
         const result: DropdownItem[] = [];
         resData.forEach(e => {
           const decompressNodes: NodePoint[] = onDecompress(e.nodes);
@@ -79,7 +79,7 @@ const PanelNodes = () => {
       const nodeData = { ...item.props.data, label: 'C' }
       return (
         <DnD key={item.id} props={item.props}>
-          <Tooltip title={itemLabel}>
+          <Tooltip title={itemLabel} >
             <Stack gap={.5}>
               <IconNodes {...nodeData} sx={{ width: '50px', height: '30px' }} />
               <Typography width='100%' overflow='hidden' sx={{ textOverflow: 'ellipsis' }} textAlign='center' fontSize='.75rem' textOverflow='' noWrap>{itemLabel}</Typography>

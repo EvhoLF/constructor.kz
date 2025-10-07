@@ -35,7 +35,7 @@ const ModalFormKanbanCreate = ({ api, setKanbans }: ModalFormKanbanCreateProps) 
         });
       }}
       onSuccess={(res) => {
-        setKanbans(prev => [...prev, { ...res.data, isNew: true }]);
+        setKanbans(prev => [...prev, { ...res?.data, isNew: true }]);
         enqueueSnackbar('Канбан доска успешно создана', { variant: 'success' });
       }}
       renderForm={(formField, disabled) => (

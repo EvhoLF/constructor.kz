@@ -27,7 +27,7 @@ const ModalFormDiagramCreate = ({ api, setDiagrams }: ModalFormDiagramCreateProp
         return axios.post(api, { ...data, userId: session.user.id });
       }}
       onSuccess={(res) => {
-        setDiagrams(prev => [...prev, { ...res.data, isNew: true }]);
+        setDiagrams(prev => [...prev, { ...res?.data, isNew: true }]);
         enqueueSnackbar('Схема успешно создана', { variant: 'success' });
       }}
       renderForm={(formField, disabled) => (

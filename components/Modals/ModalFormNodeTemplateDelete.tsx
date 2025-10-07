@@ -24,8 +24,8 @@ const ModalFormNodeTemplateDelete = ({ api, id, title, setTemplates }: Props) =>
       onConfirm={async () => {
         if (!session?.user.id) throw new Error('Нет пользователя');
         const res = await axios.delete(`${api}${id}`);
-        if (!res.data.success) throw new Error('Удаление не удалось');
-        return res.data;
+        if (!res?.data?.success) throw new Error('Удаление не удалось');
+        return res?.data;
       }}
       onSuccess={() => {
         setTemplates((prev) => prev.filter((tpl) => tpl.id !== id));

@@ -31,7 +31,7 @@ const Funnels = () => {
     axios
       .get(`${API_BASE}/user/${session.user.id}`)
       .then((res) => {
-        if (res.data) setFunnels(res.data);
+        if (res?.data) setFunnels(res.data);
       })
       .catch((err) => {
         console.error('Ошибка при загрузке воронок:', err);

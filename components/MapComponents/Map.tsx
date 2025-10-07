@@ -57,7 +57,7 @@ const Map = ({ id }: { id: string }) => {
     try {
       const fetch = async () => {
         const res = await asyncFn(() => axios.get(`${api}${id}`))
-        if (!res || !res.data) return;
+        if (!res || !res?.data) return;
         const resData: DiagramFormula = res.data;
         const resNodes = resData?.nodes ? decompress(resData?.nodes) : [init_root_NodePoint()];
         const resEdges = resData?.edges ? decompress(resData?.edges) : [];
@@ -132,7 +132,7 @@ const Map = ({ id }: { id: string }) => {
       const strNodes = compress(nodes || []);
       const strEdges = compress(edges || []);
       const res = await asyncFn(() => axios.put(`${api}${id}`, { formula, nodes: strNodes, edges: strEdges }));
-      if (res && res.data) {
+      if (res && res?.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }
       else {

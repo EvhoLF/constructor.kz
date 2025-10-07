@@ -24,8 +24,8 @@ const ModalFormDiagramDelete = ({api, id, title, setDiagrams }: ModalFormDiagram
       onConfirm={async () => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
         const res = await axios.delete(`${api}${id}`);
-        if (!res.data.success) throw new Error('Удаление не удалось');
-        return res.data;
+        if (!res?.data?.success) throw new Error('Удаление не удалось');
+        return res?.data;
       }}
       onSuccess={() => {
         setDiagrams((prev) => prev.filter((diagram) => diagram.id !== id));

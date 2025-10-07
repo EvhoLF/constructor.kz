@@ -42,7 +42,7 @@ const NodeTemplates = () => {
       .get(templateApi)
       .then((res) => {
         // Приводим данные к правильному типу
-        const templates: NodeTemplate[] = (res.data || []).map((template: any) => ({
+        const templates: NodeTemplate[] = (res?.data || []).map((template: any) => ({
           ...template,
           isNew: template.isNew || false
         }));

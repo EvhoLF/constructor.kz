@@ -23,8 +23,8 @@ const ModalFormKanbanDelete = ({ api, id, title, setKanbans }: ModalFormKanbanDe
       onConfirm={async () => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
         const res = await axios.delete(`${api}/${id}`);
-        if (!res.data.success) throw new Error('Удаление не удалось');
-        return res.data;
+        if (!res?.data?.success) throw new Error('Удаление не удалось');
+        return res?.data;
       }}
       onSuccess={() => {
         setKanbans((prev) => prev.filter((kanban) => kanban.id !== id));

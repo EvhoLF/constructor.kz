@@ -27,7 +27,7 @@ const ModalFormFunnelEdit = ({ api, id, title, setFunnels }: ModalFormFunnelEdit
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
         const res = await axios.put(`${api}/${id}`, { title: data.title });
-        return res.data;
+        return res?.data;
       }}
       onSuccess={(updated) => {
         setFunnels((funnels) =>

@@ -8,13 +8,8 @@ import { ButtonGroup, Grid, Stack, Switch, Typography, Box, IconButton } from '@
 import IconSwitch from '@/components/UI/IconSwitch';
 import NodeFitText from '@/utils/Map/NodeFitText';
 import { init_NodePoint_data } from '../Nodes';
-import DropdownMenu, { DropdownItem } from '@/components/UI/DropdownMenu';
+import DropdownMenu from '@/components/UI/DropdownMenu';
 import Icon from '@/components/UI/Icon';
-import {
-  Default, Arrow, Buildings, Business, Design, Development,
-  Device, Document, Finance, Food, Logos, Media, Medical,
-  Movement, Others, System, User, Weather
-} from '@/Icons';
 import { DataIconsGrouped } from '@/Icons/IconsData';
 
 const NodePanelPoint = ({ setFormulaError, id }) => {
@@ -24,7 +19,7 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
     const res = e.nodes.find(n => n.id === id);
     if (!res) return null;
     return {
-      data: res.data,
+      data: res?.data || '',
       width: res?.width || res.measured?.width,
       height: res?.height || res.measured?.height
     };

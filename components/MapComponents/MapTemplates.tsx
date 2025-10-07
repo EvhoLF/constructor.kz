@@ -57,8 +57,8 @@ const MapTemplates = ({ id }: { id: string }) => {
     try {
       const fetch = async () => {
         const res = await asyncFn(() => axios.get(`${templateApi}${id}`))
-        if (!res || !res.data) return;
-        const resData: SuperTemplate = res.data;
+        if (!res || !res?.data) return;
+        const resData: SuperTemplate = res?.data;
         const resNodes = resData?.nodes ? decompress(resData?.nodes) : [init_root_NodePoint()];
         const resEdges = resData?.edges ? decompress(resData?.edges) : [];
         setNodes(resNodes); setEdges(resEdges); setFormula(ParseGraphToFormula(resNodes, resEdges));
@@ -126,7 +126,7 @@ const MapTemplates = ({ id }: { id: string }) => {
       const strNodes = compress(nodes || []);
       const strEdges = compress(edges || []);
       const res = await asyncFn(() => axios.put(`${templateApi}${id}`, { nodes: strNodes, edges: strEdges }));
-      if (res && res.data) {
+      if (res && res?.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }
       else {

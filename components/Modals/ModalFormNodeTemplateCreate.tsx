@@ -33,7 +33,7 @@ const ModalFormNodeTemplateCreate = ({ api, setTemplates }: Props) => {
           ...data,
           userId: session.user.id,
         });
-        return res.data;
+        return res?.data;
       }}
       onSuccess={(created) => {
         setTemplates((prev) => [...prev, { ...created, isNew: true }]);

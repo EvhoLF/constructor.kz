@@ -54,7 +54,7 @@ export default function Funnel({ id }: { id: string }) {
   const save = async () => {
     try {
       const res = await asyncFn(() => axios.put(`/api/funnel/${id}`, { blocks }));
-      if (res && res.data) {
+      if (res && res?.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }
       else {
@@ -72,7 +72,7 @@ export default function Funnel({ id }: { id: string }) {
     try {
       const fetch = async () => {
         const res = await asyncFn(() => axios.get(`/api/funnel/${id}`))
-        if (!res || !res.data) return;
+        if (!res || !res?.data) return;
         const resData: TypeFunnel = res.data;
         if (!resData.blocks) return;
         const resBlocks = JSON.parse(resData.blocks);

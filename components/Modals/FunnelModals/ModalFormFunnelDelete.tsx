@@ -24,8 +24,8 @@ const ModalFormFunnelDelete = ({api, id, title, setFunnels }: ModalFormFunnelDel
       onConfirm={async () => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
         const res = await axios.delete(`${api}/${id}`);
-        if (!res.data.success) throw new Error('Удаление не удалось');
-        return res.data;
+        if (!res?.data?.success) throw new Error('Удаление не удалось');
+        return res?.data;
       }}
       onSuccess={() => {
         setFunnels((prev) => prev.filter((funnel) => funnel.id !== id));

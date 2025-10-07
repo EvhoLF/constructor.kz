@@ -113,7 +113,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
         blocks, 
         style: funnelStyle 
       }));
-      if (res && res.data) {
+      if (res && res?.data) {
         enqueueSnackbar('Канбан воронка обновлена успешно', { variant: 'success' });
       } else {
         console.error('Ошибка при обновлении канбан воронки');
@@ -129,7 +129,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
     try {
       const fetch = async () => {
         const res = await asyncFn(() => axios.get(`/api/kanban/${id}`));
-        if (!res || !res.data) return;
+        if (!res || !res?.data) return;
         
         const resData: IKanbanFunnel = res.data;
         

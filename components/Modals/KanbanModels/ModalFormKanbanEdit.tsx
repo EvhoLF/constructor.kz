@@ -26,7 +26,7 @@ const ModalFormKanbanEdit = ({ api, id, title, setKanbans }: ModalFormKanbanEdit
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
         const res = await axios.put(`${api}/${id}`, { title: data.title });
-        return res.data;
+        return res?.data;
       }}
       onSuccess={(updated) => {
         setKanbans((kanbans) =>
