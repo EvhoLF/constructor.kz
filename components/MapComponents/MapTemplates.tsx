@@ -59,8 +59,14 @@ const MapTemplates = ({ id }: { id: string }) => {
         const res = await asyncFn(() => axios.get(`${templateApi}${id}`))
         if (!res || !res.data) return;
         const resData: SuperTemplate = res.data;
+        console.log(resData);
+        
         const resNodes = resData?.nodes ? decompress(resData?.nodes) : [init_root_NodePoint()];
         const resEdges = resData?.edges ? decompress(resData?.edges) : [];
+        console.log(resNodes);
+        console.log(resEdges);
+        
+        
         setNodes(resNodes); setEdges(resEdges); setFormula(ParseGraphToFormula(resNodes, resEdges));
       }
       fetch();
