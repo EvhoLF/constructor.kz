@@ -29,8 +29,8 @@ model Funnel {
 model Diagram {
   id        Int      @id @default(autoincrement())
   title     String
-  nodes     String?
-  edges     String?
+  nodes     String? @db.LongText
+  edges     String? @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime
   userId    Int
@@ -43,8 +43,8 @@ model DiagramFormula {
   id        Int      @id @default(autoincrement())
   title     String
   formula   String   @default("")
-  nodes     String?
-  edges     String?
+  nodes     String? @db.LongText
+  edges     String? @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime
   userId    Int

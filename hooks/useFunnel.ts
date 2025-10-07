@@ -174,7 +174,6 @@ export function useFunnel(initialBlocks?: IFunnelBlock[]) {
     const shouldShow = blockHeight > 60;
     if (shouldShow !== toggles.showDescription) {
       OnToggleStates({ showDescription: shouldShow });
-      console.log(`showDescription: ${shouldShow}`);
     }
   }, [blockHeight, toggles.showDescription]);
   return {

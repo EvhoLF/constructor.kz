@@ -63,8 +63,6 @@ export function useFunnel(initialBlocks?: IFunnelBlock[]) {
   }
 
   const resetColors = () => {
-    console.log('zxc');
-    
     setBlocks(pre => pre.map(el => ({ ...el, color: getCyclicItem(DEFAULT_COLORS, el.order) })))
   }
 

@@ -138,8 +138,6 @@ export const ParseFormulaToGraph = (input, pre_nodes = [], pre_edges = [], resto
     return parseTopLevel();
   }
   catch (error) {
-    console.log(error);
-
     if (error.labelExists) {
       return { nodes: [], edges: [], error: error.message }
     }

@@ -52,8 +52,6 @@ export const ParseFormulaToGraph = (input) => {
     };
 
     const addEdge = (source, target, props = {}) => {
-      console.log(props);
-      
       const id = `e${source}_${target}`;
       edges.push({ id, source, target, ...props, });
     };

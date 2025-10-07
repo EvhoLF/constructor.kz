@@ -15,9 +15,6 @@ interface DiagramListItem extends Pick<DiagramFormula, 'id' | 'title'> {
 
 const DiagramListItem = ({ id, title, formula = '', onEdit = () => () => { }, onDelete = () => () => { }, isNew = false }: DiagramListItem) => {
   const { type, url } = useDiagramType(id);
-  console.log({
-    id, isNew
-  });
 
   const text = isNew ? 'zxc' : '123';
 

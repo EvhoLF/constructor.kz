@@ -129,8 +129,8 @@ const Map = ({ id }: { id: string }) => {
 
   const save = async () => {
     try {
-      const strNodes = compress(nodes);
-      const strEdges = compress(edges);
+      const strNodes = compress(nodes || []);
+      const strEdges = compress(edges || []);
       const res = await asyncFn(() => axios.put(`${api}${id}`, { formula, nodes: strNodes, edges: strEdges }));
       if (res && res.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });

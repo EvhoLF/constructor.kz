@@ -15,8 +15,6 @@ export async function POST(req: Request) {
     return NextResponse.json(newFormulaDiagram, { status: 201 });
   }
   catch (err) {
-    console.log(err);
-    
     return NextResponse.json({ error: 'Create failed', details: err }, { status: 400 });
   }
 }

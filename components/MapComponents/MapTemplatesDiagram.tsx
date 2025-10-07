@@ -89,8 +89,8 @@ const MapTemplatesDiagram = ({ id }: { id: string }) => {
 
   const save = async () => {
     try {
-      const strNodes = compress(nodes);
-      const strEdges = compress(edges);
+      const strNodes = compress(nodes || []);
+      const strEdges = compress(edges || []);
       const res = await asyncFn(() => axios.put(`${templateApi}${id}`, { nodes: strNodes, edges: strEdges }));
       if (res && res.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });

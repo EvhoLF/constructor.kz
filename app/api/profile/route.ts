@@ -6,7 +6,6 @@ import { getServerSession } from "next-auth/next";
 
 export async function PATCH(req: Request) {
   const session = await getServerSession(authOptions);
-  console.log(session);
   
   if (!session) {
     return NextResponse.json({ error: 'Не авторизован' }, { status: 401 });

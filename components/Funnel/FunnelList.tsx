@@ -11,8 +11,6 @@ type FunnelListProps = {
 
 const FunnelList: React.FC<FunnelListProps> = ({ funnels, onEdit = () => () => { }, onDelete = () => () => { } }) => {
 
-  console.log(funnels);
-
   const newFunnels = funnels.filter(funnel => funnel.isNew);
   const oldFunnels = funnels.filter(funnel => !funnel.isNew);
 
