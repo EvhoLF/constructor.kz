@@ -8,7 +8,7 @@ export const metadata = {
 }
 export default function Page() {
   return (
-    <WrapperHeader hide>
+    <WrapperHeader pageTitle={PAGE_DATA.profile.title} hide center>
       <FormProfile />
     </WrapperHeader>
   );

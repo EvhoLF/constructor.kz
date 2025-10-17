@@ -15,8 +15,10 @@ import { CSS } from '@dnd-kit/utilities';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import KanbanBlock from './KanbanBlock';
 import Icon from '../UI/Icon';
-import { memo } from 'react';
+import { memo, useContext } from 'react';
 import Dots from '../UI/Dots';
+import { ThemeContext } from '@/hooks/ThemeRegistry';
+import Frame from '../UI/Frame';
 
 interface Props {
   column: IKanbanColumn;
@@ -39,14 +41,7 @@ function KanbanColumn({
   isDragging = false,
   overId,
 }: Props) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging: isSortableDragging,
-  } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSortableDragging } = useSortable({
     id: column.id,
     data: { type: 'column' },
   });
@@ -56,8 +51,37 @@ function KanbanColumn({
     transition,
   };
 
-  const columnColor = funnelStyle.colored ? column.color : '#f5f5f5';
-  const textColor = funnelStyle.colored && funnelStyle.filled ? '#fff' : '#000';
+  const { mode } = useContext(ThemeContext);
+  // const color = colored ? block.color || '#2196f3' : '#fff'
+  // const textColor = funnelStyle.colored ? (funnelStyle.filled ? '#eee' : column.color) : mode == 'light' ? '#222222' : '#eee';
+  let textColor = '';
+  let columnColor = '';// funnelStyle.colored ? column.color : '#f5f5f5';
+
+  if (funnelStyle.colored) {
+    if (funnelStyle.filled) {
+      columnColor = column.color || '#2196f3';
+      textColor = '#ffffff';
+    }
+    else {
+      columnColor = column.color || '#2196f3';
+      textColor = '#ffffff';
+    }
+  }
+  else {
+    if (funnelStyle.filled) {
+      textColor = 'uiPanel.main'
+      columnColor = 'uiPanel.reverse'
+    }
+    else {
+      textColor = 'uiPanel.reverse';
+      columnColor = 'uiPanel.main';
+    }
+  }
+
+  // const borderColor = colored ? (styleMode === 'filled' ? '#fff' : block.color) : '#222222'
+
+
+  // const textColor =   && funnelStyle.filled ? '#fff' : '#000';
   const isOver = overId === column.id;
 
   return (
@@ -65,6 +89,7 @@ function KanbanColumn({
       ref={setNodeRef}
       style={style}
       sx={{
+        position: 'relative',
         width: funnelStyle.columnWidth,
         minWidth: funnelStyle.columnWidth,
         height: '100%',
@@ -78,13 +103,14 @@ function KanbanColumn({
         }),
       }}
     >
-      <Card
+      <Frame
         sx={{
+          padding: 0,
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: funnelStyle.filled ? columnColor : 'transparent',
-          border: `2px solid ${funnelStyle.filled ? 'transparent' : columnColor}`,
+          // border: `2px solid ${funnelStyle.filled ? 'transparent' : columnColor}`,
           transition: 'all 0.3s ease',
         }}
       >
@@ -92,9 +118,8 @@ function KanbanColumn({
         <CardContent
           sx={{
             p: .5,
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            backgroundColor: funnelStyle.filled ? columnColor : 'transparent',
+            // borderBottom: `2px solid ${columnColor}`,
+            backgroundColor: columnColor,
           }}
         >
           <Stack alignItems='center'>
@@ -152,6 +177,7 @@ function KanbanColumn({
                   funnelStyle={funnelStyle}
                   onUpdate={onUpdateBlock}
                   overId={overId}
+                  color={columnColor}
                 />
               ))}
             </Stack>
@@ -175,7 +201,7 @@ function KanbanColumn({
             </Box>
           )}
         </Box>
-      </Card>
+      </Frame>
     </Box>
   );
 }

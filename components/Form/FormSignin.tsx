@@ -27,8 +27,8 @@ const FormSignin = () => {
         <Typography variant="h4" mb={3}>Вход</Typography>
         <form onSubmit={handleSubmit} noValidate>
           <Stack direction='column' gap={2}>
-            <InputText size='mediumSmall' startIcon='email' fullWidth label='Email' type='email' {...formField('email')} />
-            <InputPassword size='mediumSmall' startIcon='key' fullWidth label='Пароль' type='password' {...formField('password')} />
+            <InputText size='mediumSmall' startIcon='email' fullWidth label='Email' placeholder='Email' type='email' {...formField('email')} />
+            <InputPassword size='mediumSmall' startIcon='key' fullWidth label='Пароль' placeholder='Пароль' type='password' {...formField('password')} />
             {serverError && <Alert severity="error">{serverError}</Alert>}
             <Button fullWidth variant="contained" type="submit">Войти</Button>
             <InputLink href='/auth/signup' textAlign='center' variant='body2'>Нет аккаунта? Зарегистрируйтесь</InputLink>

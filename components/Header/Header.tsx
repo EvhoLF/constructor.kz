@@ -10,6 +10,7 @@ import LinkButton from '../UI/LinkButton';
 import StackRow from '../UI/StackRow';
 import Frame from '../UI/Frame';
 import { HeaderMenu, HeaderMenuAdmin, HeaderMenuItem } from '@/constants/pages';
+import ThemeToggleButton from './ThemeToggleButton';
 
 export default function Header({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
@@ -39,7 +40,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
               <StackRow justifyContent='space-between' px={1}>
                 <StackRow>
                   {/* <Icon icon='konstruktor' /> */}
-                  <Typography fontFamily='RighteousRegular' variant='h6' textTransform='uppercase' fontWeight='700'>konstruktor</Typography>
+                  <Typography fontFamily='Unbounded' variant='h6' textTransform='uppercase' fontWeight='700'>konstruktor</Typography>
                 </StackRow>
                 <IconButton size='medium' color="inherit" edge="start" onClick={closeHeader}>
                   <Icon fontSize='medium' icon='close' />
@@ -49,6 +50,8 @@ export default function Header({ children }: { children: React.ReactNode }) {
                 {getItems(HeaderMenu)}
                 {isAdmin && <Divider sx={{ py: 1, fontSize: '.75rem', color: '#999' }}>Admin</Divider>}
                 {isAdmin && getItems(HeaderMenuAdmin)}
+                <Box mt={3}></Box>
+                <ThemeToggleButton isLabel />
               </Stack>
               <Stack mt='auto' alignItems='center'>
                 <Link href='https://github.com/EvhoLF'>

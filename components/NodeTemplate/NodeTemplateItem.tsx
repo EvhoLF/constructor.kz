@@ -1,17 +1,31 @@
-'use client'
-import { Grid, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material'
-import React from 'react'
-import Icon from '../UI/Icon'
-import Link from 'next/link'
-import { SuperTemplate } from '@/global'
-import { useDiagramType } from '@/hooks/DiagramTypeContext'
+"use client";
+import {
+  Grid,
+  IconButton,
+  Paper,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import React from "react";
+import Icon from "../UI/Icon";
+import Link from "next/link";
+import { SuperTemplate } from "@/global";
+import { useDiagramType } from "@/hooks/DiagramTypeContext";
 
-interface NodeTemplateItemProps extends Pick<SuperTemplate, 'id' | 'title' | 'category'> {
+interface NodeTemplateItemProps
+  extends Pick<SuperTemplate, "id" | "title" | "category"> {
   onEdit: (tpl: SuperTemplate) => void;
   onDelete: (tpl: SuperTemplate) => void;
 }
 
-const NodeTemplateItem = ({ id, title, category = '', onEdit = () => { }, onDelete = () => { } }: NodeTemplateItemProps) => {
+const NodeTemplateItem = ({
+  id,
+  title,
+  category = "",
+  onEdit = () => {},
+  onDelete = () => {},
+}: NodeTemplateItemProps) => {
   const tpl = { id, title, category } as SuperTemplate;
   const { templateUrl } = useDiagramType(id);
 
@@ -20,17 +34,20 @@ const NodeTemplateItem = ({ id, title, category = '', onEdit = () => { }, onDele
       variant="outlined"
       elevation={3}
       sx={{
-        padding: '.25rem 1rem',
-        borderRadius: '2rem',
-        transition: 'all 0.2s ease-in-out',
-        '&:hover .actions': { opacity: 1 },
-        '&:hover': { backgroundColor: '#f0f0f0' },
+        backgroundColor: "uiPanel.main",
+        padding: ".25rem 1rem",
+        borderRadius: "2rem",
+        transition: "all 0.2s ease-in-out",
+        "&:hover .actions": { opacity: 1 },
+        "&:hover": {
+          backgroundColor: "uiPanel.hoverMain",
+        },
       }}
     >
       <Stack
         direction="row"
         justifyContent="space-between"
-        sx={{ height: 'fit-content' }}
+        sx={{ height: "fit-content" }}
       >
         <Grid width="100%" container>
           <Grid size={6}>
@@ -52,7 +69,7 @@ const NodeTemplateItem = ({ id, title, category = '', onEdit = () => { }, onDele
         <Stack
           className="actions"
           gap={1}
-          sx={{ opacity: 0, transition: 'opacity 0.2s ease-in-out' }}
+          sx={{ opacity: 0, transition: "opacity 0.2s ease-in-out" }}
           direction="row"
         >
           <Tooltip title="Открыть шаблон">
@@ -68,7 +85,11 @@ const NodeTemplateItem = ({ id, title, category = '', onEdit = () => { }, onDele
             </IconButton>
           </Tooltip>
           <Tooltip title="Удалить шаблон">
-            <IconButton onClick={() => onDelete(tpl)} size="small" color="error">
+            <IconButton
+              onClick={() => onDelete(tpl)}
+              size="small"
+              color="error"
+            >
               <Icon icon="delete" />
             </IconButton>
           </Tooltip>

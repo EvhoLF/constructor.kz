@@ -160,10 +160,6 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
   return (
     <Stack sx={{ p: 1, height: '100vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
       <ClientOnly>
-        <Typography variant="h5" mb={2}>
-          Канбан Воронка
-        </Typography>
-
         {/* Панель настроек */}
         <Stack direction="row" spacing={2} mb={2} flexWrap="wrap" alignItems="center">
           <ToggleButton value="" size='small' onClick={save}>

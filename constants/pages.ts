@@ -13,7 +13,7 @@ export const HeaderMenu: HeaderMenuItem[] = [
   { id: 'diagram', label: 'Диаграмы', icon: 'layout_tree', href: '/diagram' },
   { id: 'diagram-formula', label: 'Диаграмы формулы', icon: 'layout_tree', href: '/diagram-formula' },
   { id: 'funnel', label: 'Воронки', icon: 'filter', href: '/funnel' },
-  { id: 'kanban', label: 'Доска', icon: 'clipboard', href: '/kanban' },
+  { id: 'kanban', label: 'Канбан доски', icon: 'clipboard', href: '/kanban' },
 ];
 export const HeaderMenuAdmin: HeaderMenuItem[] = [
   { id: 'template-formula', label: 'Шаблоны диаграм формул', icon: 'default', href: '/admin/template-formula' },
@@ -42,7 +42,7 @@ export const PAGE_DATA = {
     description: 'Вороноки и пользовательские пути',
   },
   kanban: {
-    title: 'Доски',
+    title: 'Канбан доски',
     description: 'Страница с функционалом канбан-досок',
   },
   icons: {

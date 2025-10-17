@@ -52,7 +52,7 @@ const FormProfile = () => {
             <InputText size='mediumSmall' startIcon='user' fullWidth label='Имя' {...formField('name')} />
             <InputText size='mediumSmall' startIcon='email' fullWidth label='Email' type='email' {...formField('email')} />
             <InputPassword size='mediumSmall' label="Текущий пароль" fullWidth {...formField('currentPassword')} />
-            <Stack direction='row' gap={2}>
+            <Stack direction={{xs:'column', sm:'row'}} gap={2}>
               <InputPassword size='mediumSmall' label="Новый пароль" fullWidth {...formField('password')} />
               <InputPassword size='mediumSmall' label="Повторите пароль" fullWidth {...formField('confirmPassword')} />
             </Stack>

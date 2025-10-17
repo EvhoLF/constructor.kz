@@ -86,3 +86,29 @@ declare module '@mui/material/TextField' {
     mediumSmall: true;
   }
 }
+
+
+// theme.d.ts
+import '@mui/material/styles';
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    uiPanel: {
+      main: string;
+      hoverMain: string;
+    };
+    transparent: {
+      primaryMain: string;
+    };
+  }
+
+  interface PaletteOptions {
+    uiPanel?: {
+      main?: string;
+      hoverMain?: string;
+    };
+    transparent?: {
+      primaryMain?: string;
+    };
+  }
+}

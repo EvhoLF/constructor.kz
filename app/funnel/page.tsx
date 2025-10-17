@@ -11,7 +11,7 @@ export const metadata = {
 export default function Home() {
   return (
     <div>
-      <WrapperHeader>
+      <WrapperHeader pageTitle={PAGE_DATA.funnel.title}>
         <Funnels />
       </WrapperHeader>
     </div>

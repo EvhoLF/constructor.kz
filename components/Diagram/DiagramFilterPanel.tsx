@@ -22,8 +22,8 @@ interface DiagramFilterPanelProps {
 
 const DiagramFilterPanel: React.FC<DiagramFilterPanelProps> = ({ search, onSearchChange, sortOption, onSortOptionChange, }) => {
   return (
-    <Grid width='100%' container spacing={1}>
-      <Grid size={8}>
+    <Grid width='100%' container spacing={1} direction={{ xs: "column", sm: "row" }}>
+      <Grid size={{sm: 'grow', md:8}}>
         <TextField
           fullWidth
           label="Поиск по названию"
@@ -33,7 +33,7 @@ const DiagramFilterPanel: React.FC<DiagramFilterPanelProps> = ({ search, onSearc
           size="small"
         />
       </Grid>
-      <Grid size={4}>
+      <Grid size={{sm: 'grow', md:4}}>
         <FormControl fullWidth size="small" sx={{ margin: '0px !IMPORTANT' }}>
           <InputLabel>Сортировка</InputLabel>
           <Select

@@ -26,8 +26,8 @@ const KanbanFilterPanel: React.FC<KanbanFilterPanelProps> = ({
   onSortOptionChange 
 }) => {
   return (
-    <Grid width='100%' container spacing={1}>
-      <Grid size={8}>
+    <Grid width='100%' container spacing={1} direction={{ xs: "column", sm: "row" }}>
+      <Grid size={{sm: 'grow', md:8}}>
         <TextField
           fullWidth
           label="Поиск по названию"
@@ -37,14 +37,13 @@ const KanbanFilterPanel: React.FC<KanbanFilterPanelProps> = ({
           size="small"
         />
       </Grid>
-      <Grid size={4}>
+      <Grid size={{sm: 'grow', md:4}}>
         <FormControl fullWidth size="small" sx={{ margin: '0px !IMPORTANT' }}>
           <InputLabel>Сортировка</InputLabel>
           <Select
             value={sortOption}
             label="Сортировка"
             onChange={(e: SelectChangeEvent) => onSortOptionChange(e.target.value as SortOption)}
-            sx={{ minWidth: 220 }}
           >
             <MenuItem value="title_asc"><StackRow><Icon icon='sortAlphabetAsc' />По названию (А–Я)</StackRow></MenuItem>
             <MenuItem value="title_desc"><StackRow><Icon icon='sortAlphabetDesc' />По названию (Я–А)</StackRow></MenuItem>

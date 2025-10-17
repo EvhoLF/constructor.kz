@@ -26,12 +26,13 @@ const FunnelListItem = ({
 
   return (
     <Paper variant='outlined' elevation={3} sx={{
+      backgroundColor: 'uiPanel.main',
       padding: '.25rem 1rem',
       borderRadius: '2rem',
       transition: 'all 0.2s ease-in-out',
       '&:hover .actions': { opacity: 1, },
       '&:hover': {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: 'uiPanel.hoverMain',
       },
     }}>
       <Stack direction='row' justifyContent='space-between' alignItems="center" sx={{
@@ -40,7 +41,7 @@ const FunnelListItem = ({
         <Grid width='100%' container alignItems="center">
           <Grid size={6}>
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="h6" overflow='hidden' textOverflow='ellipsis'>
+              <Typography variant="h6" noWrap textOverflow='ellipsis' overflow='hidden'>
                 <Link href={url} passHref>{title}</Link>
               </Typography>
               {isNew && (
@@ -52,7 +53,7 @@ const FunnelListItem = ({
           </Grid>
           <Grid size={6}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" noWrap textOverflow='ellipsis' overflow='hidden'>
                 Блоков: {blocksCount}
               </Typography>
             </Stack>

@@ -14,9 +14,8 @@ export default async function Page() {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <title>{'Diagrams'}</title>
       </Head>
-      <WrapperHeader>
+      <WrapperHeader pageTitle={PAGE_DATA.diagram.title}>
         <DiagramTypeProvider type='diagram'>
           <Diagrams />
         </DiagramTypeProvider>

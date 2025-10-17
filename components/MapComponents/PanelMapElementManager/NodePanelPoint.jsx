@@ -96,7 +96,7 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
               label='1й цвет'
               value={data.colorPrimary}
               pickColor={(e) => updateData({ colorPrimary: e })}
-              setColor={(e) => updateData({ colorPrimary: e.target.value })}
+              setColor={(e) => updateData({ colorPrimary: e })}
             />
           </Grid>
           <Grid size={6}>
@@ -104,7 +104,7 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
               label='2й цвет'
               value={data.colorSecondary}
               pickColor={(e) => updateData({ colorSecondary: e })}
-              setColor={(e) => updateData({ colorSecondary: e.target.value })}
+              setColor={(e) => updateData({ colorSecondary: e})}
             />
           </Grid>
         </Grid>

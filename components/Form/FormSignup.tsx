@@ -35,10 +35,10 @@ const FormSignup = () => {
         <Typography variant="h4" mb={3}>Регистрация</Typography>
         <form onSubmit={handleSubmit} noValidate>
           <Stack direction="column" gap={2}>
-            <InputText size='mediumSmall' startIcon="user" fullWidth label="Имя" type="text" {...formField('name')} />
-            <InputText size='mediumSmall' startIcon="email" fullWidth label="Email" type="email" {...formField('email')} />
-            <InputPassword size='mediumSmall' startIcon="key" fullWidth label="Пароль" type="password" {...formField('password')} />
-            <InputPassword size='mediumSmall' startIcon="key" fullWidth label="Повторите пароль" type="password" {...formField('confirmPassword')} />
+            <InputText size='mediumSmall' startIcon="user" fullWidth label="Имя" placeholder='Имя' type="text" {...formField('name')} />
+            <InputText size='mediumSmall' startIcon="email" fullWidth label="Email" placeholder='Email' type="email" {...formField('email')} />
+            <InputPassword size='mediumSmall' startIcon="key" fullWidth label="Пароль" placeholder='Пароль' type="password" {...formField('password')} />
+            <InputPassword size='mediumSmall' startIcon="key" fullWidth label="Повторите пароль" placeholder='Пароль' type="password" {...formField('confirmPassword')} />
             {serverError && <Alert severity="error">{serverError}</Alert>}
             <Button fullWidth variant="contained" type="submit">
               Зарегистрироваться

@@ -1,5 +1,5 @@
 'use client'
-import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import '@xyflow/react/dist/style.css';
 import { addEdge, applyEdgeChanges, applyNodeChanges, Background, Connection, Edge, EdgeChange, Node, NodeChange, OnSelectionChangeParams, Panel, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
 import { init_root_NodePoint, nodeTypes } from './Nodes';
@@ -27,8 +27,10 @@ import HeaderButton from '../Header/HeaderButton';
 import StackRow from '../UI/StackRow';
 import { useDiagramType } from '@/hooks/DiagramTypeContext';
 import { SuperTemplate } from '@/global';
+import { ThemeContext } from "@/hooks/ThemeRegistry";
 
 const MapTemplates = ({ id }: { id: string }) => {
+  const { mode, toggleMode } = useContext(ThemeContext);
   const { type, templateApi } = useDiagramType();
   const { asyncFn } = useAsync();
   const { fitView } = useReactFlow();
@@ -143,10 +145,10 @@ const MapTemplates = ({ id }: { id: string }) => {
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <ReactFlow
-        colorMode='light'
+        colorMode={mode ?? 'light'}
         nodes={nodes}
         edges={edges}
-        defaultEdgeOptions={defaultEdgeOptions}
+        defaultEdgeOptions={defaultEdgeOptions(mode)}
         onNodesChange={handleOnNodesChange}
         onEdgesChange={handleOnEdgesChange}
         nodeTypes={nodeTypes}
@@ -154,7 +156,7 @@ const MapTemplates = ({ id }: { id: string }) => {
         onDrop={onDrop}
         onDragOver={onDragOver}
         onSelectionChange={onSelectionChange}
-        connectionLineStyle={useMemo(() => ({ stroke: "#222222" }), [])}
+        connectionLineStyle={useMemo(() => ({ stroke: mode == 'dark' ? '#eeeeee' : '#222222' }), [])}
         onConnect={handleOnConnect}
         proOptions={{ hideAttribution: true }}
         fitView

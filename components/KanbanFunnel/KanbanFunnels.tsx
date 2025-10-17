@@ -1,27 +1,36 @@
-'use client';
-import { Button, Stack, Typography, CircularProgress, Box } from '@mui/material';
-import { useSession } from 'next-auth/react';
-import React, { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
-import { useModal } from '@/hooks/useModal';
-import Icon from '../UI/Icon';
-import { IKanbanFunnel } from '@/types/kanban';
-import KanbanFilterPanel, { SortOption } from './KanbanFilterPanel';
-import KanbanList from './KanbanList';
-import ModalFormKanbanCreate from '../Modals/KanbanModels/ModalFormKanbanCreate';
-import ModalFormKanbanEdit from '../Modals/KanbanModels/ModalFormKanbanEdit';
-import ModalFormKanbanDelete from '../Modals/KanbanModels/ModalFormKanbanDelete';
+"use client";
+import {
+  Button,
+  Stack,
+  Typography,
+  CircularProgress,
+  Box,
+  Grid,
+} from "@mui/material";
+import { useSession } from "next-auth/react";
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import { useModal } from "@/hooks/useModal";
+import Icon from "../UI/Icon";
+import { IKanbanFunnel } from "@/types/kanban";
+import KanbanFilterPanel, { SortOption } from "./KanbanFilterPanel";
+import KanbanList from "./KanbanList";
+import ModalFormKanbanCreate from "../Modals/KanbanModels/ModalFormKanbanCreate";
+import ModalFormKanbanEdit from "../Modals/KanbanModels/ModalFormKanbanEdit";
+import ModalFormKanbanDelete from "../Modals/KanbanModels/ModalFormKanbanDelete";
 
 const KanbanFunnels = () => {
   const { showModal } = useModal();
   const { data: session } = useSession({ required: true });
-  const [kanbans, setKanbans] = useState<(IKanbanFunnel & { isNew: boolean })[]>([]);
+  const [kanbans, setKanbans] = useState<
+    (IKanbanFunnel & { isNew: boolean })[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
-  const [search, setSearch] = useState('');
-  const [sortOption, setSortOption] = useState<SortOption>('updatedAt_desc');
+  const [search, setSearch] = useState("");
+  const [sortOption, setSortOption] = useState<SortOption>("updatedAt_desc");
 
-  const API_BASE = '/api/kanban';
+  const API_BASE = "/api/kanban";
 
   useEffect(() => {
     if (!session?.user.id) return;
@@ -41,7 +50,7 @@ const KanbanFunnels = () => {
         }
       })
       .catch((err) => {
-        console.error('Ошибка при загрузке канбан воронок:', err);
+        console.error("Ошибка при загрузке канбан воронок:", err);
       })
       .finally(() => {
         setLoading(false);
@@ -49,7 +58,10 @@ const KanbanFunnels = () => {
   }, [session?.user.id]);
 
   const filteredAndSortedKanbans = useMemo(() => {
-    const [field, order] = sortOption.split('_') as ['title' | 'createdAt' | 'updatedAt', 'asc' | 'desc'];
+    const [field, order] = sortOption.split("_") as [
+      "title" | "createdAt" | "updatedAt",
+      "asc" | "desc"
+    ];
 
     const filtered = kanbans.filter((kanban) =>
       kanban.title.toLowerCase().includes(search.toLowerCase())
@@ -58,15 +70,15 @@ const KanbanFunnels = () => {
     const sorted = [...filtered].sort((a, b) => {
       let aValue: string | number;
       let bValue: string | number;
-      if (field === 'createdAt' || field === 'updatedAt') {
+      if (field === "createdAt" || field === "updatedAt") {
         aValue = new Date(a[field]).getTime();
         bValue = new Date(b[field]).getTime();
       } else {
         aValue = a[field] as string;
         bValue = b[field] as string;
       }
-      if (aValue < bValue) return order === 'asc' ? -1 : 1;
-      if (aValue > bValue) return order === 'asc' ? 1 : -1;
+      if (aValue < bValue) return order === "asc" ? -1 : 1;
+      if (aValue > bValue) return order === "asc" ? 1 : -1;
       return 0;
     });
 
@@ -74,37 +86,78 @@ const KanbanFunnels = () => {
   }, [kanbans, search, sortOption]);
 
   const showModalFormKanbanCreate = () => {
-    showModal({ content: <ModalFormKanbanCreate api={API_BASE} setKanbans={setKanbans} /> });
+    showModal({
+      content: <ModalFormKanbanCreate api={API_BASE} setKanbans={setKanbans} />,
+    });
   };
 
-  const showModalFormKanbanEdit = (id: string | number, title: string) => () => {
-    showModal({ content: <ModalFormKanbanEdit api={API_BASE} id={id} title={title} setKanbans={setKanbans} /> });
-  };
+  const showModalFormKanbanEdit =
+    (id: string | number, title: string) => () => {
+      showModal({
+        content: (
+          <ModalFormKanbanEdit
+            api={API_BASE}
+            id={id}
+            title={title}
+            setKanbans={setKanbans}
+          />
+        ),
+      });
+    };
 
-  const showModalFormKanbanDelete = (id: string | number, title: string) => () => {
-    showModal({ content: <ModalFormKanbanDelete api={API_BASE} id={id} title={title} setKanbans={setKanbans} /> });
-  };
+  const showModalFormKanbanDelete =
+    (id: string | number, title: string) => () => {
+      showModal({
+        content: (
+          <ModalFormKanbanDelete
+            api={API_BASE}
+            id={id}
+            title={title}
+            setKanbans={setKanbans}
+          />
+        ),
+      });
+    };
 
   return (
     <Stack spacing={2} padding={1}>
-      <Stack width="100%" direction="row" gap={1} alignItems="center">
-        <KanbanFilterPanel
-          search={search}
-          onSearchChange={setSearch}
-          sortOption={sortOption}
-          onSortOptionChange={setSortOption}
-        />
-        <Button
-          size="large"
-          sx={{ width: '200px' }}
-          startIcon={<Icon icon="add" />}
-          variant="contained"
-          onClick={showModalFormKanbanCreate}
-        />
-      </Stack>
+      <Grid
+        container
+        width="100%"
+        gap={2}
+        direction={{ xs: "column", sm: "row" }}
+      >
+        <Grid size="grow">
+          <KanbanFilterPanel
+            search={search}
+            onSearchChange={setSearch}
+            sortOption={sortOption}
+            onSortOptionChange={setSortOption}
+          />
+        </Grid>
+        <Grid size="auto">
+          <Button
+            size="large"
+            sx={{
+              maxWidth: { xs: "100%", sm: "200px" },
+              width: { xs: "100%", sm: "100%", md: "200px" },
+            }}
+            variant="contained"
+            onClick={showModalFormKanbanCreate}
+          >
+            <Icon icon="add" />
+          </Button>
+        </Grid>
+      </Grid>
 
       {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1} minHeight="200px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          flexGrow={1}
+          minHeight="200px"
+        >
           <CircularProgress />
         </Box>
       ) : filteredAndSortedKanbans.length > 0 ? (

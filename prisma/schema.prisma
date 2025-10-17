@@ -9,8 +9,8 @@ datasource db {
 
 model Funnel {
   id          Int      @id @default(autoincrement())
-  title       String
-  blocks      String?
+  title       String   @db.Text
+  blocks      String?  @db.LongText
   layoutMode  String   @default("bottomBig")
   styleMode   String   @default("filled")
   textAlign   String   @default("left")
@@ -28,9 +28,9 @@ model Funnel {
 
 model Diagram {
   id        Int      @id @default(autoincrement())
-  title     String
-  nodes     String? @db.LongText
-  edges     String? @db.LongText
+  title     String   @db.Text
+  nodes     String?  @db.LongText
+  edges     String?  @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    Int
@@ -41,10 +41,10 @@ model Diagram {
 
 model DiagramFormula {
   id        Int      @id @default(autoincrement())
-  title     String
-  formula   String   @default("")
-  nodes     String? @db.LongText
-  edges     String? @db.LongText
+  title     String   @db.Text
+  formula   String   @db.Text
+  nodes     String?  @db.LongText
+  edges     String?  @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    Int
@@ -56,10 +56,10 @@ model DiagramFormula {
 model Kanban {
   id        Int      @id @default(autoincrement())
   userId    Int
-  title     String
-  columns   String?
-  blocks    String?
-  style     String?
+  title     String   @db.Text
+  columns   String?  @db.LongText
+  blocks    String?  @db.LongText
+  style     String?  @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], map: "Kanban_userId_fkey")
@@ -69,18 +69,18 @@ model Kanban {
 
 model TemplateDiagram {
   id       Int     @id @default(autoincrement())
-  title    String
-  category String
-  nodes    String? @db.LongText 
-  edges    String? @db.LongText 
+  title    String  @db.Text
+  category String  @db.Text
+  nodes    String? @db.LongText
+  edges    String? @db.LongText
 }
 
 model TemplateFormula {
   id       Int     @id @default(autoincrement())
-  title    String
-  category String
-  nodes    String? @db.LongText 
-  edges    String? @db.LongText 
+  title    String  @db.Text
+  category String  @db.Text
+  nodes    String? @db.LongText
+  edges    String? @db.LongText
 }
 
 model User {

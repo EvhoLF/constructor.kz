@@ -93,10 +93,6 @@ export default function Funnel({ id }: { id: string }) {
 
   return (
     <Stack sx={{ m: 0, p: 1 }}>
-      <Typography variant="h5" mb={2}>
-        Воронка
-      </Typography>
-
       {/* Панель настроек */}
       <Stack direction="row" spacing={2} mb={2} flexWrap="wrap" alignItems="center">
         <ToggleButton value="" size='small' onClick={save}>
@@ -181,7 +177,7 @@ export default function Funnel({ id }: { id: string }) {
           />
         </Stack>
 
-        <Button variant="outlined" onClick={resetColors}>Обновить цвета</Button>
+        <Button variant="outlined" onClick={resetColors}>Сбросить цвета</Button>
         <Button variant="outlined" onClick={() => addBlockAfter(blocks[blocks.length - 1].id)}><Icon icon='add' /></Button>
       </Stack>
 

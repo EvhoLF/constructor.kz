@@ -6,10 +6,13 @@ import HeaderMenuSmall from './HeaderMenuSmall'
 import Frame from '../UI/Frame'
 
 interface WrapperHeaderProps extends CardProps {
-  hide?: boolean
+  pageTitle?: string | null,
+  hide?: boolean,
+  center?: boolean,
 }
 
-const WrapperHeader = ({ children, hide, ...props }: WrapperHeaderProps) => {
+const WrapperHeader = ({ pageTitle = null, children, hide, center, ...props }: WrapperHeaderProps) => {
+  const styleChildren = { overflow: 'auto', ...(center ? { display: 'flex', justifyContent: 'center', alignItems: 'center' } : {}) }
   return (
     <Box
       sx={{
@@ -27,7 +30,7 @@ const WrapperHeader = ({ children, hide, ...props }: WrapperHeaderProps) => {
         <HeaderButton />
       </Box>
       <Box sx={{ gridColumn: '2', display: 'flex', alignItems: 'center', justifyContent: 'center', }} >
-        <HeaderBar />
+        <HeaderBar pageTitle={pageTitle} />
       </Box>
       {/* Sidebar */}
       <Frame sx={{ padding: '5px', }}>
@@ -35,8 +38,8 @@ const WrapperHeader = ({ children, hide, ...props }: WrapperHeaderProps) => {
       </Frame>
       {
         hide
-          ? <Stack sx={{ overflow: 'scroll', justifyContent: 'center', alignItems: 'center' }} {...props}>{children}</Stack>
-          : <Frame sx={{ overflow: 'auto' }} {...props}>{children}</Frame>
+          ? <Box sx={{ ...styleChildren }} {...props}>{children}</Box>
+          : <Frame sx={{ ...styleChildren }} {...props}>{children}</Frame>
       }
     </Box >
   )

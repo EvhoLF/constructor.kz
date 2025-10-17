@@ -19,6 +19,7 @@ export async function POST(req: Request) {
       data: { 
         userId, 
         title, 
+        formula: "",
         nodes: nodes || '',
         edges: edges || '',
         createdAt: new Date(),  // Add if required

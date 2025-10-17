@@ -8,7 +8,7 @@ export const metadata = {
 }
 export default function Page() {
   return (
-    <WrapperHeader hide>
+    <WrapperHeader hide center>
       <FormSignup />
     </WrapperHeader>
   );

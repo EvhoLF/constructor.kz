@@ -3,7 +3,7 @@ import { InputAdornment, SxProps, TextField, TextFieldProps, Theme } from '@mui/
 import Icon from './Icon';
 import { IconName } from '@/Icons';
 
-type InputTextProps = Omit<TextFieldProps, 'sx'> & {
+export type InputTextProps = Omit<TextFieldProps, 'sx'> & {
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   startIcon?: IconName;

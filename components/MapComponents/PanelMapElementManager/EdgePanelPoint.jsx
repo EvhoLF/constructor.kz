@@ -38,7 +38,7 @@ const EdgePanelPoint = ({ id }) => {
           size='small'
           placeholder='Толщина линии'
         />
-        <InputColorText label='Цвет линии' value={style?.stroke ?? '#000000'} pickColor={(e) => updateEdgeStyle({ stroke: e })} setColor={(e) => updateEdgeStyle({ stroke: e.target.value })} />
+        <InputColorText label='Цвет линии' value={style?.stroke ?? '#000000'} pickColor={(e) => updateEdgeStyle({ stroke: e })} setColor={(e) => updateEdgeStyle({ stroke: e })} />
         <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
           <Typography variant='body2'>Альтернативный выбор</Typography>
           <Switch checked={isAlternative ?? false} onChange={handlerIsAlternative} />
