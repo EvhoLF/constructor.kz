@@ -38,7 +38,7 @@ const PanelNodes = () => {
   });
 
   const addNewNode = () => {
-    addNodes({ ...init_NodePoint({ id: uuidv4(), position: screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 }), data: { label: 'zxc' } }), id: uuidv4() })
+    addNodes({ ...init_NodePoint({ id: uuidv4(), position: screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 }), data: { label: 'C' } }), id: uuidv4() })
   }
 
   useEffect(() => {

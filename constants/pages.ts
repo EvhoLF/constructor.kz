@@ -16,8 +16,8 @@ export const HeaderMenu: HeaderMenuItem[] = [
   { id: 'kanban', label: 'Канбан доски', icon: 'clipboard', href: '/kanban' },
 ];
 export const HeaderMenuAdmin: HeaderMenuItem[] = [
-  { id: 'template-formula', label: 'Шаблоны диаграм формул', icon: 'default', href: '/admin/template-formula' },
   { id: 'template-diagram', label: 'Шаблоны диаграм', icon: 'default', href: '/admin/template-diagram' },
+  { id: 'template-formula', label: 'Шаблоны диаграм формул', icon: 'default', href: '/admin/template-formula' },
 ];
 
 export const PAGE_DATA = {
@@ -58,7 +58,7 @@ export const PAGE_DATA = {
     description: 'Создание нового аккаунта в системе с заполнением основных данных',
   },
   templateDiagram: {
-    title: 'Шаблоны формульных диаграмм',
+    title: 'Шаблоны диаграмм формул',
     description: 'Страница администрирования шаблонов для формульных диаграмм',
   },
   templateFormula: {
