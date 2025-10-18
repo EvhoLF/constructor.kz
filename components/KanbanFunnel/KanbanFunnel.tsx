@@ -30,7 +30,7 @@ interface KanbanFunnelProps {
 export default function KanbanFunnel({ id }: KanbanFunnelProps) {
   const kanbanRef = useRef<HTMLDivElement>(null);
   const { asyncFn } = useAsync();
-  
+
   const {
     columns,
     blocks,
@@ -39,6 +39,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
     addColumn,
     updateColumn,
     moveColumn,
+    deleteColumn,
     addBlock,
     updateBlock,
     moveBlock,
@@ -108,10 +109,10 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
 
   const save = async () => {
     try {
-      const res = await asyncFn(() => axios.put(`/api/kanban/${id}`, { 
-        columns, 
-        blocks, 
-        style: funnelStyle 
+      const res = await asyncFn(() => axios.put(`/api/kanban/${id}`, {
+        columns,
+        blocks,
+        style: funnelStyle
       }));
       if (res && res?.data) {
         enqueueSnackbar('Канбан воронка обновлена успешно', { variant: 'success' });
@@ -130,19 +131,19 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
       const fetch = async () => {
         const res = await asyncFn(() => axios.get(`/api/kanban/${id}`));
         if (!res || !res?.data) return;
-        
+
         const resData: IKanbanFunnel = res.data;
-        
+
         if (resData.columns) {
           const parsedColumns = JSON.parse(resData.columns as any);
           setColumns(parsedColumns);
         }
-        
+
         if (resData.blocks) {
           const parsedBlocks = JSON.parse(resData.blocks as any);
           setBlocks(parsedBlocks);
         }
-        
+
         if (resData.style) {
           const parsedStyle = JSON.parse(resData.style as any);
           setFunnelStyle(parsedStyle);
@@ -165,7 +166,16 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
           <ToggleButton value="" size='small' onClick={save}>
             <Icon icon='save' />
           </ToggleButton>
-          
+
+          <ToggleButtonGroup size="small" color="primary">
+            <ToggleButton value="" onClick={() => exportFunnelPNG(kanbanRef.current)}>
+              <Icon icon='fileImage' />
+            </ToggleButton>
+            <ToggleButton value="" onClick={() => exportFunnelPDF(kanbanRef.current)}>
+              <Icon icon='filePdf2' />
+            </ToggleButton>
+          </ToggleButtonGroup>
+
           <ToggleButtonGroup
             size="small"
             color="primary"
@@ -228,22 +238,8 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
             />
           </Stack>
 
-          <Button variant="outlined" onClick={resetColors}>
-            Обновить цвета
-          </Button>
-
-          <IconButton onClick={() => addColumn()} color="primary">
-            <Icon icon="add" />
-          </IconButton>
-
-          <ToggleButtonGroup size="small" color="primary">
-            <Button onClick={() => exportFunnelPNG(kanbanRef.current)}>
-              <Icon icon="fileImage" />
-            </Button>
-            <Button onClick={() => exportFunnelPDF(kanbanRef.current)}>
-              <Icon icon="filePdf2" />
-            </Button>
-          </ToggleButtonGroup>
+          <Button variant="outlined" onClick={resetColors}>Сбросить цвета</Button>
+          <Button variant="outlined" onClick={() => addColumn()}><Icon icon='add' /></Button>
         </Stack>
 
         {/* Канбан доска */}
@@ -265,6 +261,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
                     onUpdate={updateColumn}
                     onAddBlock={addBlock}
                     onUpdateBlock={updateBlock}
+                    deleteColumn={deleteColumn}
                     overId={overId}
                   />
                 ))}

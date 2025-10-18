@@ -9,53 +9,42 @@ import {
   Typography,
   IconButton,
   Stack,
+  Portal,
+  Popper,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import KanbanBlock from './KanbanBlock';
 import Icon from '../UI/Icon';
-import { memo, useContext } from 'react';
+import { memo, useContext, useRef, useState } from 'react';
 import Dots from '../UI/Dots';
 import { ThemeContext } from '@/hooks/ThemeRegistry';
 import Frame from '../UI/Frame';
+import InputColorText from '../UI/InputColorText';
+import KanbanInsertButton from './KanbanInsertButton';
 
 interface Props {
   column: IKanbanColumn;
   blocks: IKanbanBlock[];
   funnelStyle: IKanbanFunnelStyle;
   onUpdate?: (columnId: string, updates: Partial<IKanbanColumn>) => void;
-  onAddBlock?: (columnId: string) => void;
+  onAddBlock?: (columnId: string, position?: number) => void;
   onUpdateBlock?: (blockId: string, updates: Partial<IKanbanBlock>) => void;
+  deleteColumn?: (columnId: string) => void;
   isDragging?: boolean;
-  overId?: string | null; // Добавляем свойство overId
+  overId?: string | null;
 }
 
-function KanbanColumn({
-  column,
-  blocks,
-  funnelStyle,
-  onUpdate,
-  onAddBlock,
-  onUpdateBlock,
-  isDragging = false,
-  overId,
-}: Props) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSortableDragging } = useSortable({
-    id: column.id,
-    data: { type: 'column' },
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpdateBlock, deleteColumn, isDragging = false, overId }: Props) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSortableDragging } = useSortable({ id: column.id, data: { type: 'column' }, });
+  const style = { transform: CSS.Transform.toString(transform), transition, };
 
   const { mode } = useContext(ThemeContext);
-  // const color = colored ? block.color || '#2196f3' : '#fff'
-  // const textColor = funnelStyle.colored ? (funnelStyle.filled ? '#eee' : column.color) : mode == 'light' ? '#222222' : '#eee';
   let textColor = '';
-  let columnColor = '';// funnelStyle.colored ? column.color : '#f5f5f5';
+  let columnColor = '';
 
   if (funnelStyle.colored) {
     if (funnelStyle.filled) {
@@ -78,11 +67,37 @@ function KanbanColumn({
     }
   }
 
-  // const borderColor = colored ? (styleMode === 'filled' ? '#fff' : block.color) : '#222222'
-
-
-  // const textColor =   && funnelStyle.filled ? '#fff' : '#000';
   const isOver = overId === column.id;
+  const [isHovered, setIsHovered] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+
+  const columnRef = useRef(null);
+  const headerRef = useRef(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleColorChange = (color: string) => {
+    onUpdate?.(column.id, { color });
+    setColorPickerOpen(false);
+    handleMenuClose();
+  };
+
+  const handleDelete = () => {
+    if (deleteColumn) {
+      deleteColumn(column.id);
+    }
+    handleMenuClose();
+  };
+
+  const isMenuOpen = Boolean(menuAnchorEl);
 
   return (
     <Box
@@ -90,6 +105,7 @@ function KanbanColumn({
       style={style}
       sx={{
         position: 'relative',
+        overflow: 'visible',
         width: funnelStyle.columnWidth,
         minWidth: funnelStyle.columnWidth,
         height: '100%',
@@ -102,30 +118,38 @@ function KanbanColumn({
           borderRadius: 1,
         }),
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Frame
+        ref={columnRef}
         sx={{
           padding: 0,
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: funnelStyle.filled ? columnColor : 'transparent',
-          // border: `2px solid ${funnelStyle.filled ? 'transparent' : columnColor}`,
           transition: 'all 0.3s ease',
         }}
       >
         {/* Заголовок колонки с точками для перетаскивания */}
         <CardContent
+          ref={headerRef}
           sx={{
             p: .5,
-            // borderBottom: `2px solid ${columnColor}`,
             backgroundColor: columnColor,
+            position: 'relative',
+            '&:hover .column-menu': {
+              opacity: 1,
+            },
           }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           <Stack alignItems='center'>
             <Stack direction="row" alignItems="center" spacing={1}>
               {/* Точки для перетаскивания */}
-              <Dots {...listeners}{...attributes} sx={{ width: '32px', height: '16px', }} />
+              <Dots {...listeners}{...attributes} sx={{ width: '36px', height: '16px', }} />
 
               <TextField
                 value={column.title}
@@ -146,15 +170,109 @@ function KanbanColumn({
                 fullWidth
               />
 
-              <IconButton
-                size="small"
-                onClick={() => onAddBlock?.(column.id)}
-                sx={{ color: textColor }}
-              >
-                <Icon icon="add" />
-              </IconButton>
+              {/* Кнопка меню, появляющаяся при наведении */}
+              <Stack direction='row' className="column-menu" sx={{ opacity: 0 }}>
+                <IconButton
+                  size="small"
+                  onClick={handleMenuOpen}
+                  sx={{
+                    color: textColor,
+                    transition: 'opacity 0.2s ease',
+                  }}
+                >
+                  <Icon icon='settings' />
+                </IconButton>
+
+                <IconButton
+                  size="small"
+                  onClick={() => onAddBlock?.(column.id)}
+                  sx={{ color: textColor }}
+                >
+                  <Icon icon="add" />
+                </IconButton>
+              </Stack>
             </Stack>
           </Stack>
+
+          {/* Меню для управления колонкой */}
+          <Menu
+            anchorEl={menuAnchorEl}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <Stack
+              justifyContent='center'
+              alignItems='center'
+              direction='row'
+              gap={.5}
+              paddingX={1}
+              mb={1}
+            >
+              <InputColorText
+                size="small"
+                value={column.color}
+                pickColor={handleColorChange}
+                setColor={handleColorChange}
+                sx={{
+                  '& input': { maxWidth: '100px' },
+                  mb: 1
+                }}
+              />
+            </Stack>
+            <MenuItem
+              onClick={handleDelete}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'error.main' }}
+            >
+              <Icon icon="delete" fontSize="small" />
+              Удалить колонку
+            </MenuItem>
+          </Menu>
+
+          {/* Попап для выбора цвета */}
+          <Popper
+            open={colorPickerOpen}
+            anchorEl={menuAnchorEl}
+            placement="right-start"
+            sx={{ zIndex: 1300 }}
+          >
+            <Stack
+              direction='row'
+              gap={1}
+              sx={{
+                p: 2,
+                bgcolor: 'background.paper',
+                boxShadow: 3,
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: 'divider'
+              }}
+              onMouseLeave={() => setColorPickerOpen(false)}
+            >
+              <InputColorText
+                size="small"
+                value={column.color}
+                pickColor={handleColorChange}
+                setColor={handleColorChange}
+                sx={{
+                  '& input': { maxWidth: '100px' },
+                  mb: 1
+                }}
+              />
+              <Box>
+                <IconButton size="small" onClick={() => setColorPickerOpen(false)}>
+                  <Icon icon="close" />
+                </IconButton>
+              </Box>
+            </Stack>
+          </Popper>
         </CardContent>
 
         {/* Контент колонки с скроллом */}
@@ -168,6 +286,7 @@ function KanbanColumn({
             '&::-webkit-scrollbar-thumb': { bgcolor: '#eeeeee' },
           }}
         >
+          <KanbanInsertButton onClick={() => onAddBlock?.(column.id, 0)} />
           <SortableContext items={blocks.map(block => block.id)} strategy={verticalListSortingStrategy}>
             <Stack spacing={1}>
               {blocks.map((block) => (
@@ -182,6 +301,7 @@ function KanbanColumn({
               ))}
             </Stack>
           </SortableContext>
+          {blocks.length > 0 ? < KanbanInsertButton onClick={() => { onAddBlock?.(column.id) }} /> : <></>}
 
           {blocks.length === 0 && (
             <Box
@@ -195,14 +315,14 @@ function KanbanColumn({
                 borderRadius: 1,
               }}
             >
-              <Typography variant="body2" color="#fff" textAlign="center">
+              <Typography sx={{ color: !funnelStyle.filled && funnelStyle.colored ? 'uiPanel.reverse' : textColor }} variant="body2" textAlign="center">
                 Блоков еще нет
               </Typography>
             </Box>
           )}
         </Box>
-      </Frame>
-    </Box>
+      </Frame >
+    </Box >
   );
 }
 

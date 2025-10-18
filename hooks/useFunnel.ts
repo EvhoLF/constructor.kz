@@ -232,19 +232,19 @@ export function useFunnel(initialBlocks?: IFunnelBlock[]) {
           index === 0
             ? blockWidth
             : Math.max(
-                dynamicMinWidth,
-                blockWidth -
-                  (index * (blockWidth - dynamicMinWidth)) / (total - 1)
-              );
+              dynamicMinWidth,
+              blockWidth -
+              (index * (blockWidth - dynamicMinWidth)) / (total - 1)
+            );
       } else if (layoutMode === "bottomBig") {
         width =
           index === total - 1
             ? blockWidth
             : Math.max(
-                dynamicMinWidth,
-                dynamicMinWidth +
-                  (index * (blockWidth - dynamicMinWidth)) / (total - 1)
-              );
+              dynamicMinWidth,
+              dynamicMinWidth +
+              (index * (blockWidth - dynamicMinWidth)) / (total - 1)
+            );
       }
 
       return {
@@ -261,10 +261,11 @@ export function useFunnel(initialBlocks?: IFunnelBlock[]) {
 
   useEffect(() => {
     const shouldShow = blockHeight > 60;
-    if (shouldShow !== toggles.showDescription) {
-      OnToggleStates({ showDescription: shouldShow });
+    if (!shouldShow && toggles.showDescription) {
+      // Автоматически скрываем только если высота маленькая И описание сейчас показано
+      OnToggleStates({ showDescription: false });
     }
-  }, [blockHeight, toggles.showDescription]);
+  }, [blockHeight]); // Убрали зависимость от toggles.showDescription
   return {
     blocks: blocksWithStyle,
     addBlockAfter,

@@ -12,7 +12,7 @@ interface InputColorProps {
 
 const InputColor: React.FC<InputColorProps> = ({
   color = '#ffffff',
-  onChange = () => {},
+  onChange = () => { },
   absolute = false,
   sx = {},
 }) => {
@@ -21,6 +21,7 @@ const InputColor: React.FC<InputColorProps> = ({
   return (
     <Box
       sx={{
+        padding: 0,
         position: absolute ? 'absolute' : 'relative',
         display: 'flex',
         justifyContent: 'center',

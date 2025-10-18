@@ -11,7 +11,7 @@ export function useKanbanFunnel(initialData?: {
   blocks?: IKanbanBlock[];
   style?: IKanbanFunnelStyle;
 }) {
-  const [columns, setColumns] = useState<IKanbanColumn[]>(() => 
+  const [columns, setColumns] = useState<IKanbanColumn[]>(() =>
     initialData?.columns || [
       {
         id: 'c1',
@@ -39,7 +39,7 @@ export function useKanbanFunnel(initialData?: {
 
   const [blocks, setBlocks] = useState<IKanbanBlock[]>(() => {
     if (initialData?.blocks) return initialData.blocks;
-    
+
     const defaultBlocks = [
       { id: 'c1-1', title: 'Задача 1', description: 'Описание задачи 1', columnId: '', order: 0 },
       { id: 'c1-2', title: 'Задача 2', description: 'Описание задачи 2', columnId: '', order: 1 },
@@ -48,11 +48,11 @@ export function useKanbanFunnel(initialData?: {
       ...block,
       columnId: columns[Math.min(index, columns.length - 1)].id
     }));
-    
+
     return defaultBlocks;
   });
 
-  const [funnelStyle, setFunnelStyle] = useState<IKanbanFunnelStyle>(() => 
+  const [funnelStyle, setFunnelStyle] = useState<IKanbanFunnelStyle>(() =>
     initialData?.style || {
       colored: true,
       filled: true,
@@ -118,17 +118,40 @@ export function useKanbanFunnel(initialData?: {
     });
   }, []);
 
-  const addBlock = useCallback((columnId: string) => {
+  const addBlock = useCallback((columnId: string, position?: number) => {
     setBlocks(prev => {
       const columnBlocks = prev.filter(block => block.columnId === columnId);
+
+      // Если позиция не указана или больше количества блоков - добавляем в конец
+      if (position === undefined || position > columnBlocks.length) {
+        const newBlock: IKanbanBlock = {
+          id: uuidv4(),
+          title: 'Новая задача',
+          description: 'Описание задачи',
+          columnId,
+          order: columnBlocks.length
+        };
+        return [...prev, newBlock];
+      }
+
+      // Если позиция указана - вставляем в нужное место и обновляем порядок остальных блоков
       const newBlock: IKanbanBlock = {
         id: uuidv4(),
         title: 'Новая задача',
         description: 'Описание задачи',
         columnId,
-        order: columnBlocks.length
+        order: position
       };
-      return [...prev, newBlock];
+
+      // Обновляем order у блоков, которые идут после вставленной позиции
+      const updatedBlocks = prev.map(block => {
+        if (block.columnId === columnId && block.order >= position) {
+          return { ...block, order: block.order + 1 };
+        }
+        return block;
+      });
+
+      return [...updatedBlocks, newBlock];
     });
   }, []);
 
@@ -172,6 +195,20 @@ export function useKanbanFunnel(initialData?: {
 
       const movedBlock = { ...activeBlock, columnId: newColumnId, order: newOrder };
       return normalizeBlockOrders([...updatedBlocks, movedBlock]);
+    });
+  }, []);
+
+  const deleteColumn = useCallback((columnId: string) => {
+    setColumns(prev => {
+      // Удаляем колонку
+      const filteredColumns = prev.filter(col => col.id !== columnId);
+      // Перенумеровываем order
+      return filteredColumns.map((col, index) => ({ ...col, order: index }));
+    });
+
+    setBlocks(prev => {
+      // Удаляем все блоки, которые были в колонке
+      return prev.filter(block => block.columnId !== columnId);
     });
   }, []);
 
@@ -236,17 +273,18 @@ export function useKanbanFunnel(initialData?: {
     blocksByColumn,
     blocks,
     funnelStyle,
-    
+
     // Setters
     setColumns,
     setBlocks,
     setFunnelStyle,
     setInitialData,
-    
+
     // Actions
     addColumn,
     updateColumn,
     moveColumn,
+    deleteColumn,
     addBlock,
     updateBlock,
     moveBlock,

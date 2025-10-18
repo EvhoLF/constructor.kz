@@ -84,6 +84,7 @@ import { Edge, Node } from '@xyflow/react';
 declare module '@mui/material/TextField' {
   interface TextFieldPropsSizeOverrides extends TextFieldProps {
     mediumSmall: true;
+    extraSmall: true;
   }
 }
 

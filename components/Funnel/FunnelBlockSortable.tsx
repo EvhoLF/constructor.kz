@@ -140,16 +140,16 @@ function FunnelBlockSortable({
 
           {/* Показываем меню, если наведен курсор или внутри есть фокус (ввод) */}
           {(isHovered || isEditing) && (
-            <Frame sx={{ display: 'flex', px: 1, py: .25, gap: 1, position: 'absolute', right: 40, top: '50%', transform: 'translateY(-50%)' }}>
+            <Frame sx={{ display: 'flex', px: 1, py: .25, gap: 1, position: 'absolute', right: 40, top: '50%', alignItems: 'center', transform: 'translateY(-50%)' }}>
               <IconButton
                 className='no-export'
                 size="small"
                 onClick={() => onRemove(block.id)}
-                sx={{ color: '#ffffff' }}
+              // sx={{ color: '#ffffff' }}
               >
                 <Icon icon='delete' />
               </IconButton>
-              <InputColorText value={color} pickColor={setColor} setColor={setColor} sx={{ maxWidth: '120px', '& *': { py: 1.1} }} />
+              <InputColorText size='extraSmall' value={color} pickColor={setColor} setColor={setColor} sx={{ '& input': { maxWidth: '70px' }, '& *': { py: 1.1 } }} />
             </Frame>
           )}
 

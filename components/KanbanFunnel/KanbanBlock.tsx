@@ -51,8 +51,8 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
       elevation={isSortableDragging ? 8 : 1}
       sx={{
         position: 'relative',
-        backgroundColor: 'uiPanel.main',
-        borderColor: isOver ? 'primary.main' : 'grey.200',
+        backgroundColor: funnelStyle.filled ? '#ffffff' : 'uiPanel.main',
+        borderColor: isOver ? 'primary.main' : 'none',
         cursor: 'default',
         opacity: isSortableDragging ? 0.5 : 1,
         height: funnelStyle.blockHeight,
@@ -99,7 +99,7 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
               InputProps={{
                 disableUnderline: !isEditing,
                 sx: {
-                  color: '#000000',
+                  color: funnelStyle.filled ? '#000000' : 'uiPanel.reverse',
                   lineHeight: '1rem',
                   fontSize: '0.9rem',
                   fontWeight: 'bold',
@@ -127,7 +127,7 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
                 disableUnderline: !isEditing,
                 sx: {
                   fontSize: '0.8rem',
-                  color: 'grey.600',
+                  color: funnelStyle.filled ? '#333333' : 'uiPanel.reverse',
                   textAlign: funnelStyle.textAlign as any,
                   '& .MuiInput-input': {
                     cursor: isEditing ? 'text' : 'default',

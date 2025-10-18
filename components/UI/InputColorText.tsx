@@ -25,7 +25,10 @@ const InputColorText = ({ label = '', maxLength = 7, value, pickColor, setColor,
   return (
     <InputText label={label}
       sx={{
-        '& .MuiOutlinedInput-root': { padding: ' 0px 10px !important' }, '& input': { paddingRight: '0px !important', textTransform: 'lowercase', fontSize: '.9rem' }, ...sx
+        '& .MuiOutlinedInput-root': { padding: ' 0px 10px !important' },
+        '& input': { paddingRight: '0px !important', textTransform: 'lowercase', fontSize: '.9rem' },
+        '& input[type="type="color"]': { padding: '0' },
+        ...sx
       }}
       value={value}
       inputProps={{ maxLength }}
