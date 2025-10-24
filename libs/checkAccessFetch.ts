@@ -1,11 +1,11 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from './auth'; // путь к authOptions
 import { prisma } from '@/prisma/prisma';
-import { session } from "@/types/global";
 import { ErrorWithStatus } from "./ErrorWithStatus";
+import { Session } from "next-auth";
 
 export async function checkAccessFetch(targetUserId: number) {
-  const session: session = await getServerSession(authOptions);
+  const session: Session | null = await getServerSession(authOptions);
 
   if (!session || !session.user) {
     throw new ErrorWithStatus('Not authenticated', 401);
