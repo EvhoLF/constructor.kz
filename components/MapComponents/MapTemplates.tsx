@@ -1,7 +1,7 @@
 'use client'
 import React, { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import '@xyflow/react/dist/style.css';
-import { addEdge, applyEdgeChanges, applyNodeChanges, Background, Connection, Edge, EdgeChange, Node, NodeChange, OnSelectionChangeParams, Panel, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
+import { addEdge, applyEdgeChanges, applyNodeChanges, Background, BackgroundVariant, Connection, Edge, EdgeChange, Node, NodeChange, OnSelectionChangeParams, Panel, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
 import { init_root_NodePoint, nodeTypes } from './Nodes';
 import { edgeTypes } from './Edges';
 import { useFlowDnD } from '@/hooks/useFlowDnD';
@@ -24,10 +24,9 @@ import { enqueueSnackbar } from 'notistack';
 import Frame from '../UI/Frame';
 import Icon from '../UI/Icon';
 import HeaderButton from '../Header/HeaderButton';
-import StackRow from '../UI/StackRow';
 import { useDiagramType } from '@/hooks/DiagramTypeContext';
-import { SuperTemplate } from '@/global';
 import { ThemeContext } from "@/hooks/ThemeRegistry";
+import { SuperTemplate } from '@/types/diagrams';
 
 const MapTemplates = ({ id }: { id: string }) => {
   const { mode, toggleMode } = useContext(ThemeContext);
@@ -165,7 +164,7 @@ const MapTemplates = ({ id }: { id: string }) => {
         snapToGrid={true}
         onlyRenderVisibleElements
       >
-        <Background color="#222222" size={2} gap={40} />
+        <Background variant={BackgroundVariant.Lines} color="#222222" size={1} gap={20} />
         <Panel position='top-center' style={{ width: '100%' }}>
           <Grid container spacing={2} px={2}>
             <Grid size={{ xs: 12, sm: 3, md: 2 }} sx={{ flexShrink: 0, minWidth: 'fit-content' }}>

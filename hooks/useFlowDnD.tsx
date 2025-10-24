@@ -4,7 +4,7 @@ import { useDnD } from "./DnDProvider";
 import { init_NodePoint } from "@/components/MapComponents/Nodes";
 import { v4 as uuidv4 } from 'uuid';
 import { useModal } from "@/hooks/useModal";
-import ModalFormSchemeImport from "@/components/Modals/ModalFormDiagramImport";
+import ModalDiagramImport from "@/components/Modals/ModalDiagramImport";
 
 interface SchemePayload {
   nodes: Node[];
@@ -57,22 +57,22 @@ export const useFlowDnD = () => {
         addNodes(newNode);
       }
       if (dnd.type === "ADD_SCHEME") {
-        const formulaDiagrams = dnd.data as SchemePayload;
-        if (!formulaDiagrams?.nodes || !formulaDiagrams.edges) return;
+        const newAddScheme = dnd.data as SchemePayload;
+        if (!newAddScheme?.nodes || !newAddScheme.edges) return;
         showModal({
           content: (
-            <ModalFormSchemeImport
+            <ModalDiagramImport
               onCancel={() => { }}
               onSubmit={(baseName: string, autoRename: boolean) => {
-                const offsetX = position.x - (formulaDiagrams.nodes[0]?.position?.x || 0);
-                const offsetY = position.y - (formulaDiagrams.nodes[0]?.position?.y || 0);
-                const newNodes = formulaDiagrams.nodes.map((node) => ({
+                const offsetX = position.x - (newAddScheme.nodes[0]?.position?.x || 0);
+                const offsetY = position.y - (newAddScheme.nodes[0]?.position?.y || 0);
+                const newNodes = newAddScheme.nodes.map((node) => ({
                   ...node, id: uuidv4(),
                   position: { x: node.position.x + offsetX, y: node.position.y + offsetY, },
                 }));
                 const oldToNewId: Record<string, string> = {};
-                formulaDiagrams.nodes.forEach((old, idx) => { oldToNewId[old.id] = newNodes[idx].id; });
-                const newEdges = formulaDiagrams.edges.map((edge) => ({
+                newAddScheme.nodes.forEach((old, idx) => { oldToNewId[old.id] = newNodes[idx].id; });
+                const newEdges = newAddScheme.edges.map((edge) => ({
                   ...edge,
                   id: uuidv4(),
                   source: oldToNewId[edge.source],

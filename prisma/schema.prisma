@@ -26,33 +26,6 @@ model Funnel {
   @@map("funnels")
 }
 
-model Diagram {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.Text
-  nodes     String?  @db.LongText
-  edges     String?  @db.LongText
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], map: "Diagram_userId_fkey")
-
-  @@index([userId], map: "Diagram_userId_fkey")
-}
-
-model DiagramFormula {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.Text
-  formula   String   @db.Text
-  nodes     String?  @db.LongText
-  edges     String?  @db.LongText
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], map: "DiagramFormula_userId_fkey")
-
-  @@index([userId], map: "DiagramFormula_userId_fkey")
-}
-
 model Kanban {
   id        Int      @id @default(autoincrement())
   userId    Int
@@ -62,9 +35,39 @@ model Kanban {
   style     String?  @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  image     String?
   user      User     @relation(fields: [userId], references: [id], map: "Kanban_userId_fkey")
 
   @@index([userId], map: "Kanban_userId_fkey")
+}
+
+model Diagram {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.Text
+  nodes     String?  @db.LongText
+  edges     String?  @db.LongText
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  image     String?
+  user      User     @relation(fields: [userId], references: [id], map: "Diagram_userId_fkey")
+
+  @@index([userId], map: "Diagram_userId_fkey")
+}
+
+model Ontology {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.Text
+  formula   String   @db.Text
+  nodes     String?  @db.LongText
+  edges     String?  @db.LongText
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  image     String?
+  user      User     @relation(fields: [userId], references: [id], map: "Ontology_userId_fkey")
+
+  @@index([userId], map: "Ontology_userId_fkey")
 }
 
 model TemplateDiagram {
@@ -73,27 +76,29 @@ model TemplateDiagram {
   category String  @db.Text
   nodes    String? @db.LongText
   edges    String? @db.LongText
+  image    String?
 }
 
-model TemplateFormula {
+model TemplateOntology {
   id       Int     @id @default(autoincrement())
   title    String  @db.Text
   category String  @db.Text
   nodes    String? @db.LongText
   edges    String? @db.LongText
+  image    String?
 }
 
 model User {
-  id             Int              @id @default(autoincrement())
-  email          String           @unique(map: "User_email_key")
-  name           String?
-  password       String
-  role           user_role        @default(user)
-  createdAt      DateTime         @default(now())
-  diagram        Diagram[]
-  diagramformula DiagramFormula[]
-  funnels        Funnel[]
-  kanban         Kanban[]
+  id        Int        @id @default(autoincrement())
+  email     String     @unique(map: "User_email_key")
+  name      String?
+  password  String
+  role      user_role  @default(user)
+  createdAt DateTime   @default(now())
+  diagram   Diagram[]
+  ontology  Ontology[]
+  funnels   Funnel[]
+  kanban    Kanban[]
 }
 
 enum user_role {

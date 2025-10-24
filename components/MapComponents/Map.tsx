@@ -13,6 +13,7 @@ import {
   applyEdgeChanges,
   applyNodeChanges,
   Background,
+  BackgroundVariant,
   Connection,
   Edge,
   EdgeChange,
@@ -43,7 +44,7 @@ import { useAsync } from "@/hooks/useAsync";
 import axios from "axios";
 import { compress, decompress } from "@/utils/compress";
 import { enqueueSnackbar } from "notistack";
-import { DiagramFormula } from ".prisma/client";
+import { Ontology } from ".prisma/client";
 import Frame from "../UI/Frame";
 import Icon from "../UI/Icon";
 import HeaderButton from "../Header/HeaderButton";
@@ -100,7 +101,7 @@ const Map = ({ id }: { id: string }) => {
       const fetch = async () => {
         const res = await asyncFn(() => axios.get(`${api}${id}`));
         if (!res || !res?.data) return;
-        const resData: DiagramFormula = res.data;
+        const resData: Ontology = res.data;
         const resNodes = resData?.nodes
           ? decompress(resData?.nodes)
           : [init_root_NodePoint()];
@@ -175,8 +176,7 @@ const Map = ({ id }: { id: string }) => {
     const descriptionLines =
       nodesHierarchy.map(
         (node) =>
-          `${node.data.label || ""}${
-            node.data?.description ? ` – ${node.data?.description}` : ""
+          `${node.data.label || ""}${node.data?.description ? ` – ${node.data?.description}` : ""
           }`
       ) || [];
     await fitView();
@@ -226,7 +226,7 @@ const Map = ({ id }: { id: string }) => {
         snapToGrid={true}
         onlyRenderVisibleElements
       >
-        <Background color="#222222" size={2} gap={40} />
+        <Background variant={BackgroundVariant.Lines} color="#222222" size={1} gap={20} />
         <Panel position="top-center" style={{ width: "100%" }}>
           <Grid container spacing={2} px={2}>
             <Grid

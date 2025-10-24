@@ -3,6 +3,7 @@ import WrapperHeader from "@/components/Header/WrapperHeader";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import Head from "next/head";
 import { PAGE_DATA } from '@/constants/pages';
+import { ImageUploadType } from "@/constants/upload";
 
 
 export const metadata = {
@@ -16,7 +17,7 @@ export default async function Page() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </Head>
       <WrapperHeader pageTitle={PAGE_DATA.diagram.title}>
-        <DiagramTypeProvider type='diagram'>
+        <DiagramTypeProvider type={ImageUploadType.DIAGRAM}>
           <Diagrams />
         </DiagramTypeProvider>
       </WrapperHeader>

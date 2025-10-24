@@ -13,7 +13,7 @@ import Icon from '@/components/UI/Icon';
 import { DataIconsGrouped } from '@/Icons/IconsData';
 
 const NodePanelPoint = ({ setFormulaError, id }) => {
-  const { updateNodeData, updateNode } = useReactFlow();
+  const { updateNodeData, updateNode, deleteElements  } = useReactFlow();
 
   const storeData = useStore(e => {
     const res = e.nodes.find(n => n.id === id);
@@ -79,18 +79,26 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
     updateData({ isAutoResize: value });
   };
 
+  const handleDelete = () => {
+    deleteElements({ nodes: [{ id }] });
+  };
+
   return (
     <Frame sx={{ padding: '1rem', maxWidth: '250px' }}>
-      <Stack spacing={0.25}>
-        <Stack spacing={2}>
+      <Stack spacing={0.5}>
+        <Stack direction='row' justifyContent='space-between' gap={1}>
           <Typography variant='h6'>Параметры</Typography>
+          <IconButton onClick={handleDelete}><Icon icon='delete'/></IconButton>
+        </Stack>
+
+        <Stack spacing={2}>
           <Stack direction='row' gap={1}>
             <InputText label='Заголовок' value={data.label} size='small' placeholder='Label' onChange={handleLabelChange} />
             <IconSwitch brightnessOff={50} value={data.isLabelVisible} onClick={() => updateData({ isLabelVisible: !data.isLabelVisible })} />
           </Stack>
         </Stack>
 
-        <Grid container spacing={1} pt={1}>
+        <Grid container spacing={1} pt={1.5}>
           <Grid size={6}>
             <InputColorText
               label='1й цвет'

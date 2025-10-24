@@ -2,7 +2,10 @@ import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 
 const filterNoExport = (node: any) => {
-  return node instanceof HTMLElement ? !node.classList.contains('no-export') : true;
+  if (!(node instanceof HTMLElement)) return true;
+  const hasNoExportAttr = node.hasAttribute('data-no-export');
+  const hasNoExportClass = node.classList.contains('no-export');
+  return !(hasNoExportAttr || hasNoExportClass);
 };
 
 export const exportFunnelPNG = async (element: HTMLElement | null, fileName = 'funnel.png') => {

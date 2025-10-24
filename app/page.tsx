@@ -5,25 +5,8 @@ import ForWhomBlock from "@/components/Home/ForWhomBlock";
 import Hero from "@/components/Home/Hero";
 import HowItWorksTimeline from "@/components/Home/HowItWorksTimeline";
 import ModulesBlock from "@/components/Home/ModulesBlock";
-import Frame from "@/components/UI/Frame";
-import Icon from "@/components/UI/Icon";
-import { HeaderMenu, PAGE_DATA } from "@/constants/pages";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
-import Image from "next/image";
+import { PAGE_DATA } from "@/constants/pages";
+import { Button, Stack, Typography, } from "@mui/material";
 import Link from "next/link";
 
 export const metadata = {
@@ -55,7 +38,7 @@ export default function Home() {
             <Typography variant="h6">
               Присоединяйтесь к пользователей, которые уже используют наши решения для достижения своих целей.
             </Typography>
-            <Button fullWidth sx={{maxWidth:'250px'}} size='large' variant='contained' LinkComponent={Link} href="/profile">
+            <Button fullWidth sx={{ maxWidth: '250px' }} size='large' variant='contained' LinkComponent={Link} href="/profile">
               Начать
             </Button>
           </Stack>

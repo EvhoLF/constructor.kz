@@ -13,13 +13,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import SchemeFilterPanel, { SortOption } from "./DiagramFilterPanel";
 import { useModal } from "@/hooks/useModal";
-import ModalFormDiagramCreate from "../Modals/ModalFormDiagramCreate";
-import ModalFormDiagramEdit from "../Modals/ModalFormDiagramEdit";
-import ModalFormDiagramDelete from "../Modals/ModalFormDiagramDelete";
+import ModalFormDiagramCreate from "../Modals/ModalDiagramCreate";
+import ModalFormDiagramEdit from "../Modals/ModalDiagramEdit";
+import ModalFormDiagramDelete from "../Modals/ModalDiagramDelete";
 import Icon from "../UI/Icon";
 import DiagramList from "./DiagramList";
-import { SuperDiagram } from "@/global";
 import { useDiagramType } from "@/hooks/DiagramTypeContext";
+import ModalFormImageUpload from "../Modals/ModalImageUpload";
+import { SuperDiagram } from "@/types/diagrams";
 
 const Diagrams = () => {
   const { showModal } = useModal();
@@ -32,7 +33,7 @@ const Diagrams = () => {
   const [search, setSearch] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("updatedAt_desc");
 
-  const { api } = useDiagramType();
+  const { api, imageUploadType } = useDiagramType();
 
   useEffect(() => {
     if (!session?.user.id) return;
@@ -110,6 +111,30 @@ const Diagrams = () => {
         ),
       });
     };
+  const showModalImageUpload =
+    (id: string | number) => () => {
+
+      showModal({
+        content: (
+          <ModalFormImageUpload
+            title='Загрузка изображения'
+            currentImageUrl={null}
+            uploadUrl='/api/upload/img'
+            folder={`/image/${imageUploadType}`}
+            maxSizeMb={5}
+            onSuccess={async (imageUrl) => {
+              const res = await axios.post('/api/imageUpdate', { id, type: imageUploadType, imageUrl });
+              console.log(res);
+              if (res?.data?.success && res?.data?.updated) {
+                setDiagrams((diagrams) =>
+                  diagrams.map((diagram) => diagram.id == id ? { ...diagram, ...res?.data?.updated } : diagram)
+                );
+              }
+            }}
+          />
+        ),
+      });
+    };
 
   return (
     <Stack spacing={2} padding={1}>
@@ -156,6 +181,7 @@ const Diagrams = () => {
           diagrams={filteredAndSortedDiagrams}
           onEdit={showModalFormDiagramEdit}
           onDelete={showModalFormDiagramDelete}
+          onUploadImage={showModalImageUpload}
         />
       ) : (
         <Typography variant="body2" color="text.secondary">

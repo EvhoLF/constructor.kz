@@ -2,7 +2,7 @@
 import { DndContext, closestCenter } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useFunnel } from '@/hooks/useFunnel'
-import { Box, Button, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
+import { Box, Button, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import FunnelBlockSortable from './FunnelBlockSortable'
 import FunnelInsertButton from './FunnelInsertButton'
 import Icon from '../UI/Icon'
@@ -40,6 +40,8 @@ export default function Funnel({ id }: { id: string }) {
     setBlockWidth,
     blockHeight,
     setBlockHeight,
+    funnel,
+    updateFunnel,
   } = useFunnel();
 
   const handleDragEnd = (event: any) => {
@@ -53,7 +55,7 @@ export default function Funnel({ id }: { id: string }) {
 
   const save = async () => {
     try {
-      const res = await asyncFn(() => axios.put(`/api/funnel/${id}`, { blocks }));
+      const res = await asyncFn(() => axios.put(`/api/funnel/${id}`, funnel));
       if (res && res?.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }
@@ -82,7 +84,21 @@ export default function Funnel({ id }: { id: string }) {
             correctBlocksMap[block.id] = block as IFunnelBlock;
           }
         });
-        setBlocksMap(correctBlocksMap);
+        const toggles = resData.toggles ? JSON.parse(resData.toggles) : { showNumber: true, colored: true, showDescription: true };
+
+        updateFunnel(
+          Object.fromEntries(
+            Object.entries({
+              blocks: correctBlocksMap,
+              layoutMode: resData.layoutMode as ("equal" | "topBig" | "bottomBig") | undefined,
+              styleMode: resData.styleMode as ("filled" | "outlined") | undefined,
+              textAlign: resData.textAlign as ("center" | "right" | "left") | undefined,
+              toggles,
+              blockWidth: resData.blockWidth,
+              blockHeight: resData.blockHeight,
+            }).filter(([_, v]) => v !== undefined && v !== null)
+          )
+        );
       }
       fetch();
     }

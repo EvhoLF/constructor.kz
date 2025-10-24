@@ -21,7 +21,7 @@ const HowItWorksTimeline = () => {
         },
         {
             label: 'Создание проекта',
-            description: 'Выберите нужный модуль и создайте проект — диаграмму, воронку, формулу или доску.',
+            description: 'Выберите нужный модуль и создайте проект — схему, онтологию, воронку или доску.',
             icon: '2'
         },
         {
@@ -56,7 +56,7 @@ const HowItWorksTimeline = () => {
                                     justifyContent: 'center',
                                     flexShrink: 0,
                                     fontSize: '1.2rem',
-                                    color: 'white',
+                                    color: 'uiPanel.main',
                                     fontWeight: 'bold'
                                 }}
                             >
@@ -131,7 +131,7 @@ const HowItWorksTimeline = () => {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         fontSize: '1.3rem',
-                                        color: 'white',
+                                        color: 'uiPanel.main',
                                         fontWeight: 'bold',
                                         boxShadow: 2,
                                         position: 'relative',

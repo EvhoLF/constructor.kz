@@ -1,5 +1,5 @@
 'use client'
-import { IFunnelBlock } from '@/global'
+import { IFunnelBlock } from '@/types/funnel'
 import { useState, useMemo, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 

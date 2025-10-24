@@ -1,40 +1,53 @@
-import { Divider, Stack } from '@mui/material';
-import React, { Fragment } from 'react';
-import DiagramListItem from './DiagramListItem';
-import { DiagramType, SuperDiagram } from '@/global';
-
+"use client";
+import { Grid, Typography, Divider } from "@mui/material";
+import React, { Fragment } from "react";
+import DiagramListItem from "./DiagramListItem";
+import { SuperDiagram } from "@/types/diagrams";
 type DiagramListProps = {
   diagrams: (SuperDiagram & { isNew: boolean })[];
   onEdit: (id: string | number, title: string) => () => void;
   onDelete: (id: string | number, title: string) => () => void;
+  onUploadImage: (id: string | number) => () => void;
 };
 
-const DiagramList: React.FC<DiagramListProps> = ({ diagrams, onEdit = () => () => { }, onDelete = () => () => { } }) => {
-  const newDiagrams = diagrams.filter(diagram => diagram.isNew);
-  const oldDiagrams = diagrams.filter(diagram => !diagram.isNew);
+const DiagramList: React.FC<DiagramListProps> = ({
+  diagrams,
+  onEdit,
+  onDelete,
+  onUploadImage,
+}) => {
+  const newDiagrams = diagrams.filter((d) => d.isNew);
+  const oldDiagrams = diagrams.filter((d) => !d.isNew);
 
-  const GetList = (diagram: SuperDiagram & { isNew: boolean }) => {
-    const { id, title, isNew } = diagram;
-    if ('formula' in diagram) return { id, title, formula: diagram.formula, isNew, onEdit, onDelete }
-    else return { id, title, onEdit, onDelete, isNew }
-  }
+  const renderBlock = (diagram: SuperDiagram & { isNew: boolean }) => (
+    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={diagram.id}>
+      <DiagramListItem
+        {...diagram}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onUploadImage={onUploadImage}
+      />
+    </Grid>
+  );
 
   return (
-    <Stack gap={1}>
+    <>
       {newDiagrams.length > 0 && (
         <Fragment key="new-maps">
-          {newDiagrams.map(diagram => (
-            <DiagramListItem key={diagram.id} {...GetList(diagram)} />
-          ))}
-          <Divider sx={{ my: 1 }}>Новые карты</Divider>
+          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+            Новые карты
+          </Typography>
+          <Grid container spacing={2}>
+            {newDiagrams.map(renderBlock)}
+          </Grid>
+          <Divider sx={{ my: 3 }} />
         </Fragment>
       )}
-
-      {oldDiagrams.map(diagram => (
-        <DiagramListItem key={diagram.id} {...GetList(diagram)} />
-      ))}
-    </Stack>
-  )
-}
+      <Grid container spacing={2}>
+        {oldDiagrams.map(renderBlock)}
+      </Grid>
+    </>
+  );
+};
 
 export default DiagramList;

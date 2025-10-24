@@ -11,8 +11,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const diagram = await prisma.diagram.findUnique({ where: { id: Number(id) } });
   return {
-    title: diagram?.title || 'Диаграмма',
-    description: 'Визуализация данных с помощью различных типов графиков и диаграмм для анализа информации',
+    title: diagram?.title || 'Схема',
+    description: 'Визуализация данных с помощью различных типов графиков и схем для анализа информации',
   }
 }
 

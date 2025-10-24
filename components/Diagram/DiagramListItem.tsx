@@ -1,139 +1,178 @@
 "use client";
 import {
   Box,
-  Chip,
-  Grid,
-  IconButton,
-  Paper,
-  Stack,
-  Tooltip,
+  Card,
+  CardMedia,
+  CardContent,
   Typography,
+  Stack,
+  IconButton,
+  Tooltip,
+  Button,
+  Chip,
 } from "@mui/material";
+import Link from "next/link";
 import React from "react";
 import Icon from "../UI/Icon";
-import Link from "next/link";
-import { DiagramFormula } from ".prisma/client";
 import { useDiagramType } from "@/hooks/DiagramTypeContext";
 
-interface DiagramListItem extends Pick<DiagramFormula, "id" | "title"> {
-  onEdit: (id: string | number, title: string) => () => void;
-  onDelete: (id: string | number, title: string) => () => void;
+interface DiagramListItemProps {
+  id: string | number;
+  title: string;
+  image?: string | null;
   formula?: string;
   isNew?: boolean;
+  onEdit: (id: string | number, title: string) => () => void;
+  onDelete: (id: string | number, title: string) => () => void;
+  onUploadImage: (id: string | number) => () => void;
 }
 
-const DiagramListItem = ({
+const DiagramListItem: React.FC<DiagramListItemProps> = ({
   id,
   title,
-  formula = "",
-  onEdit = () => () => {},
-  onDelete = () => () => {},
+  image,
   isNew = false,
-}: DiagramListItem) => {
-  const { type, url } = useDiagramType(id);
-
-  const text = isNew ? "zxc" : "123";
+  formula,
+  onEdit,
+  onDelete,
+  onUploadImage,
+}) => {
+  const { url } = useDiagramType(id);
 
   return (
-    <Paper
-      variant="outlined"
-      elevation={3}
+    <Card
       sx={{
-        backgroundColor: "uiPanel.main",
-        padding: ".25rem 1rem",
-        borderRadius: "2rem",
-        transition: "all 0.2s ease-in-out",
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: 3,
+        cursor: "pointer",
         "&:hover .actions": { opacity: 1 },
-        "&:hover": {
-          backgroundColor: "uiPanel.hoverMain",
-        },
+        "&:hover .overlay": { opacity: 1 },
       }}
     >
-      <Stack
-        direction="row"
-        justifyContent="space-between"
+      {image ? (
+        <CardMedia
+          component="img"
+          height="180"
+          image={image}
+          alt={title}
+          sx={{ objectFit: "cover" }}
+        />
+      ) : (
+        <Box
+          height={180}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bgcolor="action.hover"
+          color="text.secondary"
+        >
+          Загрузите изображение
+        </Box>
+      )}
+
+      <Box
+        className="overlay"
         sx={{
-          height: "fit-content",
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.1))",
+          opacity: 0,
+          transition: "opacity 0.2s ease-in-out",
+        }}
+      />
+
+      <CardContent
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          color: "white",
+          zIndex: 2,
+          p: '.4rem 1.5rem',
+          background: '#00000070'
         }}
       >
-        {type == "formula" ? (
-          <Grid width="100%" container>
-            <Grid size={6}>
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Typography
-                  variant="h6"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  <Link href={url} passHref>
-                    {title}
-                  </Link>
-                </Typography>
-                {isNew && (
-                  <div style={{ pointerEvents: "none" }}>
-                    <Chip label="Новый" color="primary" size="small" />
-                  </div>
-                )}
-              </Stack>
-            </Grid>
-            <Grid size={6} alignContent="center">
-              <Stack direction="row" spacing={2} alignItems="center">
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  noWrap
-                  textOverflow="ellipsis"
-                  overflow="hidden"
-                >
-                  {formula ? formula : '(Нет формулы)'}
-                </Typography>
-              </Stack>
-            </Grid>
-          </Grid>
-        ) : (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="h6" overflow="hidden" textOverflow="ellipsis">
-              <Link href={url} passHref>
-                {title}
-              </Link>
-            </Typography>
-            {isNew && (
-              <div style={{ pointerEvents: "none" }}>
-                <Chip label="Новый" color="primary" size="small" />
-              </div>
-            )}
-          </Stack>
-        )}
-        <Stack
-          className="actions"
-          gap={1}
-          sx={{ opacity: 0, transition: "opacity 0.2s ease-in-out" }}
-          direction="row"
-        >
-          <Tooltip title="Открыть схему">
-            <Link href={url} passHref>
-              <IconButton size="small">
-                <Icon icon="shareBox" />
-              </IconButton>
-            </Link>
-          </Tooltip>
-          <Tooltip title="Редактировать схему">
-            <IconButton onClick={onEdit(id, title)} size="small">
-              <Icon icon="edit" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Удалить схему">
-            <IconButton
-              onClick={onDelete(id, title)}
-              size="small"
-              color="error"
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Link href={url} passHref>
+            <Typography
+              variant="subtitle1"
+              fontWeight={600}
+              sx={{
+                color: "white",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
             >
-              <Icon icon="delete" />
-            </IconButton>
-          </Tooltip>
+              {title}
+            </Typography>
+          </Link>
+          {isNew && <Chip label="Новый" color="primary" size="small" />}
         </Stack>
+        {formula && (
+          <Typography
+            variant="body2"
+          >
+            {formula}
+          </Typography>
+        )}
+      </CardContent>
+
+      <Stack
+        className="actions"
+        direction="row"
+        spacing={1}
+        sx={{
+          position: "absolute",
+          top: 8,
+          right: 8,
+          opacity: 0,
+          transition: "opacity 0.2s ease-in-out",
+          zIndex: 3,
+        }}
+      >
+        <Tooltip title="Открыть">
+          <Link href={url} passHref>
+            <IconButton size="small" sx={{ bgcolor: "rgba(0,0,0,0.4)", color: "#fff" }}>
+              <Icon icon="shareBox" />
+            </IconButton>
+          </Link>
+        </Tooltip>
+
+        <Tooltip title="Загрузить изображение">
+          <IconButton
+            onClick={onUploadImage(id)}
+            size="small"
+            sx={{ bgcolor: "rgba(0,0,0,0.4)", color: "#fff" }}
+          >
+            <Icon icon='image' />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Редактировать">
+          <IconButton
+            onClick={onEdit(id, title)}
+            size="small"
+            sx={{ bgcolor: "rgba(0,0,0,0.4)", color: "#fff" }}
+          >
+            <Icon icon="edit" />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Удалить">
+          <IconButton
+            onClick={onDelete(id, title)}
+            size="small"
+            sx={{ bgcolor: "rgba(0,0,0,0.4)", color: "error.light" }}
+          >
+            <Icon icon="delete" />
+          </IconButton>
+        </Tooltip>
       </Stack>
-    </Paper>
+    </Card >
   );
 };
 

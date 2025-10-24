@@ -1,6 +1,6 @@
 "use client";
-import { IFunnelBlock } from "@/global";
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { IFunnelBlock } from "@/types/funnel";
+import { useState, useMemo, useCallback, useEffect, Dispatch, SetStateAction } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const DEFAULT_COLORS = [
@@ -14,10 +14,20 @@ const DEFAULT_COLORS = [
 const MIN_WIDTH = 40;
 const DEFAULT_HEIGHT = 70;
 
+
+interface UpdateFunnelArgs {
+  blocks?: SetStateAction<Record<string, IFunnelBlock>>;
+  layoutMode?: SetStateAction<"equal" | "topBig" | "bottomBig">;
+  styleMode?: SetStateAction<"filled" | "outlined">;
+  textAlign?: SetStateAction<"left" | "center" | "right">;
+  toggles?: SetStateAction<{ showNumber: boolean; colored: boolean; showDescription: boolean; }>;
+  blockWidth?: SetStateAction<number>;
+  blockHeight?: SetStateAction<number>;
+}
+
 function getCyclicItem<T>(array: T[], index: number) {
   return array[index % array.length];
 }
-
 function getRandomColor(exclude1?: string, exclude2?: string): string {
   const filtered = DEFAULT_COLORS.filter(
     (c) => c !== exclude1 && c !== exclude2
@@ -26,7 +36,6 @@ function getRandomColor(exclude1?: string, exclude2?: string): string {
     ? filtered[Math.floor(Math.random() * filtered.length)]
     : DEFAULT_COLORS[0];
 }
-
 const getOptimalColor = (
   blocks: IFunnelBlock[],
   insertIndex: number
@@ -57,7 +66,6 @@ const getOptimalColor = (
   colorUsage.sort((a, b) => a.usage - b.usage);
   return colorUsage[0].color;
 };
-
 function getMinWidth(total: number, blockWidth: number, minWidth: number) {
   const factor = Math.min(1, (total - 1) / 6);
   const targetMin =
@@ -69,38 +77,17 @@ export function useFunnel(initialBlocks?: IFunnelBlock[]) {
   const [blocksMap, setBlocksMap] = useState<Record<string, IFunnelBlock>>(
     () => {
       const blocks = initialBlocks ?? [
-        {
-          id: uuidv4(),
-          order: 1,
-          title: "Шаг 1",
-          description: "Описание",
-          color: DEFAULT_COLORS[0],
-        },
-        {
-          id: uuidv4(),
-          order: 2,
-          title: "Шаг 2",
-          description: "Описание",
-          color: DEFAULT_COLORS[1],
-        },
+        { id: uuidv4(), order: 1, title: "Шаг 1", description: "Описание", color: DEFAULT_COLORS[0] },
+        { id: uuidv4(), order: 2, title: "Шаг 2", description: "Описание", color: DEFAULT_COLORS[1] },
       ];
       return Object.fromEntries(blocks.map((b) => [b.id, b]));
     }
   );
 
-  const [layoutMode, setLayoutMode] = useState<
-    "equal" | "topBig" | "bottomBig"
-  >("bottomBig");
+  const [layoutMode, setLayoutMode] = useState<"equal" | "topBig" | "bottomBig">("topBig");
   const [styleMode, setStyleMode] = useState<"filled" | "outlined">("filled");
-  const [textAlign, setTextAlign] = useState<"left" | "center" | "right">(
-    "left"
-  );
-
-  const [toggles, setToggles] = useState({
-    showNumber: true,
-    colored: true,
-    showDescription: true,
-  });
+  const [textAlign, setTextAlign] = useState<"left" | "center" | "right">("left");
+  const [toggles, setToggles] = useState({ showNumber: true, colored: true, showDescription: true, });
   const [blockWidth, setBlockWidth] = useState(100);
   const [blockHeight, setBlockHeight] = useState(DEFAULT_HEIGHT);
 
@@ -266,6 +253,19 @@ export function useFunnel(initialBlocks?: IFunnelBlock[]) {
       OnToggleStates({ showDescription: false });
     }
   }, [blockHeight]); // Убрали зависимость от toggles.showDescription
+
+
+  const funnel = { blocks, layoutMode, styleMode, textAlign, toggles, blockWidth, blockHeight }
+  const updateFunnel = ({ blocks, layoutMode, styleMode, textAlign, toggles, blockWidth, blockHeight }: UpdateFunnelArgs) => {
+    if (blocks) setBlocksMap(blocks);
+    if (layoutMode) setLayoutMode(layoutMode);
+    if (styleMode) setStyleMode(styleMode);
+    if (textAlign) setTextAlign(textAlign);
+    if (toggles) setToggles(toggles);
+    if (blockWidth) setBlockWidth(blockWidth);
+    if (blockHeight) setBlockHeight(blockHeight);
+  }
+
   return {
     blocks: blocksWithStyle,
     addBlockAfter,
@@ -287,5 +287,7 @@ export function useFunnel(initialBlocks?: IFunnelBlock[]) {
     setBlocksMap,
     blockHeight,
     setBlockHeight,
+    funnel,
+    updateFunnel,
   };
 }

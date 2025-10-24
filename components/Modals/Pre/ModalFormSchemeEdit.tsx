@@ -7,14 +7,14 @@ import schemeFormTitleShema from '@/libs/validation/schemeFormTitleShema';
 import { useZodForm } from '@/hooks/useZodForm';
 import { useSession } from 'next-auth/react';
 import { useAsync } from '@/hooks/useAsync';
-import { DiagramFormula } from '.prisma/client';
+import { Ontology } from '.prisma/client';
 import InputText from '@/components/UI/InputText';
 import StackRow from '@/components/UI/StackRow';
 
 interface ModalFormSchemeEdit {
   id: string | number,
   title: string,
-  setSchemes: React.Dispatch<React.SetStateAction<(DiagramFormula & { isNew: boolean })[]>>,
+  setSchemes: React.Dispatch<React.SetStateAction<(Ontology & { isNew: boolean })[]>>,
   closeModal?: () => void;
 }
 
@@ -30,10 +30,10 @@ const ModalFormSchemeEdit = ({ id, title, setSchemes, closeModal = () => { } }: 
     try {
       const isValid = validate();
       if (!isValid || !session?.user.id) return;
-      const res = await asyncFn(() => axios.put(`/api/diagram-formula/${id}`, { title: data.title }));
+      const res = await asyncFn(() => axios.put(`/api/ontology/${id}`, { title: data.title }));
       if (!res) return;
       if (res?.data) {
-        setSchemes((formulaDiagrams) => formulaDiagrams.map(formulaDiagrams => formulaDiagrams.id == id ? { ...formulaDiagrams, ...res?.data } : formulaDiagrams));
+        setSchemes((ontologys) => ontologys.map(ontology => ontology.id == id ? { ...ontology, ...res?.data } : ontology));
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
         onCloseModal();
       }

@@ -58,8 +58,8 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
   }
   else {
     if (funnelStyle.filled) {
-      textColor = 'uiPanel.main'
-      columnColor = 'uiPanel.reverse'
+      textColor = 'uiPanel.reverse'
+      columnColor = 'uiPanel.main'
     }
     else {
       textColor = 'uiPanel.reverse';
@@ -128,7 +128,7 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: funnelStyle.filled ? columnColor : 'transparent',
+          // backgroundColor: ,
           transition: 'all 0.3s ease',
         }}
       >
@@ -149,7 +149,13 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
           <Stack alignItems='center'>
             <Stack direction="row" alignItems="center" spacing={1}>
               {/* Точки для перетаскивания */}
-              <Dots {...listeners}{...attributes} sx={{ width: '36px', height: '16px', }} />
+              <Box
+                className='no-export'
+                {...listeners}
+                sx={{ width: '38px', height: '16px' }}
+              >
+                <Dots dotColor={textColor} spacing={8} />
+              </Box>
 
               <TextField
                 value={column.title}

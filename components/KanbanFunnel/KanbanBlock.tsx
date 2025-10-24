@@ -7,6 +7,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { memo, useState, useContext } from 'react';
 import { ThemeContext } from '@/hooks/ThemeRegistry';
 import Frame from '../UI/Frame';
+import Dots from '../UI/Dots';
 
 interface Props {
   block: IKanbanBlock;
@@ -51,31 +52,14 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
       elevation={isSortableDragging ? 8 : 1}
       sx={{
         position: 'relative',
-        backgroundColor: funnelStyle.filled ? '#ffffff' : 'uiPanel.main',
+        // backgroundColor: 'uiPanel.main',
         borderColor: isOver ? 'primary.main' : 'none',
         cursor: 'default',
         opacity: isSortableDragging ? 0.5 : 1,
         height: funnelStyle.blockHeight,
         transition: 'all 0.2s ease',
         borderRadius: 1.5,
-        // borderLeft: `3px solid ${color}`,
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          left: 0, top: 0,
-          height: '100%',
-          width: '5px', // colored
-          background: funnelStyle.filled ? '#dddddd' : funnelStyle.colored ? color ?? 'uiPanel.reverse' : 'uiPanel.reverse'
-        }
-        // '&:hover': {
-        //   boxShadow: 2,
-        //   borderColor: 'grey.300',
-        // },
-        // ...(isOver && {
-        //   borderColor: 'primary.main',
-        //   borderWidth: 2,
-        //   marginBottom: '2px',
-        // }),
+
       }}
       onDoubleClick={() => setIsEditing(true)}
       onBlur={() => setIsEditing(false)}
@@ -88,8 +72,14 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
         display: 'flex',
         // flexDirection: 'column',
       }}>
-        <Box {...listeners} {...attributes} sx={{ position: 'absolute', left: '0', top: '0', width: '2rem', height: '100%' }}></Box>
-        <Stack spacing={1} flex={1} px={2} justifyContent='center'>
+        <Box
+          className='no-export'
+          {...listeners}
+          sx={{ position: 'absolute', left: 0, top: 0, width: '16px', height: '100%', display: 'flex', padding: '.25rem', }}
+        >
+          <Dots spacing={9} dotColor={funnelStyle.filled ? '#dddddd' : funnelStyle.colored ? color ?? 'uiPanel.reverse' : 'uiPanel.reverse'} />
+        </Box>
+        <Stack spacing={1} flex={1} pl={2} pr={1} justifyContent='center'>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, minHeight: 0 }}>
             <TextField
               value={block.title}

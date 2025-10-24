@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       </Head>
       <main>
         <ReactFlowProvider>
-          <DiagramTypeProvider type='diagram'>
+          <DiagramTypeProvider type='diagram' isTemplate>
             <DnDProvider>
               <Box width='100vw' height='100vh'>
                 <MapTemplatesDiagram id={id} />

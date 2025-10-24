@@ -10,14 +10,14 @@ export interface HeaderMenuItem {
 export const HeaderMenu: HeaderMenuItem[] = [
   { id: 'main', label: 'Главная', icon: 'home', href: '/' },
   { id: 'profile', label: 'Профиль', icon: 'user', href: '/profile' },
-  { id: 'diagram', label: 'Диаграмы', icon: 'layout_tree', href: '/diagram' },
-  { id: 'diagram-formula', label: 'Диаграмы формулы', icon: 'layout_tree', href: '/diagram-formula' },
+  { id: 'diagram', label: 'Схемы', icon: 'mindMap', href: '/diagram' },
+  { id: 'ontology', label: 'Онтологии', icon: 'layout_tree', href: '/ontology' },
   { id: 'funnel', label: 'Воронки', icon: 'filter', href: '/funnel' },
   { id: 'kanban', label: 'Канбан доски', icon: 'clipboard', href: '/kanban' },
 ];
 export const HeaderMenuAdmin: HeaderMenuItem[] = [
-  { id: 'template-diagram', label: 'Шаблоны диаграм', icon: 'default', href: '/admin/template-diagram' },
-  { id: 'template-formula', label: 'Шаблоны диаграм формул', icon: 'default', href: '/admin/template-formula' },
+  { id: 'template-diagram', label: 'Шаблоны схем', icon: 'mindMap', href: '/admin/template-diagram' },
+  { id: 'template-ontology', label: 'Шаблоны онтологий', icon: 'layout_tree', href: '/admin/template-ontology' },
 ];
 
 export const PAGE_DATA = {
@@ -30,12 +30,12 @@ export const PAGE_DATA = {
     description: 'Управление личными данными, настройками аккаунта и параметрами безопасности',
   },
   diagram: {
-    title: 'Диаграммы',
-    description: 'Визуализация данных с помощью различных типов графиков и диаграмм для анализа информации',
+    title: 'Схемы',
+    description: 'Визуализация данных с помощью различных типов графиков и схем для анализа информации',
   },
-  diagramFormula: {
-    title: 'Диаграммы формулы',
-    description: 'Создание и редактирование диаграмм на основе формул',
+  ontology: {
+    title: 'Онтологии',
+    description: 'Создание и редактирование онтологий',
   },
   funnel: {
     title: 'Воронки',
@@ -58,12 +58,12 @@ export const PAGE_DATA = {
     description: 'Создание нового аккаунта в системе с заполнением основных данных',
   },
   templateDiagram: {
-    title: 'Шаблоны диаграмм формул',
+    title: 'Шаблоны схем',
     description: 'Страница администрирования шаблонов для формульных диаграмм',
   },
-  templateFormula: {
-    title: 'Шаблоны диаграмм',
-    description: 'Страница администрирования шаблонов для формул',
+  templateOntology: {
+    title: 'Шаблоны онтологий',
+    description: 'Страница администрирования шаблонов онтологий',
   },
 
 }

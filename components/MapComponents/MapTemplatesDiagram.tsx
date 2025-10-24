@@ -1,7 +1,7 @@
 'use client'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import '@xyflow/react/dist/style.css';
-import { addEdge, Background, Connection, Edge, EdgeChange, Node, NodeChange, OnSelectionChangeParams, Panel, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
+import { addEdge, Background, BackgroundVariant, Connection, Edge, EdgeChange, Node, NodeChange, OnSelectionChangeParams, Panel, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
 import { init_root_NodePoint, nodeTypes } from './Nodes';
 import { edgeTypes } from './Edges';
 import { useFlowDnD } from '@/hooks/useFlowDnD';
@@ -50,7 +50,7 @@ const MapTemplatesDiagram = ({ id }: { id: string }) => {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(`${templateApi}${id}`))
+        const res = await asyncFn(() => axios.get(`${templateApi}${id}`))        
         if (!res || !res?.data) return;
         const resData: Diagram = res.data;
         const resNodes = resData?.nodes ? decompress(resData?.nodes) : [];
@@ -131,7 +131,7 @@ const MapTemplatesDiagram = ({ id }: { id: string }) => {
         snapToGrid={true}
         onlyRenderVisibleElements
       >
-        <Background color="#222222" size={2} gap={40} />
+        <Background variant={BackgroundVariant.Lines} color="#222222" size={1} gap={20} />
         <Panel position='top-left'>
           <Stack gap={2}>
             <Stack direction='row' gap={2}>

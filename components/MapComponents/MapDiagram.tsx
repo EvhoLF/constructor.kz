@@ -1,7 +1,7 @@
 'use client'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import '@xyflow/react/dist/style.css';
-import { addEdge, Background, Connection, Edge, EdgeChange, Node, NodeChange, OnSelectionChangeParams, Panel, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
+import { addEdge, Background, BackgroundVariant, Connection, Edge, EdgeChange, Node, NodeChange, OnSelectionChangeParams, Panel, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
 import { init_root_NodePoint, nodeTypes } from './Nodes';
 import { edgeTypes } from './Edges';
 import { useFlowDnD } from '@/hooks/useFlowDnD';
@@ -24,6 +24,7 @@ import HeaderButton from '../Header/HeaderButton';
 import { useDiagramType } from '@/hooks/DiagramTypeContext';
 import PanelMapElementManager from './PanelMapElementManager';
 import { ThemeContext } from "@/hooks/ThemeRegistry";
+import { getAllDescendants } from '@/utils/Map/tree-helpers';
 
 
 const MapDiagram = ({ id }: { id: string }) => {
@@ -74,6 +75,17 @@ const MapDiagram = ({ id }: { id: string }) => {
       const newEdges = addEdge({ ...connection, data: { isAlternative: false } }, eds);
       return newEdges
     });
+  };
+
+  const handleDoubleClick = (node: Node) => {
+    const childrenIds = getAllDescendants(node.id, edges);
+
+    setNodes(nodes =>
+      nodes.map(n => ({
+        ...n,
+        selected: n.id === node.id || childrenIds.includes(n.id),
+      }))
+    );
   };
 
   const takeScreenshot = useCallback(async () => {
@@ -131,8 +143,9 @@ const MapDiagram = ({ id }: { id: string }) => {
         snapGrid={[10, 10]}
         snapToGrid={true}
         onlyRenderVisibleElements
+        onNodeDoubleClick={(_, node) => handleDoubleClick(node)}
       >
-        <Background color="#222222" size={2} gap={40} />
+        <Background variant={BackgroundVariant.Lines} color="#222222" size={1} gap={20} />
         <Panel position='top-left'>
           <Stack gap={2}>
             <Stack direction='row' gap={2}>

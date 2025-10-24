@@ -131,7 +131,7 @@ const HeaderBar = ({
                         startIcon={<Icon icon="user" />}
                         variant="contained"
                       >
-                        Ввойти
+                        Войти
                       </Button>
                     </Link>
                   </Tooltip>

@@ -2,11 +2,13 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Box, Card, CardContent, Stack, TextField, Typography, IconButton } from '@mui/material'
-import { IFunnelBlock } from '@/global'
-import { memo, useState } from 'react'
+import { memo, useContext, useState } from 'react'
 import Icon from '../UI/Icon'
 import Frame from '../UI/Frame'
 import InputColorText from '../UI/InputColorText'
+import { IFunnelBlock } from '@/types/funnel'
+import Dots from '../UI/Dots'
+import { ThemeContext } from '@/hooks/ThemeRegistry'
 
 interface Props {
   block: IFunnelBlock & { blockStyle: React.CSSProperties }
@@ -36,9 +38,10 @@ function FunnelBlockSortable({
     transition,
   }
 
-  const color = colored ? block.color || '#2196f3' : '#fff'
-  const textColor = colored ? (styleMode === 'filled' ? '#eee' : block.color) : '#222222'
-  const borderColor = colored ? (styleMode === 'filled' ? '#fff' : block.color) : '#222222'
+  const color = colored ? block.color || '#2196f3' : 'uiPanel.reverse'
+  const textColor = colored ? (styleMode === 'filled' ? 'uiPanel.main' : block.color) : (styleMode === 'filled' ? 'uiPanel.reverse' : 'uiPanel.reverse')
+  const borderColor = colored ? (styleMode === 'filled' ? 'uiPanel.reverse' : block.color) : 'uiPanel.reverse'
+  const dotsColor = colored ? (styleMode === 'filled' ? 'white' : block.color) : 'uiPanel.sub_main'
 
   const setColor = (e: string) => onChange(block.id, { color: e });
 
@@ -55,14 +58,15 @@ function FunnelBlockSortable({
       onFocusCapture={() => setIsEditing(true)}
       onBlurCapture={() => setIsEditing(false)}
     >
-      <Card
+      <Frame
         elevation={isDragging ? 8 : 2}
         variant={styleMode === 'outlined' ? 'outlined' : undefined}
         sx={{
+          position: 'relative',
+          boxShadow: 'none',
           display: 'grid',
           gridTemplateColumns: showNumber ? 'min-content 1fr 20px' : '1fr',
-          position: 'relative',
-          backgroundColor: styleMode === 'filled' ? color : '#ffffff00',
+          background: styleMode === 'filled' ? color : 'rgba(255,255,255,0.01)',
           borderColor: styleMode === 'outlined' ? borderColor : 'transparent',
           borderWidth: styleMode === 'outlined' ? 2 : 1,
           color: textColor,
@@ -95,7 +99,7 @@ function FunnelBlockSortable({
             textAlign: block.blockStyle.textAlign,
           }}
         >
-          <Stack gap={0.5} height="100%" justifyContent="center">
+          <Stack gap={0.5} height="100%" px={.5} justifyContent="center">
             <Box display="flex" alignItems="center" gap={1} width="100%">
               <TextField
                 variant="standard"
@@ -106,6 +110,7 @@ function FunnelBlockSortable({
                 InputProps={{ disableUnderline: true }}
                 sx={{
                   '& *': { padding: 0 },
+                  padding: 0,
                   fontWeight: 'bold',
                   fontSize: '1rem',
                   '& .MuiInputBase-input': {
@@ -127,6 +132,7 @@ function FunnelBlockSortable({
                 multiline
                 maxRows={3}
                 sx={{
+                  padding: 0,
                   '& *': { maxHeight: '100%', padding: 0 },
                   '& .MuiInputBase-input': {
                     fontSize: '.8em',
@@ -141,48 +147,19 @@ function FunnelBlockSortable({
           {/* Показываем меню, если наведен курсор или внутри есть фокус (ввод) */}
           {(isHovered || isEditing) && (
             <Frame sx={{ display: 'flex', px: 1, py: .25, gap: 1, position: 'absolute', right: 40, top: '50%', alignItems: 'center', transform: 'translateY(-50%)' }}>
-              <IconButton
-                className='no-export'
-                size="small"
-                onClick={() => onRemove(block.id)}
-              // sx={{ color: '#ffffff' }}
-              >
-                <Icon icon='delete' />
-              </IconButton>
-              <InputColorText size='extraSmall' value={color} pickColor={setColor} setColor={setColor} sx={{ '& input': { maxWidth: '70px' }, '& *': { py: 1.1 } }} />
+              <IconButton className='no-export' size="small" onClick={() => onRemove(block.id)} ><Icon icon='delete' /></IconButton>
+              <InputColorText size='extraSmall' value={block.color} pickColor={setColor} setColor={setColor} sx={{ '& input': { maxWidth: '70px' }, '& *': { py: 1.1 } }} />
             </Frame>
           )}
-
-          {/* Дрэг-хэндл */}
           <Box
             className='no-export'
             {...listeners}
-            sx={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              width: '32px',
-              height: '100%',
-              display: 'flex',
-              padding: '.5rem',
-            }}
+            sx={{ position: 'absolute', right: 0, top: 0, width: '34px', height: '100%', display: 'flex', alignItems:'center', padding: '.5rem', }}
           >
-            <Box
-              className='no-export'
-              {...listeners}
-              sx={{
-                width: '100%',
-                height: '100%',
-                backgroundImage: `url('/dot_min.png')`,
-                backgroundPosition: 'top left',
-                backgroundSize: '8px 8px',
-                backgroundRepeat: 'repeat',
-              }}
-            >
-            </Box>
+            <Dots dotColor={dotsColor} />
           </Box>
         </CardContent>
-      </Card>
+      </Frame>
     </Box >
   )
 }

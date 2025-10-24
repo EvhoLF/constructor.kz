@@ -13,8 +13,9 @@ import { Edge, useReactFlow } from '@xyflow/react';
 import { rootNodeID } from '@/utils/Formula/FormulaConfig';
 import Icon from '@/components/UI/Icon';
 import { v4 as uuidv4 } from 'uuid';
-import { SuperTemplate } from '@/global';
 import { useDiagramType } from '@/hooks/DiagramTypeContext';
+import { findRootNode } from '@/utils/Map/tree-helpers';
+import { SuperTemplate } from '@/types/diagrams';
 
 // type dataType = { id: string, label: string, props: { [key: string]: any, data: NodePointData } }[]
 
@@ -44,23 +45,42 @@ const PanelNodes = () => {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(templateApi))
+        const res = await asyncFn(() => axios.get(templateApi));
+        console.log(res?.data);
         if (!res || !res?.data) return;
         const resData: SuperTemplate[] = res?.data;
         const result: DropdownItem[] = [];
         resData.forEach(e => {
           const decompressNodes: NodePoint[] = onDecompress(e.nodes);
           const decompressEdges: Edge[] = onDecompress(e.edges);
+          if (!decompressNodes.length) return;
+
+          const rootNode = findRootNode(decompressNodes, decompressEdges);
+
+          if (rootNode) {
+            const aaa = createNodeTemplate(
+              rootNode.id,
+              'Схема',
+              e.title,
+              'ADD_SCHEME',
+              { nodes: decompressNodes, edges: decompressEdges }
+            );
+            result.push(aaa);
+          }
+
           decompressNodes.forEach(node => {
-            if (node.id == rootNodeID) {
-              const aaa = createNodeTemplate(node.id, `Схема`, e.title, 'ADD_SCHEME', { nodes: decompressNodes, edges: decompressEdges });
+            if (node.id !== rootNode?.id) {
+              const aaa = createNodeTemplate(
+                node.id,
+                node.data.label,
+                e.title,
+                'ADD_NODE',
+                node.data,
+                { width: node?.measured?.width }
+              );
               result.push(aaa);
             }
-            else {
-              const aaa = createNodeTemplate(node.id, node.data.label, e.title, 'ADD_NODE', node.data, { width: node?.measured?.width });
-              result.push(aaa);
-            }
-          })
+          });
         });
         setNodeTemplates(result);
       }
