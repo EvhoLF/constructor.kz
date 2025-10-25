@@ -44,3 +44,7 @@ next-env.d.ts
 
 prisma/dev.db
 access.txt
+
+access.txt
+
+public/uploads
