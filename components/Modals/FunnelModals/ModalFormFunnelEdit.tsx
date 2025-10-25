@@ -7,6 +7,7 @@ import InputText from '../../UI/InputText';
 import schemeFormTitleSchema from '@/libs/validation/schemeFormTitleShema';
 import BaseModalForm from '../BaseModalForm';
 import { IFunnel } from '@/types/funnel';
+import { useAutoFocus } from '@/hooks/useAutoFocus';
 
 interface ModalFormFunnelEditProps {
   api: string,
@@ -17,7 +18,7 @@ interface ModalFormFunnelEditProps {
 
 const ModalFormFunnelEdit = ({ api, id, title, setFunnels }: ModalFormFunnelEditProps) => {
   const { data: session } = useSession({ required: true });
-
+  const autoFocusRef = useAutoFocus();
   return (
     <BaseModalForm
       title="Редактирование воронки"
@@ -37,7 +38,7 @@ const ModalFormFunnelEdit = ({ api, id, title, setFunnels }: ModalFormFunnelEdit
       }}
       renderForm={(formField, disabled) => (
         <>
-          <InputText
+          <InputText inputRef={autoFocusRef}
             disabled={disabled}
             label="Название воронки"
             placeholder="Название"

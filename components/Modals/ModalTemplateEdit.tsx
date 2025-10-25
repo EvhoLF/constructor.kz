@@ -7,6 +7,7 @@ import { z } from 'zod';
 import BaseModalForm from './BaseModalForm';
 import InputText from '../UI/InputText';
 import { SuperDiagram } from '@/types/diagrams';
+import { useAutoFocus } from '@/hooks/useAutoFocus';
 
 interface Props {
   api: string,
@@ -21,9 +22,9 @@ const schema = z.object({
   category: z.string().min(1, 'Введите категорию'),
 });
 
-const ModalFormTemplateEdit = ({api, id, title, category, setTemplates }: Props) => {
+const ModalFormTemplateEdit = ({ api, id, title, category, setTemplates }: Props) => {
   const { data: session } = useSession({ required: true });
-
+  const autoFocusRef = useAutoFocus();
   return (
     <BaseModalForm
       title="Редактирование шаблона"
@@ -43,7 +44,7 @@ const ModalFormTemplateEdit = ({api, id, title, category, setTemplates }: Props)
       }}
       renderForm={(formField, disabled) => (
         <>
-          <InputText label="Название" disabled={disabled} {...formField('title')} />
+          <InputText inputRef={autoFocusRef} label="Название" disabled={disabled} {...formField('title')} />
           <InputText label="Категория" disabled={disabled} {...formField('category')} />
         </>
       )}

@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
-    const oldFile = formData.get("oldFile") as string | null;
+    const oldImage = formData.get("oldImage") as string | null;
     const folder = formData.get("folder") as string | null;
     const folderNormalized = folder ? folder.replace(/^\/+|\/+$/g, '') : '';
 
@@ -59,10 +59,10 @@ export async function POST(req: NextRequest) {
       .toFile(filePath);
 
     // ✅ Удаляем предыдущий файл, если есть
-    if (oldFile) {
+    if (oldImage) {
       try {
         // Убираем начальный /uploads/ из пути
-        const oldRelativePath = oldFile.replace(/^\/uploads\//, '');
+        const oldRelativePath = oldImage.replace(/^\/uploads\//, '');
         const oldFullPath = path.join(BASE_UPLOAD_DIR, oldRelativePath);
 
         // Дополнительная проверка безопасности

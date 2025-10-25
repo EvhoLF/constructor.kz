@@ -7,6 +7,7 @@ import { z } from 'zod';
 import InputText from '../UI/InputText';
 import BaseModalForm from './BaseModalForm';
 import { SuperDiagram } from '@/types/diagrams';
+import { useAutoFocus } from '@/hooks/useAutoFocus';
 
 interface Props {
   api: string,
@@ -20,7 +21,7 @@ const schema = z.object({
 
 const ModalTemplateCreate = ({ api, setTemplates }: Props) => {
   const { data: session } = useSession({ required: true });
-
+  const autoFocusRef = useAutoFocus();
   return (
     <BaseModalForm
       title="Создание шаблона"
@@ -41,7 +42,7 @@ const ModalTemplateCreate = ({ api, setTemplates }: Props) => {
       }}
       renderForm={(formField, disabled) => (
         <>
-          <InputText label="Название" disabled={disabled} {...formField('title')} />
+          <InputText inputRef={autoFocusRef} label="Название" disabled={disabled} {...formField('title')} />
           <InputText label="Категория" disabled={disabled} {...formField('category')} />
         </>
       )}

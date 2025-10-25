@@ -93,13 +93,12 @@ const Templates = () => {
         content: (
           <ModalImageUpload
             title='Загрузка изображения'
-            currentImageUrl={null}
+            oldImage={diagrams.find(el => el.id == id)?.image}
             uploadUrl='/api/upload/img'
             folder={`/image/${imageUploadType}`}
             maxSizeMb={5}
             onSuccess={async (imageUrl) => {
               const res = await axios.post('/api/imageUpdate', { id, type: imageUploadType, imageUrl });
-              console.log(res);
               if (res?.data?.success && res?.data?.updated) {
                 setDiagrams((diagrams) =>
                   diagrams.map((diagram) => diagram.id == id ? { ...diagram, ...res?.data?.updated } : diagram)

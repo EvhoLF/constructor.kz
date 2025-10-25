@@ -7,6 +7,7 @@ import schemeFormTitleSchema from '@/libs/validation/schemeFormTitleShema';
 import BaseModalForm from '../BaseModalForm';
 import { IKanbanFunnel } from '@/types/kanban';
 import { useKanbanFunnel } from '@/hooks/useKanbanFunnel';
+import { useAutoFocus } from '@/hooks/useAutoFocus';
 
 interface ModalFormKanbanCreateProps {
   api: string;
@@ -16,7 +17,7 @@ interface ModalFormKanbanCreateProps {
 const ModalFormKanbanCreate = ({ api, setKanbans }: ModalFormKanbanCreateProps) => {
   const { data: session } = useSession({ required: true });
   const { columns, blocks, funnelStyle } = useKanbanFunnel();
-
+  const autoFocusRef = useAutoFocus();
   return (
     <BaseModalForm
       title="Создание канбан доски"
@@ -25,9 +26,9 @@ const ModalFormKanbanCreate = ({ api, setKanbans }: ModalFormKanbanCreateProps) 
       submitText="Создать"
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
-        
-        return axios.post(api, { 
-          ...data, 
+
+        return axios.post(api, {
+          ...data,
           userId: session.user.id,
           columns,
           blocks,
@@ -39,7 +40,7 @@ const ModalFormKanbanCreate = ({ api, setKanbans }: ModalFormKanbanCreateProps) 
         enqueueSnackbar('Канбан доска успешно создана', { variant: 'success' });
       }}
       renderForm={(formField, disabled) => (
-        <InputText
+        <InputText inputRef={autoFocusRef}
           label="Название канбан доски"
           placeholder="Название"
           disabled={disabled}

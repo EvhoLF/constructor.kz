@@ -118,7 +118,7 @@ const Diagrams = () => {
         content: (
           <ModalFormImageUpload
             title='Загрузка изображения'
-            currentImageUrl={null}
+            oldImage={diagrams.find(el => el.id == id)?.image}
             uploadUrl='/api/upload/img'
             folder={`/image/${imageUploadType}`}
             maxSizeMb={5}

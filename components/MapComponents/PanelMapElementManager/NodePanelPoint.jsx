@@ -1,5 +1,5 @@
 'use client'
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import Frame from '@/components/UI/Frame';
 import InputText from '@/components/UI/InputText';
 import InputColorText from '@/components/UI/InputColorText';
@@ -13,7 +13,12 @@ import Icon from '@/components/UI/Icon';
 import { DataIconsGrouped } from '@/Icons/IconsData';
 
 const NodePanelPoint = ({ setFormulaError, id }) => {
-  const { updateNodeData, updateNode, deleteElements  } = useReactFlow();
+  const { updateNodeData, updateNode, deleteElements } = useReactFlow();
+  const labelRef = useRef(null)
+
+  useEffect(() => {
+    if (id && labelRef.current) labelRef.current.focus()
+  }, [id])
 
   const storeData = useStore(e => {
     const res = e.nodes.find(n => n.id === id);
@@ -27,37 +32,6 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
   if (!storeData) return null;
 
   const data = { ...init_NodePoint_data(), ...storeData.data };
-
-  // Формирование данных иконок с группами
-  // const data_icons_grouped = useMemo(() => {
-  //   const groups: DropdownItem[] = [];
-  //   const addGroup = (groupName, iconsObj) => {
-  //     Object.keys(iconsObj).forEach(icon => {
-  //       groups.push({ id: icon, label: icon, icon, group: groupName });
-  //     });
-  //   };
-
-  //   addGroup("Default", Default);
-  //   addGroup("Arrow", Arrow);
-  //   addGroup("Buildings", Buildings);
-  //   addGroup("Business", Business);
-  //   addGroup("Design", Design);
-  //   addGroup("Development", Development);
-  //   addGroup("Device", Device);
-  //   addGroup("Document", Document);
-  //   addGroup("Finance", Finance);
-  //   addGroup("Food", Food);
-  //   addGroup("Logos", Logos);
-  //   addGroup("Media", Media);
-  //   addGroup("Medical", Medical);
-  //   addGroup("Movement", Movement);
-  //   addGroup("Others", Others);
-  //   addGroup("System", System);
-  //   addGroup("User", User);
-  //   addGroup("Weather", Weather);
-
-  //   return groups;
-  // }, []);
 
   const updateData = (updateData) => updateNodeData(id, updateData);
 
@@ -88,12 +62,12 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
       <Stack spacing={0.5}>
         <Stack direction='row' justifyContent='space-between' gap={1}>
           <Typography variant='h6'>Параметры</Typography>
-          <IconButton onClick={handleDelete}><Icon icon='delete'/></IconButton>
+          <IconButton onClick={handleDelete}><Icon icon='delete' /></IconButton>
         </Stack>
 
         <Stack spacing={2}>
           <Stack direction='row' gap={1}>
-            <InputText label='Заголовок' value={data.label} size='small' placeholder='Label' onChange={handleLabelChange} />
+            <InputText inputRef={labelRef} label='Заголовок' value={data.label} size='small' placeholder='Label' onChange={handleLabelChange} />
             <IconSwitch brightnessOff={50} value={data.isLabelVisible} onClick={() => updateData({ isLabelVisible: !data.isLabelVisible })} />
           </Stack>
         </Stack>
@@ -112,7 +86,7 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
               label='2й цвет'
               value={data.colorSecondary}
               pickColor={(e) => updateData({ colorSecondary: e })}
-              setColor={(e) => updateData({ colorSecondary: e})}
+              setColor={(e) => updateData({ colorSecondary: e })}
             />
           </Grid>
         </Grid>

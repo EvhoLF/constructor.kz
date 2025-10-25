@@ -8,6 +8,7 @@ import schemeFormTitleSchema from '@/libs/validation/schemeFormTitleShema';
 import BaseModalForm from '../BaseModalForm';
 import { IFunnel } from '@/types/funnel';
 import { v4 as uuidv4 } from 'uuid';
+import { useAutoFocus } from '@/hooks/useAutoFocus';
 
 interface ModalFormFunnelCreateProps {
   api: string,
@@ -17,6 +18,7 @@ interface ModalFormFunnelCreateProps {
 const ModalFormFunnelCreate = ({ api, setFunnels }: ModalFormFunnelCreateProps) => {
   const { data: session } = useSession({ required: true });
 
+  const autoFocusRef = useAutoFocus();
   return (
     <BaseModalForm
       title="Создание воронки"
@@ -25,16 +27,16 @@ const ModalFormFunnelCreate = ({ api, setFunnels }: ModalFormFunnelCreateProps) 
       submitText="Создать"
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
-        
+
         const defaultBlocks = [
           { id: uuidv4(), order: 1, title: 'Шаг 1', description: 'Описание', color: '#2196f3' },
           { id: uuidv4(), order: 2, title: 'Шаг 2', description: 'Описание', color: '#4caf50' },
         ];
 
-        return axios.post(api, { 
-          ...data, 
+        return axios.post(api, {
+          ...data,
           userId: session.user.id,
-          blocks: defaultBlocks 
+          blocks: defaultBlocks
         });
       }}
       onSuccess={(res) => {
@@ -43,6 +45,7 @@ const ModalFormFunnelCreate = ({ api, setFunnels }: ModalFormFunnelCreateProps) 
       }}
       renderForm={(formField, disabled) => (
         <InputText
+          inputRef={autoFocusRef}
           label="Название воронки"
           placeholder="Название"
           disabled={disabled}

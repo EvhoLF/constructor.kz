@@ -7,6 +7,7 @@ import InputText from '../UI/InputText';
 import schemeFormTitleSchema from '@/libs/validation/schemeFormTitleShema';
 import BaseModalForm from './BaseModalForm';
 import { SuperDiagram } from '@/types/diagrams';
+import { useAutoFocus } from '@/hooks/useAutoFocus';
 
 interface ModalDiagramEditProps {
   api: string,
@@ -17,6 +18,8 @@ interface ModalDiagramEditProps {
 
 const ModalDiagramEdit = ({ api, id, title, setDiagrams }: ModalDiagramEditProps) => {
   const { data: session } = useSession({ required: true });
+
+  const autoFocusRef = useAutoFocus();
 
   return (
     <BaseModalForm
@@ -38,6 +41,7 @@ const ModalDiagramEdit = ({ api, id, title, setDiagrams }: ModalDiagramEditProps
       renderForm={(formField, disabled) => (
         <>
           <InputText
+            inputRef={autoFocusRef}
             disabled={disabled}
             label="Название схемы"
             placeholder="Название"

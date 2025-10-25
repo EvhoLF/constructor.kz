@@ -1,14 +1,13 @@
 'use client'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Box, Card, CardContent, Stack, TextField, Typography, IconButton } from '@mui/material'
-import { memo, useContext, useState } from 'react'
+import { Box, CardContent, Stack, TextField, Typography, IconButton } from '@mui/material'
+import { memo, useState, useRef } from 'react'
 import Icon from '../UI/Icon'
 import Frame from '../UI/Frame'
 import InputColorText from '../UI/InputColorText'
 import { IFunnelBlock } from '@/types/funnel'
 import Dots from '../UI/Dots'
-import { ThemeContext } from '@/hooks/ThemeRegistry'
 
 interface Props {
   block: IFunnelBlock & { blockStyle: React.CSSProperties }
@@ -33,6 +32,8 @@ function FunnelBlockSortable({
   const [isHovered, setIsHovered] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
 
+  const titleRef = useRef<HTMLInputElement>(null)
+
   const sortableStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -43,7 +44,7 @@ function FunnelBlockSortable({
   const borderColor = colored ? (styleMode === 'filled' ? 'uiPanel.reverse' : block.color) : 'uiPanel.reverse'
   const dotsColor = colored ? (styleMode === 'filled' ? 'white' : block.color) : 'uiPanel.sub_main'
 
-  const setColor = (e: string) => onChange(block.id, { color: e });
+  const setColor = (e: string) => onChange(block.id, { color: e })
 
   return (
     <Box
@@ -54,9 +55,13 @@ function FunnelBlockSortable({
       position="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      // Отслеживаем фокус внутри всего компонента:
       onFocusCapture={() => setIsEditing(true)}
       onBlurCapture={() => setIsEditing(false)}
+      onClick={(e) => {
+        const target = e.target as HTMLElement
+        if (target.closest('.no-focus')) return
+        if (titleRef.current) titleRef.current.focus()
+      }}
     >
       <Frame
         elevation={isDragging ? 8 : 2}
@@ -91,6 +96,7 @@ function FunnelBlockSortable({
             </Typography>
           </Box>
         )}
+
         <CardContent
           sx={{
             flexGrow: 1,
@@ -102,6 +108,8 @@ function FunnelBlockSortable({
           <Stack gap={0.5} height="100%" px={.5} justifyContent="center">
             <Box display="flex" alignItems="center" gap={1} width="100%">
               <TextField
+                className='no-focus'
+                inputRef={titleRef}
                 variant="standard"
                 fullWidth
                 value={block.title}
@@ -123,6 +131,7 @@ function FunnelBlockSortable({
 
             {showDescription && (
               <TextField
+                className='no-focus'
                 variant="standard"
                 fullWidth
                 value={block.description}
@@ -144,37 +153,55 @@ function FunnelBlockSortable({
             )}
           </Stack>
 
-          {/* Показываем меню, если наведен курсор или внутри есть фокус (ввод) */}
           {(isHovered || isEditing) && (
-            <Frame sx={{ display: 'flex', px: 1, py: .25, gap: 1, position: 'absolute', right: 40, top: '50%', alignItems: 'center', transform: 'translateY(-50%)' }}>
-              <IconButton className='no-export' size="small" onClick={() => onRemove(block.id)} ><Icon icon='delete' /></IconButton>
-              <InputColorText size='extraSmall' value={block.color} pickColor={setColor} setColor={setColor} sx={{ '& input': { maxWidth: '70px' }, '& *': { py: 1.1 } }} />
+            <Frame
+              className="no-focus"
+              sx={{
+                display: 'flex',
+                px: 1,
+                py: .25,
+                gap: 1,
+                position: 'absolute',
+                right: 40,
+                top: '50%',
+                alignItems: 'center',
+                transform: 'translateY(-50%)'
+              }}
+            >
+              <IconButton size="small" onClick={() => onRemove(block.id)}>
+                <Icon icon='delete' />
+              </IconButton>
+              <InputColorText
+                size='extraSmall'
+                value={block.color}
+                pickColor={setColor}
+                setColor={setColor}
+                sx={{ '& input': { maxWidth: '70px' }, '& *': { py: 1.1 } }}
+              />
             </Frame>
           )}
+
           <Box
-            className='no-export'
+            className='no-focus'
             {...listeners}
-            sx={{ position: 'absolute', right: 0, top: 0, width: '34px', height: '100%', display: 'flex', alignItems:'center', padding: '.5rem', }}
+            sx={{
+              position: 'absolute',
+              right: 0,
+              top: 0,
+              width: '34px',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '.5rem',
+              cursor: 'pointer',
+            }}
           >
             <Dots dotColor={dotsColor} />
           </Box>
         </CardContent>
       </Frame>
-    </Box >
+    </Box>
   )
 }
 
-export default memo(FunnelBlockSortable, (prev, next) => {
-  return (
-    prev.block.id === next.block.id &&
-    prev.block.order === next.block.order &&
-    prev.block.color === next.block.color &&
-    prev.block.title === next.block.title &&
-    prev.block.description === next.block.description &&
-    prev.styleMode === next.styleMode &&
-    prev.colored === next.colored &&
-    prev.showNumber === next.showNumber &&
-    prev.showDescription === next.showDescription &&
-    JSON.stringify(prev.block.blockStyle) === JSON.stringify(next.block.blockStyle)
-  )
-})
+export default memo(FunnelBlockSortable)

@@ -4,7 +4,7 @@ import { IKanbanBlock, IKanbanFunnelStyle } from '@/types/kanban';
 import { CardContent, TextField, Stack, Box } from '@mui/material';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { memo, useState, useContext } from 'react';
+import { memo, useState, useContext, useRef } from 'react';
 import { ThemeContext } from '@/hooks/ThemeRegistry';
 import Frame from '../UI/Frame';
 import Dots from '../UI/Dots';
@@ -21,6 +21,7 @@ interface Props {
 function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDragging = false, overId }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const { mode } = useContext(ThemeContext);
+  const titleRef = useRef<HTMLInputElement>(null)
 
   const {
     attributes,
@@ -63,6 +64,16 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
       }}
       onDoubleClick={() => setIsEditing(true)}
       onBlur={() => setIsEditing(false)}
+      onClick={(e) => {
+        console.log('zxc');
+        const target = e.target as HTMLElement
+        if (target.closest('.no-focus')) return
+        if (titleRef.current) {
+          console.log('zxc');
+
+          titleRef.current.focus()
+        }
+      }}
     >
       <CardContent sx={{
         p: 1.5,
@@ -73,7 +84,7 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
         // flexDirection: 'column',
       }}>
         <Box
-          className='no-export'
+          className='no-export no-focus'
           {...listeners}
           sx={{ position: 'absolute', left: 0, top: 0, width: '16px', height: '100%', display: 'flex', padding: '.25rem', }}
         >
@@ -82,6 +93,8 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
         <Stack spacing={1} flex={1} pl={2} pr={1} justifyContent='center'>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, minHeight: 0 }}>
             <TextField
+              className='no-focus'
+              inputRef={titleRef}
               value={block.title}
               onChange={(e) => onUpdate?.(block.id, { title: e.target.value })}
               onFocus={() => setIsEditing(true)}
@@ -100,7 +113,7 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
                   },
                 },
               }}
-              placeholder="Название задачи"
+              placeholder="Заголовок"
               fullWidth
               multiline
               maxRows={funnelStyle.blockHeight < 105 ? 1 : 2}
@@ -109,6 +122,7 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
 
           {funnelStyle.showDescriptions && funnelStyle.blockHeight > 85 && (
             <TextField
+              className='no-focus'
               value={block.description}
               onChange={(e) => onUpdate?.(block.id, { description: e.target.value })}
               onFocus={() => setIsEditing(true)}
@@ -124,7 +138,7 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
                   },
                 },
               }}
-              placeholder="Описание задачи"
+              placeholder="Описание"
               fullWidth
               multiline
               maxRows={funnelStyle.blockHeight < 90 ? 1 : funnelStyle.blockHeight < 120 ? 2 : 3}

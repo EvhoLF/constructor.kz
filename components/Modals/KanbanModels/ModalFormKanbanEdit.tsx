@@ -6,6 +6,7 @@ import InputText from '../../UI/InputText';
 import schemeFormTitleSchema from '@/libs/validation/schemeFormTitleShema';
 import BaseModalForm from '../BaseModalForm';
 import { IKanbanFunnel } from '@/types/kanban';
+import { useAutoFocus } from '@/hooks/useAutoFocus';
 
 interface ModalFormKanbanEditProps {
   api: string;
@@ -16,7 +17,7 @@ interface ModalFormKanbanEditProps {
 
 const ModalFormKanbanEdit = ({ api, id, title, setKanbans }: ModalFormKanbanEditProps) => {
   const { data: session } = useSession({ required: true });
-
+  const autoFocusRef = useAutoFocus();
   return (
     <BaseModalForm
       title="Редактирование канбан доски"
@@ -35,7 +36,7 @@ const ModalFormKanbanEdit = ({ api, id, title, setKanbans }: ModalFormKanbanEdit
         enqueueSnackbar('Канбан доска обновлена успешно', { variant: 'success' });
       }}
       renderForm={(formField, disabled) => (
-        <InputText
+        <InputText inputRef={autoFocusRef}
           disabled={disabled}
           label="Название канбан доски"
           placeholder="Название"

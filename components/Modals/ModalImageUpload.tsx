@@ -16,7 +16,7 @@ import { ImageUploadType } from "@/constants/upload";
 
 interface ModalImageUploadProps {
   title?: string;
-  currentImageUrl?: string | null;
+  oldImage?: string | null;
   uploadUrl: string;
   maxSizeMb?: number;
   minWidth?: number;
@@ -28,7 +28,7 @@ interface ModalImageUploadProps {
 
 const ModalImageUpload: React.FC<ModalImageUploadProps> = ({
   title = "Загрузка изображения",
-  currentImageUrl = null,
+  oldImage = null,
   uploadUrl,
   maxSizeMb = 5,
   minWidth = 200,
@@ -84,7 +84,7 @@ const ModalImageUpload: React.FC<ModalImageUploadProps> = ({
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
-    if (currentImageUrl) formData.append("oldFile", currentImageUrl);
+    if (oldImage) formData.append("oldImage", oldImage);
 
     try {
       const res = await axios.post(uploadUrl, formData, {
@@ -115,7 +115,8 @@ const ModalImageUpload: React.FC<ModalImageUploadProps> = ({
           sx={{
             width: 300,
             height: 200,
-            border: "2px dashed rgba(255,255,255,0.2)",
+            border: "3px dashed rgba(125,125,125,0.2)",
+            borderColor: 'primary',
             borderRadius: 2,
             overflow: "hidden",
             position: "relative",
@@ -131,9 +132,9 @@ const ModalImageUpload: React.FC<ModalImageUploadProps> = ({
               fill
               style={{ objectFit: "contain" }}
             />
-          ) : currentImageUrl ? (
+          ) : oldImage ? (
             <Image
-              src={currentImageUrl}
+              src={oldImage}
               alt="Current"
               fill
               style={{ objectFit: "contain" }}

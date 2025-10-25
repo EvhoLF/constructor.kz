@@ -46,7 +46,6 @@ const PanelNodes = () => {
     try {
       const fetch = async () => {
         const res = await asyncFn(() => axios.get(templateApi));
-        console.log(res?.data);
         if (!res || !res?.data) return;
         const resData: SuperTemplate[] = res?.data;
         const result: DropdownItem[] = [];
