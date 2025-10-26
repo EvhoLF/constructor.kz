@@ -6,3 +6,5 @@ services:
     restart: always
     env_file:
       - .env
+    volumes:
+      - /var/www/konstruktor__usr/uploads:/app/public/uploads
