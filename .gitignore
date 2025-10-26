@@ -47,5 +47,5 @@ access.txt
 
 access.txt
 
-/public/uploads/*
-/public/uploads/
+/uploads/*
+!/uploads/.gitkeep

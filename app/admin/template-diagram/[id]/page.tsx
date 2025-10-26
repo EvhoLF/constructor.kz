@@ -5,12 +5,6 @@ import { Box } from "@mui/material";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import MapTemplatesDiagram from "@/components/MapComponents/MapTemplatesDiagram";
 
-// export async function generateMetadata({ params }) {
-//   const { id } = await params
-//   if (!id) return { title: 'EDONs' }
-//   const map = await MapGetById(id);
-//   return !map ? { title: 'EDONs' } : { title: `${map?.label} - EDONs` };
-// }
 import { PAGE_DATA } from '@/constants/pages';
 export const metadata = {
   ...PAGE_DATA.templateDiagram

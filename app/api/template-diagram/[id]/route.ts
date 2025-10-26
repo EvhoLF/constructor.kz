@@ -1,3 +1,4 @@
+import { deleteFileIfExists, extractFilePathFromUrl } from '@/libs/file-utils';
 import { prisma } from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -31,6 +32,21 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: id_string } = await params;
   const id = parseInt(id_string);
+
+  // Сначала получаем объект, чтобы узнать путь к файлу
+  const template = await prisma.templateDiagram.findUnique({
+    where: { id },
+    select: { image: true }
+  });
+
+  // Удаляем объект из БД
   await prisma.templateDiagram.delete({ where: { id } });
+
+  // Удаляем связанный файл, если он есть
+  if (template?.image) {
+    const filePath = extractFilePathFromUrl(template.image);
+    await deleteFileIfExists(filePath);
+  }
+
   return NextResponse.json({ success: true });
 }

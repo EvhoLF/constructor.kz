@@ -112,12 +112,6 @@ const Map = ({ id }: { id: string }) => {
         setFormula(resFormula);
       };
       fetch();
-      // setFormulaError(null);
-      // const parse = ParseFormulaToGraph(formula, nodes, edges, restoreData);
-      // if (!parse) return;
-      // if (parse.error) return setFormulaError(parse.error);
-      // setLayouted(parse.nodes, parse.edges);
-      // requestAnimationFrame(() => fitView({ padding: 1 }));
     } catch (err) {
       console.error(err);
     }

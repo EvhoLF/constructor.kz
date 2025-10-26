@@ -5,13 +5,13 @@ import { z, ZodSchema } from 'zod';
 export function useZodForm<T extends ZodSchema<any>>(
   schema: T,
   initialData: z.infer<T>,
-  deps: any[] = [] // 👈 Добавили
+  deps: any[] = []
 ) {
   const [data, setData] = useState(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof typeof data, string>>>({});
 
   useEffect(() => {
-    setData(initialData); // 👈 теперь будет обновляться, если deps изменятся
+    setData(initialData);
   }, deps);
 
   const validate = () => {

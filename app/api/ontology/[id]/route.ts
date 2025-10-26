@@ -1,3 +1,4 @@
+import { deleteFileIfExists, extractFilePathFromUrl } from '@/libs/file-utils';
 import { prisma } from '@/prisma/prisma';
 import { NextResponse } from 'next/server';
 
@@ -30,7 +31,19 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
+
+    const ontology = await prisma.ontology.findUnique({
+      where: { id: Number(id) },
+      select: { image: true }
+    });
+
     await prisma.ontology.delete({ where: { id: Number(id) } });
+
+    if (ontology?.image) {
+      const filePath = extractFilePathFromUrl(ontology.image);
+      await deleteFileIfExists(filePath);
+    }
+
     return NextResponse.json({ success: true });
   }
   catch (err) {

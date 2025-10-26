@@ -17,13 +17,6 @@ import { useDiagramType } from '@/hooks/DiagramTypeContext';
 import { findRootNode } from '@/utils/Map/tree-helpers';
 import { SuperTemplate } from '@/types/diagrams';
 
-// type dataType = { id: string, label: string, props: { [key: string]: any, data: NodePointData } }[]
-
-// const data: dataType = [
-//   { id: 'default_required', label: 'Обязательный узел', props: { type: 'ADD_NODE', data: { isRequired: true } } },
-//   { id: 'default_no_required', label: 'Не обязательный узел', props: { type: 'ADD_NODE', data: { isRequired: false } } },
-// ]
-
 const onDecompress = (data: string | null | undefined) => data ? decompress(data) : []
 
 const PanelNodes = () => {

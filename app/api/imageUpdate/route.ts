@@ -41,7 +41,6 @@ export async function POST(req: NextRequest) {
         if (!id || !type || !imageUrl)
             return NextResponse.json({ error: "Некорректные данные" }, { status: 400 });
 
-        // Проверяем валидность типа
         if (!isValidModelType(type)) {
             return NextResponse.json({ error: "Неизвестный тип" }, { status: 400 });
         }
