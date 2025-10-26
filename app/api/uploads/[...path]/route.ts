@@ -1,38 +1,47 @@
+// app/api/uploads/[...path]/route.ts
 import { NextRequest } from "next/server";
-import fs from "fs";
-import path from "path";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/libs/auth";
+import fs from "fs";
+import path from "path";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
+  // Получаем параметры из Promise
+  const { path: pathParams } = await context.params;
+  
+  // Проверяем авторизацию пользователя
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    return new Response("Forbidden", { status: 403 });
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return new Response("Unauthorized 403", { status: 403 });
-    }
-
-    const { path: pathParams } = params;
-
     if (!pathParams || !Array.isArray(pathParams)) {
       return new Response("File not found", { status: 404 });
     }
+
     const decodedPath = pathParams.map(p => decodeURIComponent(p));
     const filePath = path.join(process.cwd(), "uploads", ...decodedPath);
-    console.log("Looking for file:", filePath);
+
+    console.log("Looking for file:", filePath); // Для отладки
+
     if (!fs.existsSync(filePath)) {
       console.log("File not found:", filePath);
       return new Response("File not found", { status: 404 });
     }
+
     const stats = fs.statSync(filePath);
     if (!stats.isFile()) {
       return new Response("Not a file", { status: 404 });
     }
+
     const mimeType = getMimeType(filePath);
     const fileBuffer = fs.readFileSync(filePath);
+
     return new Response(fileBuffer, {
       headers: {
         "Content-Type": mimeType,
