@@ -120,7 +120,7 @@ const Diagrams = () => {
             title='Загрузка изображения'
             oldImage={diagrams.find(el => el.id == id)?.image}
             uploadUrl='/api/upload/img'
-            folder={`/image/${imageUploadType}`}
+            folder={`${imageUploadType}`}
             maxSizeMb={5}
             onSuccess={async (imageUrl) => {
               const res = await axios.post('/api/imageUpdate', { id, type: imageUploadType, imageUrl });

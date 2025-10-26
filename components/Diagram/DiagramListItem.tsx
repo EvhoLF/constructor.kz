@@ -38,6 +38,7 @@ const DiagramListItem: React.FC<DiagramListItemProps> = ({
   onUploadImage,
 }) => {
   const { url } = useDiagramType(id);
+  console.log(image);
 
   return (
     <Card
