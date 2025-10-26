@@ -8,7 +8,7 @@ export function ThemeRegistry({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = React.useState<'light' | 'dark'>('light');
 
   // Загружаем тему из localStorage при монтировании
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const savedMode = localStorage.getItem('themeMode') as 'light' | 'dark' | null;
     if (savedMode) {
       setMode(savedMode);
