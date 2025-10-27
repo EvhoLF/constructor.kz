@@ -1,10 +1,11 @@
 'use client';
 
 import { enqueueSnackbar } from 'notistack';
-import axios from 'axios';
+
 import { useSession } from 'next-auth/react';
 import BaseModalConfirm from './BaseModalConfirm';
 import { SuperDiagram } from '@/types/diagrams';
+import axiosClient from '@/libs/axiosClient';
 
 interface ModalFormDiagramDeleteProps {
   api: string,
@@ -23,7 +24,7 @@ const ModalFormDiagramDelete = ({api, id, title, setDiagrams }: ModalFormDiagram
       confirmText="Удалить"
       onConfirm={async () => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
-        const res = await axios.delete(`${api}${id}`);
+        const res = await axiosClient.delete(`${api}${id}`);
         if (!res?.data?.success) throw new Error('Удаление не удалось');
         return res?.data;
       }}

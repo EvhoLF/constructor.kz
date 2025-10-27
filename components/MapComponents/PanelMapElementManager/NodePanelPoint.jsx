@@ -41,7 +41,7 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
   };
 
   const handleLabelChange = (e) => {
-    const value = e.target.value.toUpperCase() ?? '';
+    const value = e.target.value ?? '';
     if (data.isAutoResize) FitText(value);
     if (setFormulaError) setFormulaError(null);
     updateData({ label: value });
@@ -99,7 +99,7 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
               data={DataIconsGrouped}
               displayItem={(item) => (
                 <Box display="flex" flexDirection="column" alignItems="center">
-                  <IconButton onClick={() => updateData({ icon: item.id })} color='primary'>
+                  <IconButton onClick={() => updateData({ icon: item.id, isIconVisible: true, })} color='primary'>
                     <Icon icon={item.icon} />
                   </IconButton>
                   <Typography fontSize="0.75rem" width='100%' textOverflow='ellipsis' overflow='hidden' align="center">{item.label}</Typography>
@@ -120,7 +120,7 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
 
         <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
           <label htmlFor="required-switch" style={{ cursor: 'pointer' }}>
-            <Typography sx={{ userSelect: 'none' }}>Обязательный</Typography>
+            <Typography sx={{ userSelect: 'none' }}>Инверсия</Typography>
           </label>
           <Switch id="required-switch" checked={data.isRequired} onChange={e => updateData({ isRequired: e.target.checked })} />
         </Stack>

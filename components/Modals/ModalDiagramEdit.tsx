@@ -1,13 +1,14 @@
 'use client';
 
 import { enqueueSnackbar } from 'notistack';
-import axios from 'axios';
+
 import { useSession } from 'next-auth/react';
 import InputText from '../UI/InputText';
 import schemeFormTitleSchema from '@/libs/validation/schemeFormTitleShema';
 import BaseModalForm from './BaseModalForm';
 import { SuperDiagram } from '@/types/diagrams';
 import { useAutoFocus } from '@/hooks/useAutoFocus';
+import axiosClient from '@/libs/axiosClient';
 
 interface ModalDiagramEditProps {
   api: string,
@@ -29,7 +30,7 @@ const ModalDiagramEdit = ({ api, id, title, setDiagrams }: ModalDiagramEditProps
       submitText="Обновить"
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
-        const res = await axios.put(`${api}${id}`, { title: data.title });
+        const res = await axiosClient.put(`${api}${id}`, { title: data.title });
         return res?.data;
       }}
       onSuccess={(updated) => {

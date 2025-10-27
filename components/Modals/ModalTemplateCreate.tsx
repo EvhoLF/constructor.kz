@@ -1,13 +1,14 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import axios from 'axios';
+
 import { enqueueSnackbar } from 'notistack';
 import { z } from 'zod';
 import InputText from '../UI/InputText';
 import BaseModalForm from './BaseModalForm';
 import { SuperDiagram } from '@/types/diagrams';
 import { useAutoFocus } from '@/hooks/useAutoFocus';
+import axiosClient from '@/libs/axiosClient';
 
 interface Props {
   api: string,
@@ -30,7 +31,7 @@ const ModalTemplateCreate = ({ api, setTemplates }: Props) => {
       submitText="Создать"
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет пользователя');
-        const res = await axios.post(api, {
+        const res = await axiosClient.post(api, {
           ...data,
           userId: session.user.id,
         });

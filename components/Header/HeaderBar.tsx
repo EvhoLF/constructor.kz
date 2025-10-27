@@ -71,6 +71,7 @@ const HeaderBar = ({
                       konstruktor
                     </Typography>
                   )}
+                  <IconButton onClick={() => { throw new Error("Тестовая ошибка!"); }}>zxc</IconButton>
                   {!isMobile && pageTitle && (
                     <Typography
                       noWrap

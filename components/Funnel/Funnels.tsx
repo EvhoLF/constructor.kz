@@ -19,6 +19,7 @@ import ModalFormFunnelEdit from "../Modals/FunnelModals/ModalFormFunnelEdit";
 import ModalFormFunnelDelete from "../Modals/FunnelModals/ModalFormFunnelDelete";
 import FunnelFilterPanel, { SortOption } from "./FunnelFilterPanel";
 import FunnelList from "./FunnelList";
+import axiosClient from "@/libs/axiosClient";
 
 const Funnels = () => {
   const { showModal } = useModal();
@@ -35,7 +36,7 @@ const Funnels = () => {
     if (!session?.user.id) return;
 
     setLoading(true);
-    axios
+    axiosClient
       .get(`${API_BASE}/user/${session.user.id}`)
       .then((res) => {
         if (res?.data) setFunnels(res.data);

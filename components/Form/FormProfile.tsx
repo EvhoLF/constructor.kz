@@ -7,8 +7,9 @@ import { signOut, useSession } from 'next-auth/react';
 import React, { useState } from 'react'
 import InputText from '../UI/InputText';
 import InputPassword from '../UI/InputPassword';
-import axios from 'axios';
+
 import Frame from '../UI/Frame';
+import axiosClient from '@/libs/axiosClient';
 
 const FormProfile = () => {
   const { data: session } = useSession({ required: true });
@@ -33,7 +34,7 @@ const FormProfile = () => {
     if (!isValid) return;
 
     try {
-      const res = await axios.patch('/api/profile', data, { withCredentials: true });
+      const res = await axiosClient.patch('/api/profile', data, { withCredentials: true });
       if (res.status === 200) {
         setSuccessMessage('Профиль обновлён успешно');
       }

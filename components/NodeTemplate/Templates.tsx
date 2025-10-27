@@ -14,6 +14,7 @@ import ModalTemplateCreate from "../Modals/ModalTemplateCreate";
 import ModalFormTemplateEdit from "../Modals/ModalTemplateEdit";
 import ModalTemplateDelete from "../Modals/ModalTemplateDelete";
 import { SuperDiagram } from "@/types/diagrams";
+import axiosClient from "@/libs/axiosClient";
 
 const Templates = () => {
   const { data: session } = useSession({ required: true });
@@ -98,7 +99,7 @@ const Templates = () => {
             folder={`/${imageUploadType}`}
             maxSizeMb={5}
             onSuccess={async (imageUrl) => {
-              const res = await axios.post('/api/imageUpdate', { id, type: imageUploadType, imageUrl });
+              const res = await axiosClient.post('/api/imageUpdate', { id, type: imageUploadType, imageUrl });
               if (res?.data?.success && res?.data?.updated) {
                 setDiagrams((diagrams) =>
                   diagrams.map((diagram) => diagram.id == id ? { ...diagram, ...res?.data?.updated } : diagram)

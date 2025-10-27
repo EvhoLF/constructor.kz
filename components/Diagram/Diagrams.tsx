@@ -21,6 +21,7 @@ import DiagramList from "./DiagramList";
 import { useDiagramType } from "@/hooks/DiagramTypeContext";
 import ModalFormImageUpload from "../Modals/ModalImageUpload";
 import { SuperDiagram } from "@/types/diagrams";
+import axiosClient from "@/libs/axiosClient";
 
 const Diagrams = () => {
   const { showModal } = useModal();
@@ -39,7 +40,7 @@ const Diagrams = () => {
     if (!session?.user.id) return;
 
     setLoading(true);
-    axios
+    axiosClient
       .get(`${api}/user/${session.user.id}`)
       .then((res) => {
         if (res?.data) setDiagrams(res.data);
@@ -123,7 +124,7 @@ const Diagrams = () => {
             folder={`${imageUploadType}`}
             maxSizeMb={5}
             onSuccess={async (imageUrl) => {
-              const res = await axios.post('/api/imageUpdate', { id, type: imageUploadType, imageUrl });
+              const res = await axiosClient.post('/api/imageUpdate', { id, type: imageUploadType, imageUrl });
               console.log(res);
               if (res?.data?.success && res?.data?.updated) {
                 setDiagrams((diagrams) =>

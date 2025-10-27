@@ -1,7 +1,7 @@
 'use client';
 
 import { enqueueSnackbar } from 'notistack';
-import axios from 'axios';
+
 import { useSession } from 'next-auth/react';
 import InputText from '../UI/InputText';
 import schemeFormTitleSchema from '@/libs/validation/schemeFormTitleShema';
@@ -9,6 +9,7 @@ import BaseModalForm from './BaseModalForm';
 import { SuperDiagram } from '@/types/diagrams';
 import { useRef } from 'react';
 import { useAutoFocus } from '@/hooks/useAutoFocus';
+import axiosClient from '@/libs/axiosClient';
 
 
 interface ModalDiagramCreateProps {
@@ -29,7 +30,7 @@ const ModalDiagramCreate = ({ api, setDiagrams }: ModalDiagramCreateProps) => {
       submitText="Создать"
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет ID пользователя');
-        return axios.post(api, { ...data, userId: session.user.id });
+        return axiosClient.post(api, { ...data, userId: session.user.id });
       }}
       onSuccess={(res) => {
         setDiagrams(prev => [...prev, { ...res?.data, isNew: true }]);

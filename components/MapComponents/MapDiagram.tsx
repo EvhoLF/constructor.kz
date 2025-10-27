@@ -14,7 +14,7 @@ import { TakeImageMap, TakeImageMapDownload } from '@/utils/Map/ImageMap';
 import createPDF from '@/utils/Map/createPDF';
 import getNodeHierarchy from '@/utils/Map/getNodeHierarchy';
 import { useAsync } from '@/hooks/useAsync';
-import axios from 'axios';
+
 import { compress, decompress } from '@/utils/compress';
 import { enqueueSnackbar } from 'notistack';
 import { Diagram } from '.prisma/client';
@@ -25,6 +25,7 @@ import { useDiagramType } from '@/hooks/DiagramTypeContext';
 import PanelMapElementManager from './PanelMapElementManager';
 import { ThemeContext } from "@/hooks/ThemeRegistry";
 import { getAllDescendants } from '@/utils/Map/tree-helpers';
+import axiosClient from '@/libs/axiosClient';
 
 
 const MapDiagram = ({ id }: { id: string }) => {
@@ -52,7 +53,7 @@ const MapDiagram = ({ id }: { id: string }) => {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(`${api}${id}`))
+        const res = await asyncFn(() => axiosClient.get(`${api}${id}`))
         if (!res || !res?.data) return;
         const resData: Diagram = res.data;
         const resNodes = resData?.nodes ? decompress(resData?.nodes) : [];
@@ -106,7 +107,7 @@ const MapDiagram = ({ id }: { id: string }) => {
     try {
       const strNodes = compress(nodes || []);
       const strEdges = compress(edges || []);
-      const res = await asyncFn(() => axios.put(`${api}${id}`, { nodes: strNodes, edges: strEdges }));
+      const res = await asyncFn(() => axiosClient.put(`${api}${id}`, { nodes: strNodes, edges: strEdges }));
       if (res && res?.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }

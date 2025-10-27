@@ -2,11 +2,12 @@
 import { useAsync } from '@/hooks/useAsync';
 import { useModal } from '@/hooks/useModal';
 import { Button, Stack, Typography } from '@mui/material';
-import axios from 'axios';
+
 import { useSession } from 'next-auth/react';
 import { enqueueSnackbar } from 'notistack';
 import { Ontology } from '.prisma/client';
 import StackRow from '@/components/UI/StackRow';
+import axiosClient from '@/libs/axiosClient';
 
 interface ModalFormSchemeDelete {
   id: string | number,
@@ -25,7 +26,7 @@ const ModalFormSchemeDelete = ({ id, title, setSchemes, closeModal = () => { } }
   const handler = async () => {
     try {
       if (!session?.user.id) return;
-      const res = await asyncFn(() => axios.delete(`/api/ontology/${id}`));
+      const res = await asyncFn(() => axiosClient.delete(`/api/ontology/${id}`));
       if (!res || !res?.data.success) return
       setSchemes(prev => prev.filter(ontologys => ontologys.id !== id));
       onCloseModal();

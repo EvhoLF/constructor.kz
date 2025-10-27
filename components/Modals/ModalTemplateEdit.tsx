@@ -1,13 +1,14 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import axios from 'axios';
+
 import { enqueueSnackbar } from 'notistack';
 import { z } from 'zod';
 import BaseModalForm from './BaseModalForm';
 import InputText from '../UI/InputText';
 import { SuperDiagram } from '@/types/diagrams';
 import { useAutoFocus } from '@/hooks/useAutoFocus';
+import axiosClient from '@/libs/axiosClient';
 
 interface Props {
   api: string,
@@ -33,7 +34,7 @@ const ModalFormTemplateEdit = ({ api, id, title, category, setTemplates }: Props
       submitText="Обновить"
       onSubmit={async (data) => {
         if (!session?.user.id) throw new Error('Нет пользователя');
-        const res = await axios.put(`${api}${id}`, data);
+        const res = await axiosClient.put(`${api}${id}`, data);
         return res?.data;
       }}
       onSuccess={(updated) => {

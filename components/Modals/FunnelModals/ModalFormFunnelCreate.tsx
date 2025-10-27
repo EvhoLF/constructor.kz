@@ -1,7 +1,7 @@
 'use client';
 
 import { enqueueSnackbar } from 'notistack';
-import axios from 'axios';
+
 import { useSession } from 'next-auth/react';
 import InputText from '../../UI/InputText';
 import schemeFormTitleSchema from '@/libs/validation/schemeFormTitleShema';
@@ -9,6 +9,7 @@ import BaseModalForm from '../BaseModalForm';
 import { IFunnel } from '@/types/funnel';
 import { v4 as uuidv4 } from 'uuid';
 import { useAutoFocus } from '@/hooks/useAutoFocus';
+import axiosClient from '@/libs/axiosClient';
 
 interface ModalFormFunnelCreateProps {
   api: string,
@@ -33,7 +34,7 @@ const ModalFormFunnelCreate = ({ api, setFunnels }: ModalFormFunnelCreateProps) 
           { id: uuidv4(), order: 2, title: 'Шаг 2', description: 'Описание', color: '#4caf50' },
         ];
 
-        return axios.post(api, {
+        return axiosClient.post(api, {
           ...data,
           userId: session.user.id,
           blocks: defaultBlocks

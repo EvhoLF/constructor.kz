@@ -18,10 +18,11 @@ import { exportFunnelPDF, exportFunnelPNG } from '@/utils/exportFunnel';
 import Icon from '../UI/Icon';
 import InputSlider from '../UI/InputSlider';
 import ClientOnly from '../ClientOnly';
-import axios from 'axios';
+
 import { useAsync } from '@/hooks/useAsync';
 import { enqueueSnackbar } from 'notistack';
 import { IKanbanFunnel } from '@/types/kanban';
+import axiosClient from '@/libs/axiosClient';
 
 interface KanbanFunnelProps {
   id: string;
@@ -109,7 +110,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
 
   const save = async () => {
     try {
-      const res = await asyncFn(() => axios.put(`/api/kanban/${id}`, {
+      const res = await asyncFn(() => axiosClient.put(`/api/kanban/${id}`, {
         columns,
         blocks,
         style: funnelStyle
@@ -129,7 +130,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(`/api/kanban/${id}`));
+        const res = await asyncFn(() => axiosClient.get(`/api/kanban/${id}`));
         if (!res || !res?.data) return;
 
         const resData: IKanbanFunnel = res.data;

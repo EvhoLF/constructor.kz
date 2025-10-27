@@ -1,10 +1,11 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import axios from 'axios';
+
 import { enqueueSnackbar } from 'notistack';
 import BaseModalConfirm from './BaseModalConfirm';
 import { SuperDiagram } from '@/types/diagrams';
+import axiosClient from '@/libs/axiosClient';
 
 interface Props {
   api: string,
@@ -23,7 +24,7 @@ const ModalTemplateDelete = ({ api, id, title, setTemplates }: Props) => {
       confirmText="Удалить"
       onConfirm={async () => {
         if (!session?.user.id) throw new Error('Нет пользователя');
-        const res = await axios.delete(`${api}${id}`);
+        const res = await axiosClient.delete(`${api}${id}`);
         if (!res?.data?.success) throw new Error('Удаление не удалось');
         return res?.data;
       }}

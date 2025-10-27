@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import IconNodes from './IconNodes';
 import { init_NodePoint, NodePoint } from '../Nodes';
 import { useAsync } from '@/hooks/useAsync';
-import axios from 'axios';
+
 import { decompress } from '@/utils/compress';
 import DropdownMenu, { DropdownItem } from '@/components/UI/DropdownMenu';
 import { Edge, useReactFlow } from '@xyflow/react';
@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useDiagramType } from '@/hooks/DiagramTypeContext';
 import { findRootNode } from '@/utils/Map/tree-helpers';
 import { SuperTemplate } from '@/types/diagrams';
+import axiosClient from '@/libs/axiosClient';
 
 const onDecompress = (data: string | null | undefined) => data ? decompress(data) : []
 
@@ -38,7 +39,7 @@ const PanelNodes = () => {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(templateApi));
+        const res = await asyncFn(() => axiosClient.get(templateApi));
         if (!res || !res?.data) return;
         const resData: SuperTemplate[] = res?.data;
         const result: DropdownItem[] = [];

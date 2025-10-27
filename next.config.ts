@@ -7,10 +7,15 @@ const nextConfig: NextConfig = {
         source: '/uploads/:path*',
         destination: '/api/uploads/:path*',
       },
-    ]
+      // Добавьте явное исключение для API routes
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
+      },
+    ];
   },
   eslint: {
-    ignoreDuringBuilds: true, // отключает ESLint при `next build`
+    ignoreDuringBuilds: true,
   },
 };
 

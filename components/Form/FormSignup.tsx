@@ -6,10 +6,11 @@ import InputText from '../UI/InputText';
 import InputPassword from '../UI/InputPassword';
 import { useZodForm } from '@/hooks/useZodForm';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+
 import signupSchema from '@/libs/validation/signupSchema';
 import Frame from '../UI/Frame';
 import InputLink from '../UI/InputLink';
+import axiosClient from '@/libs/axiosClient';
 
 const FormSignup = () => {
   const router = useRouter();
@@ -21,7 +22,7 @@ const FormSignup = () => {
     const valid = validate();
     if (!valid) return;
     try {
-      await axios.post('/api/signup', { name: data.name, email: data.email, password: data.password, });
+      await axiosClient.post('/api/signup', { name: data.name, email: data.email, password: data.password, });
       router.push('/auth/signin');
     } catch (err: any) {
       const message = err?.response?.data?.error || 'Ошибка регистрации';

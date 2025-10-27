@@ -51,6 +51,8 @@ import HeaderButton from "../Header/HeaderButton";
 import { useDiagramType } from "@/hooks/DiagramTypeContext";
 import PanelNodes from "./PanelNodes/PanelNodes";
 import { ThemeContext } from "@/hooks/ThemeRegistry";
+import { getAllDescendants } from "@/utils/Map/tree-helpers";
+import axiosClient from "@/libs/axiosClient";
 
 const Map = ({ id }: { id: string }) => {
   const { mode, toggleMode } = useContext(ThemeContext);
@@ -99,7 +101,7 @@ const Map = ({ id }: { id: string }) => {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(`${api}${id}`));
+        const res = await asyncFn(() => axiosClient.get(`${api}${id}`));
         if (!res || !res?.data) return;
         const resData: Ontology = res.data;
         const resNodes = resData?.nodes
@@ -183,7 +185,7 @@ const Map = ({ id }: { id: string }) => {
       const strNodes = compress(nodes || []);
       const strEdges = compress(edges || []);
       const res = await asyncFn(() =>
-        axios.put(`${api}${id}`, { formula, nodes: strNodes, edges: strEdges })
+        axiosClient.put(`${api}${id}`, { formula, nodes: strNodes, edges: strEdges })
       );
       if (res && res?.data) {
         enqueueSnackbar("Cхема обновлена успешно", { variant: "success" });
@@ -197,6 +199,17 @@ const Map = ({ id }: { id: string }) => {
     }
   };
 
+  const handleDoubleClick = (node: Node) => {
+    const childrenIds = getAllDescendants(node.id, edges);
+
+    setNodes(nodes =>
+      nodes.map(n => ({
+        ...n,
+        selected: n.id === node.id || childrenIds.includes(n.id),
+      }))
+    );
+  };
+
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <ReactFlow
@@ -206,6 +219,7 @@ const Map = ({ id }: { id: string }) => {
         defaultEdgeOptions={defaultEdgeOptions(mode)}
         onNodesChange={handleOnNodesChange}
         onEdgesChange={handleOnEdgesChange}
+        onNodeDoubleClick={(_, node) => handleDoubleClick(node)}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onDrop={onDrop}

@@ -13,6 +13,7 @@ import { enqueueSnackbar } from "notistack";
 import { useModal } from "@/hooks/useModal";
 import axios from "axios";
 import { ImageUploadType } from "@/constants/upload";
+import axiosClient from "@/libs/axiosClient";
 
 interface ModalImageUploadProps {
   title?: string;
@@ -87,7 +88,7 @@ const ModalImageUpload: React.FC<ModalImageUploadProps> = ({
     if (oldImage) formData.append("oldImage", oldImage);
 
     try {
-      const res = await axios.post(uploadUrl, formData, {
+      const res = await axiosClient.post(uploadUrl, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

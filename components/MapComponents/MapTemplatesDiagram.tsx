@@ -14,7 +14,7 @@ import { TakeImageMap, TakeImageMapDownload } from '@/utils/Map/ImageMap';
 import createPDF from '@/utils/Map/createPDF';
 import getNodeHierarchy from '@/utils/Map/getNodeHierarchy';
 import { useAsync } from '@/hooks/useAsync';
-import axios from 'axios';
+
 import { compress, decompress } from '@/utils/compress';
 import { enqueueSnackbar } from 'notistack';
 import { Diagram } from '.prisma/client';
@@ -24,6 +24,8 @@ import HeaderButton from '../Header/HeaderButton';
 import { useDiagramType } from '@/hooks/DiagramTypeContext';
 import PanelMapElementManager from './PanelMapElementManager';
 import { ThemeContext } from "@/hooks/ThemeRegistry";
+import { getAllDescendants } from '@/utils/Map/tree-helpers';
+import axiosClient from '@/libs/axiosClient';
 
 const MapTemplatesDiagram = ({ id }: { id: string }) => {
   const { mode, toggleMode } = useContext(ThemeContext);
@@ -50,7 +52,7 @@ const MapTemplatesDiagram = ({ id }: { id: string }) => {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(`${templateApi}${id}`))        
+        const res = await asyncFn(() => axiosClient.get(`${templateApi}${id}`))
         if (!res || !res?.data) return;
         const resData: Diagram = res.data;
         const resNodes = resData?.nodes ? decompress(resData?.nodes) : [];
@@ -93,7 +95,7 @@ const MapTemplatesDiagram = ({ id }: { id: string }) => {
     try {
       const strNodes = compress(nodes || []);
       const strEdges = compress(edges || []);
-      const res = await asyncFn(() => axios.put(`${templateApi}${id}`, { nodes: strNodes, edges: strEdges }));
+      const res = await asyncFn(() => axiosClient.put(`${templateApi}${id}`, { nodes: strNodes, edges: strEdges }));
       if (res && res?.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }
@@ -108,12 +110,23 @@ const MapTemplatesDiagram = ({ id }: { id: string }) => {
     }
   }
 
+  const handleDoubleClick = (node: Node) => {
+    const childrenIds = getAllDescendants(node.id, edges);
+
+    setNodes(nodes =>
+      nodes.map(n => ({
+        ...n,
+        selected: n.id === node.id || childrenIds.includes(n.id),
+      }))
+    );
+  };
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <ReactFlow
         colorMode={mode ?? 'light'}
         nodes={nodes}
         edges={edges}
+        onNodeDoubleClick={(_, node) => handleDoubleClick(node)}
         defaultEdgeOptions={defaultEdgeOptions(mode)}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}

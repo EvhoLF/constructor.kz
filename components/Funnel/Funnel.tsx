@@ -15,6 +15,7 @@ import axios from 'axios'
 import { Funnel as TypeFunnel } from '.prisma/client';
 import { enqueueSnackbar } from 'notistack'
 import { IFunnelBlock } from '@/types/funnel'
+import axiosClient from '@/libs/axiosClient'
 
 
 export default function Funnel({ id }: { id: string }) {
@@ -55,7 +56,7 @@ export default function Funnel({ id }: { id: string }) {
 
   const save = async () => {
     try {
-      const res = await asyncFn(() => axios.put(`/api/funnel/${id}`, funnel));
+      const res = await asyncFn(() => axiosClient.put(`/api/funnel/${id}`, funnel));
       if (res && res?.data) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }
@@ -73,7 +74,7 @@ export default function Funnel({ id }: { id: string }) {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axios.get(`/api/funnel/${id}`))
+        const res = await asyncFn(() => axiosClient.get(`/api/funnel/${id}`))
         if (!res || !res?.data) return;
         const resData: TypeFunnel = res.data;
         if (!resData.blocks) return;

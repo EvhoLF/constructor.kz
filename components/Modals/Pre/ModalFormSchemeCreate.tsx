@@ -1,7 +1,7 @@
 'use client'
 import { Button, Stack, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import axios from 'axios';
+
 import { useModal } from '@/hooks/useModal';
 import { useZodForm } from '@/hooks/useZodForm';
 import { useSession } from 'next-auth/react';
@@ -10,6 +10,7 @@ import { Ontology } from '.prisma/client';
 import schemeFormTitleShema from '@/libs/validation/schemeFormTitleShema';
 import InputText from '@/components/UI/InputText';
 import StackRow from '@/components/UI/StackRow';
+import axiosClient from '@/libs/axiosClient';
 
 interface ModalFormSchemeCreate {
   setSchemes: React.Dispatch<React.SetStateAction<(Ontology & { isNew: boolean })[]>>,
@@ -28,7 +29,7 @@ const ModalFormSchemeCreate = ({ setSchemes, closeModal = () => { } }: ModalForm
     try {
       const isValid = validate();
       if (!isValid || !session?.user.id) return;
-      const res = await asyncFn(() => axios.post(`/api/ontology/`, { userId: session?.user.id, title: data.title }));
+      const res = await asyncFn(() => axiosClient.post(`/api/ontology/`, { userId: session?.user.id, title: data.title }));
       if (!res) return;
       if (res?.data) {
         setSchemes((prev) => [...prev, { ...res?.data, isNew: true }]);

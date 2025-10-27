@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useCallback } from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
+import axiosClient from '@/libs/axiosClient';
 
 export interface UsePaginatedFetchhProps<T> {
   url: string;
@@ -28,7 +29,7 @@ export function usePaginatedFetch<T>({ url, limit = 20, params = {}, enabled = t
     setLoading(true);
     try {
       const config: AxiosRequestConfig = { params: { page, limit, ...params }, };
-      const response = await axios.get(url, config);
+      const response = await axiosClient.get(url, config);
       const newData = parseData(response.data);
       setData((prev) => [...prev, ...newData]);
       setPage((prev) => prev + 1);
