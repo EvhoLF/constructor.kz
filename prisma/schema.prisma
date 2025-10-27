@@ -35,7 +35,6 @@ model Kanban {
   style     String?  @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  image     String?
   user      User     @relation(fields: [userId], references: [id], map: "Kanban_userId_fkey")
 
   @@index([userId], map: "Kanban_userId_fkey")
