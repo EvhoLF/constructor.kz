@@ -198,6 +198,12 @@ export function useKanbanFunnel(initialData?: {
     });
   }, []);
 
+  const deleteBlock = useCallback((blockId: string) => {
+    setBlocks(prev => {
+      return prev.filter(block => block.id !== blockId);
+    });
+  }, []);
+
   const deleteColumn = useCallback((columnId: string) => {
     setColumns(prev => {
       // Удаляем колонку
@@ -287,6 +293,7 @@ export function useKanbanFunnel(initialData?: {
     deleteColumn,
     addBlock,
     updateBlock,
+    deleteBlock,
     moveBlock,
     updateStyle,
     resetColors,

@@ -49,6 +49,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
     setColumns,
     setBlocks,
     setFunnelStyle,
+    deleteBlock,
   } = useKanbanFunnel();
 
   const [activeColumn, setActiveColumn] = useState<string | null>(null);
@@ -262,6 +263,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
                     onUpdate={updateColumn}
                     onAddBlock={addBlock}
                     onUpdateBlock={updateBlock}
+                    deleteBlock={deleteBlock}
                     deleteColumn={deleteColumn}
                     overId={overId}
                   />
@@ -284,7 +286,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
                 <Box sx={{ opacity: 0.8, transform: 'rotate(5deg)' }}>
                   <KanbanBlock
                     block={activeBlockData}
-                    funnelStyle={funnelStyle}
+                    kanbanStyle={funnelStyle}
                     isDragging
                   />
                 </Box>

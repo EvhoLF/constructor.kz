@@ -1,27 +1,40 @@
 // components/KanbanFunnel/KanbanBlock.tsx
 'use client'
 import { IKanbanBlock, IKanbanFunnelStyle } from '@/types/kanban';
-import { CardContent, TextField, Stack, Box } from '@mui/material';
+import { CardContent, TextField, Stack, Box, IconButton } from '@mui/material';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { memo, useState, useContext, useRef } from 'react';
 import { ThemeContext } from '@/hooks/ThemeRegistry';
 import Frame from '../UI/Frame';
 import Dots from '../UI/Dots';
+import Icon from '../UI/Icon';
 
 interface Props {
   block: IKanbanBlock;
-  funnelStyle: IKanbanFunnelStyle;
+  kanbanStyle: IKanbanFunnelStyle;
   onUpdate?: (blockId: string, updates: Partial<IKanbanBlock>) => void;
+  onDelete?: (blockId: string) => void;
   isDragging?: boolean;
   overId?: string | null;
   color?: string;
 }
 
-function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDragging = false, overId }: Props) {
+function KanbanBlock({ block, kanbanStyle, onUpdate, onDelete, color = '#555555', isDragging = false, overId }: Props) {
+  const [isHovered, setIsHovered] = useState(false)
   const [isEditing, setIsEditing] = useState(false);
   const { mode } = useContext(ThemeContext);
   const titleRef = useRef<HTMLInputElement>(null)
+
+  // const blockColor = kanbanStyle.colored ? color || '#2196f3' : 'uiPanel.reverse'
+  // const textColor = kanbanStyle.colored ? (kanbanStyle.filled ? 'uiPanel.main' : color) : (kanbanStyle.filled ? 'uiPanel.reverse' : 'uiPanel.reverse')
+  // const borderColor = kanbanStyle.colored ? (kanbanStyle.filled ? 'uiPanel.reverse' : color) : 'uiPanel.reverse'
+  // const dotsColor = kanbanStyle.colored ? (kanbanStyle.filled ? 'white' : color) : 'uiPanel.sub_main'
+
+  const blockColor = kanbanStyle.colored ? (kanbanStyle.filled ? color : 'uiPanel.main') : 'uiPanel.main'
+  const textColor = kanbanStyle.colored ? (kanbanStyle.filled ? 'uiPanel.main' : color) : (kanbanStyle.filled ? 'uiPanel.reverse' : 'uiPanel.reverse')
+  const borderColor = kanbanStyle.colored ? (kanbanStyle.filled ? 'uiPanel.reverse' : color) : 'uiPanel.reverse'
+  const dotsColor = kanbanStyle.colored ? (kanbanStyle.filled ? 'white' : color) : 'uiPanel.sub_main'
 
   const {
     attributes,
@@ -53,15 +66,19 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
       elevation={isSortableDragging ? 8 : 1}
       sx={{
         position: 'relative',
-        // backgroundColor: 'uiPanel.main',
-        borderColor: isOver ? 'primary.main' : 'none',
+        backgroundColor: blockColor,
+        borderColor: isOver ? borderColor : 'none',
         cursor: 'default',
         opacity: isSortableDragging ? 0.5 : 1,
-        height: funnelStyle.blockHeight,
+        height: kanbanStyle.blockHeight,
         transition: 'all 0.2s ease',
         borderRadius: 1.5,
 
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocusCapture={() => setIsEditing(true)}
+      onBlurCapture={() => setIsEditing(false)}
       onDoubleClick={() => setIsEditing(true)}
       onBlur={() => setIsEditing(false)}
       onClick={(e) => {
@@ -73,6 +90,16 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
         }
       }}
     >
+      {(isHovered) && (
+        <Frame
+          className="no-focus"
+          sx={{ p: 0, zIndex: 10, display: 'flex', gap: 1, position: 'absolute', right: 0, top: 0, alignItems: 'center' }}
+        >
+          <IconButton size="small" onClick={() => { if (onDelete) onDelete(block.id) }}>
+            <Icon icon='delete' />
+          </IconButton>
+        </Frame>
+      )}
       <CardContent sx={{
         p: 1.5,
         pl: 0,
@@ -86,7 +113,7 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
           {...listeners}
           sx={{ position: 'absolute', left: 0, top: 0, width: '16px', height: '100%', display: 'flex', padding: '.25rem', }}
         >
-          <Dots spacing={9} dotColor={funnelStyle.filled ? '#dddddd' : funnelStyle.colored ? color ?? 'uiPanel.reverse' : 'uiPanel.reverse'} />
+          <Dots spacing={9} dotColor={dotsColor} />
         </Box>
         <Stack spacing={1} flex={1} pl={2} pr={1} justifyContent='center'>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, minHeight: 0 }}>
@@ -100,11 +127,11 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
               InputProps={{
                 disableUnderline: !isEditing,
                 sx: {
-                  color: funnelStyle.filled ? '#000000' : 'uiPanel.reverse',
+                  color: textColor,
                   lineHeight: '1rem',
                   fontSize: '0.9rem',
                   fontWeight: 'bold',
-                  textAlign: funnelStyle.textAlign as any,
+                  textAlign: kanbanStyle.textAlign as any,
                   flex: 1,
                   '& .MuiInput-input': {
                     cursor: isEditing ? 'text' : 'default',
@@ -114,11 +141,11 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
               placeholder="Заголовок"
               fullWidth
               multiline
-              maxRows={funnelStyle.blockHeight < 105 ? 1 : 2}
+              maxRows={kanbanStyle.blockHeight < 105 ? 1 : 2}
             />
           </Box>
 
-          {funnelStyle.showDescriptions && funnelStyle.blockHeight > 85 && (
+          {kanbanStyle.showDescriptions && kanbanStyle.blockHeight > 85 && (
             <TextField
               className='no-focus'
               value={block.description}
@@ -129,8 +156,8 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
                 disableUnderline: !isEditing,
                 sx: {
                   fontSize: '0.8rem',
-                  color: funnelStyle.filled ? '#333333' : 'uiPanel.reverse',
-                  textAlign: funnelStyle.textAlign as any,
+                  color: textColor,
+                  textAlign: kanbanStyle.textAlign as any,
                   '& .MuiInput-input': {
                     cursor: isEditing ? 'text' : 'default',
                   },
@@ -139,7 +166,7 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
               placeholder="Описание"
               fullWidth
               multiline
-              maxRows={funnelStyle.blockHeight < 90 ? 1 : funnelStyle.blockHeight < 120 ? 2 : 3}
+              maxRows={kanbanStyle.blockHeight < 90 ? 1 : kanbanStyle.blockHeight < 120 ? 2 : 3}
             />
           )}
         </Stack>

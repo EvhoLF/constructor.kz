@@ -34,38 +34,19 @@ interface Props {
   onAddBlock?: (columnId: string, position?: number) => void;
   onUpdateBlock?: (blockId: string, updates: Partial<IKanbanBlock>) => void;
   deleteColumn?: (columnId: string) => void;
+  deleteBlock?: (blockId: string) => void;
   isDragging?: boolean;
   overId?: string | null;
 }
 
-function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpdateBlock, deleteColumn, isDragging = false, overId }: Props) {
+function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, deleteBlock, onUpdateBlock, deleteColumn, isDragging = false, overId }: Props) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSortableDragging } = useSortable({ id: column.id, data: { type: 'column' }, });
   const style = { transform: CSS.Transform.toString(transform), transition, };
 
-  const { mode } = useContext(ThemeContext);
-  let textColor = '';
-  let columnColor = '';
-
-  if (funnelStyle.colored) {
-    if (funnelStyle.filled) {
-      columnColor = column.color || '#2196f3';
-      textColor = '#ffffff';
-    }
-    else {
-      columnColor = column.color || '#2196f3';
-      textColor = '#ffffff';
-    }
-  }
-  else {
-    if (funnelStyle.filled) {
-      textColor = 'uiPanel.reverse'
-      columnColor = 'uiPanel.main'
-    }
-    else {
-      textColor = 'uiPanel.reverse';
-      columnColor = 'uiPanel.main';
-    }
-  }
+  const color = funnelStyle.colored ? (funnelStyle.filled ? column.color : 'uiPanel.main') : 'uiPanel.main'
+  const textColor = funnelStyle.colored ? (funnelStyle.filled ? 'uiPanel.main' : column.color) : (funnelStyle.filled ? 'uiPanel.reverse' : 'uiPanel.reverse')
+  const borderColor = funnelStyle.colored ? (funnelStyle.filled ? 'uiPanel.reverse' : column.color) : 'uiPanel.reverse'
+  const dotsColor = funnelStyle.colored ? (funnelStyle.filled ? 'white' : column.color) : 'uiPanel.sub_main'
 
   const isOver = overId === column.id;
   const [isHovered, setIsHovered] = useState(false);
@@ -128,8 +109,8 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          // backgroundColor: ,
           transition: 'all 0.3s ease',
+          ...(funnelStyle.filled ? {} : { borderColor: borderColor, border: '2px solid' }),
         }}
       >
         {/* Заголовок колонки с точками для перетаскивания */}
@@ -137,7 +118,7 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
           ref={headerRef}
           sx={{
             p: .5,
-            backgroundColor: columnColor,
+            backgroundColor: color,
             position: 'relative',
             '&:hover .column-menu': {
               opacity: 1,
@@ -154,7 +135,7 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
                 {...listeners}
                 sx={{ width: '38px', height: '16px' }}
               >
-                <Dots dotColor={textColor} spacing={8} />
+                <Dots dotColor={dotsColor} spacing={8} />
               </Box>
 
               <TextField
@@ -289,7 +270,7 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
             p: 1,
             '&::-webkit-scrollbar': { width: 6, background: 'transparent' },
             '&::-webkit-scrollbar-track': { background: 'transparent' },
-            '&::-webkit-scrollbar-thumb': { bgcolor: '#eeeeee' },
+            '&::-webkit-scrollbar-thumb': { bgcolor: '#bbbbbb' },
           }}
         >
           <KanbanInsertButton onClick={() => onAddBlock?.(column.id, 0)} />
@@ -299,10 +280,11 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
                 <KanbanBlock
                   key={block.id}
                   block={block}
-                  funnelStyle={funnelStyle}
+                  kanbanStyle={funnelStyle}
                   onUpdate={onUpdateBlock}
+                  onDelete={deleteBlock}
                   overId={overId}
-                  color={columnColor}
+                  color={column.color}
                 />
               ))}
             </Stack>
@@ -311,17 +293,18 @@ function KanbanColumn({ column, blocks, funnelStyle, onUpdate, onAddBlock, onUpd
 
           {blocks.length === 0 && (
             <Box
+              className='no-export no-focus'
               sx={{
                 p: '1rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 border: '2px dashed',
-                borderColor: 'grey.300',
+                borderColor: 'grey.500',
                 borderRadius: 1,
               }}
             >
-              <Typography sx={{ color: !funnelStyle.filled && funnelStyle.colored ? 'uiPanel.reverse' : textColor }} variant="body2" textAlign="center">
+              <Typography color='grey.600' variant="body2" textAlign="center">
                 Блоков еще нет
               </Typography>
             </Box>

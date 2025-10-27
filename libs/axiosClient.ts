@@ -22,7 +22,7 @@ axiosClient.interceptors.response.use(
         enqueueSnackbar("У вас нет доступа к этому действию.", { variant: "error" });
         break;
       case 404:
-        enqueueSnackbar("Ресурс не найден.", { variant: "error" });
+        enqueueSnackbar("Ресурс не найден.", { variant: 'info' });
         break;
       case 500:
         enqueueSnackbar("Ошибка сервера. Попробуйте позже.", { variant: "error" });
