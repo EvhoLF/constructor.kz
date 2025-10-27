@@ -9,7 +9,6 @@ import Header from "@/components/Header/Header";
 import localFont from "next/font/local";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeRegistry } from "@/hooks/ThemeRegistry";
-import ErrorBoundary from "@/components/Modals/ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -53,23 +52,21 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <ErrorBoundary>
-          <SessionWrapper>
-            <AppRouterCacheProvider>
-              <NextThemesProvider>
-                <ThemeRegistry>
-                  <ModalProvider>
-                    <SnackbarProviderClient>
-                      <HeaderProvider>
-                        <Header>{children}</Header>
-                      </HeaderProvider>
-                    </SnackbarProviderClient>
-                  </ModalProvider>
-                </ThemeRegistry>
-              </NextThemesProvider>
-            </AppRouterCacheProvider>
-          </SessionWrapper>
-        </ErrorBoundary>
+        <SessionWrapper>
+          <AppRouterCacheProvider>
+            <NextThemesProvider>
+              <ThemeRegistry>
+                <ModalProvider>
+                  <SnackbarProviderClient>
+                    <HeaderProvider>
+                      <Header>{children}</Header>
+                    </HeaderProvider>
+                  </SnackbarProviderClient>
+                </ModalProvider>
+              </ThemeRegistry>
+            </NextThemesProvider>
+          </AppRouterCacheProvider>
+        </SessionWrapper>
       </body>
     </html>
   );
