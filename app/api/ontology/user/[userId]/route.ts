@@ -1,15 +1,15 @@
-import { checkAccessFetch } from '@/libs/checkAccessFetch';
+// import { checkAccessFetch } from '@/libs/checkAccessFetch';
 import { ErrorWithStatus } from '@/libs/ErrorWithStatus';
 import { prisma } from '@/prisma/prisma';
 import { NextResponse } from 'next/server';
 
 
-export async function GET(req: Request, { params }: { params: Promise<{ userId: string }> }) {
+export async function GET(_: Request, { params }: { params: Promise<{ userId: string }> }) {
   const { userId } = await params
   const requestedUserId = Number(userId);
 
   try {
-    const res = await checkAccessFetch(req, requestedUserId);
+    // const res = await checkAccessFetch(requestedUserId);
 
     const ontologys = await prisma.ontology.findMany({
       where: { userId: requestedUserId }
