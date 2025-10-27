@@ -115,6 +115,12 @@ const DiagramListItem: React.FC<DiagramListItemProps> = ({
         {formula && (
           <Typography
             variant="body2"
+            sx={{
+              color: "white",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
           >
             {formula}
           </Typography>

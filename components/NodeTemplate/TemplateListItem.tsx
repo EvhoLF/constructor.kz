@@ -113,6 +113,12 @@ const TemplateListItem: React.FC<TemplateListItemProps> = ({
         </Stack>
         <Typography
           variant="body2"
+          sx={{
+            color: "white",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
         >
           {category || 'Нет категории'}
         </Typography>
