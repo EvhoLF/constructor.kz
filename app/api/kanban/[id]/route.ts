@@ -4,6 +4,12 @@ import { NextResponse } from 'next/server'
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
+
+    if (!id || isNaN(Number(id))) {
+      return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
+    }
+
+
     const kanban = await prisma.kanban.findUnique({
       where: { id: Number(id) }
     })
@@ -20,7 +26,12 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params
+    const { id } = await params;
+
+    if (!id || isNaN(Number(id))) {
+      return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
+    }
+
     const body = await req.json();
     const { title, columns, blocks, style } = body
 
@@ -44,6 +55,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
+
+    if (!id || isNaN(Number(id))) {
+      return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
+    }
+
+
     await prisma.kanban.delete({
       where: { id: Number(id) }
     })
