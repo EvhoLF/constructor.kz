@@ -1,4 +1,4 @@
-import { checkAccessFetch } from '@/libs/checkAccessFetch';
+// import { checkAccessFetch } from '@/libs/checkAccessFetch';
 import { ErrorWithStatus } from '@/libs/ErrorWithStatus';
 import { prisma } from '@/prisma/prisma';
 import { NextResponse } from 'next/server';
