@@ -9,7 +9,6 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-
     const kanban = await prisma.kanban.findUnique({
       where: { id: Number(id) }
     })
