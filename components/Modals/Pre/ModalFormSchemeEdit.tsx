@@ -31,7 +31,7 @@ const ModalFormSchemeEdit = ({ id, title, setSchemes, closeModal = () => { } }: 
     try {
       const isValid = validate();
       if (!isValid || !session?.user.id) return;
-      const res = await asyncFn(() => axiosClient.put(`/api/ontology/${id}`, { title: data.title }));
+      const res = await asyncFn(() => axiosClient.put(`/ontology/${id}`, { title: data.title }));
       if (!res) return;
       if (res?.data) {
         setSchemes((ontologys) => ontologys.map(ontology => ontology.id == id ? { ...ontology, ...res?.data } : ontology));

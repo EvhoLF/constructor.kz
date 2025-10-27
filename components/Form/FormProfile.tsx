@@ -34,7 +34,7 @@ const FormProfile = () => {
     if (!isValid) return;
 
     try {
-      const res = await axiosClient.patch('/api/profile', data, { withCredentials: true });
+      const res = await axiosClient.patch('/profile', data, { withCredentials: true });
       if (res.status === 200) {
         setSuccessMessage('Профиль обновлён успешно');
       }

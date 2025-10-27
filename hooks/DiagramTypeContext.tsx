@@ -24,20 +24,20 @@ export const getDiagramTypeProps = (
   switch (type) {
     case 'ontology':
       return {
-        api: `/api/ontology/${id}`,
+        api: `/ontology/${id}`,
         url: `/ontology/${id}`,
         type: 'ontology',
-        templateApi: `/api/template-ontology/${id}`,
+        templateApi: `/template-ontology/${id}`,
         templateUrl: `/admin/template-ontology/${id}`,
         imageUploadType: isTemplate ? ImageUploadType.TEMPLATE_ONTOLOGY : ImageUploadType.ONTOLOGY,
       };
     case 'diagram':
     default:
       return {
-        api: `/api/diagram/${id}`,
+        api: `/diagram/${id}`,
         url: `/diagram/${id}`,
         type: 'diagram',
-        templateApi: `/api/template-diagram/${id}`,
+        templateApi: `/template-diagram/${id}`,
         templateUrl: `/admin/template-diagram/${id}`,
         imageUploadType: isTemplate ? ImageUploadType.TEMPLATE_DIAGRAM : ImageUploadType.DIAGRAM,
       };

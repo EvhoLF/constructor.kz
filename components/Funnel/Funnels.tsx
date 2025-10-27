@@ -30,7 +30,7 @@ const Funnels = () => {
   const [search, setSearch] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("updatedAt_desc");
 
-  const API_BASE = "/api/funnel";
+  const API_BASE = "/funnel";
 
   useEffect(() => {
     if (!session?.user.id) return;

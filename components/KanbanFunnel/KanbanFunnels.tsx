@@ -30,7 +30,7 @@ const KanbanFunnels = () => {
   const [search, setSearch] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("updatedAt_desc");
 
-  const API_BASE = "/api/kanban";
+  const API_BASE = "/kanban";
 
   useEffect(() => {
     if (!session?.user.id) return;

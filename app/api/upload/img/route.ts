@@ -58,7 +58,6 @@ export async function POST(req: NextRequest) {
 
         if (oldFullPath.startsWith(BASE_UPLOAD_DIR) && await fs.access(oldFullPath).then(() => true).catch(() => false)) {
           await fs.unlink(oldFullPath);
-          console.log(`Удален старый файл: ${oldFullPath}`);
         }
       } catch (error) {
         console.error("Ошибка при удалении старого файла:", error);

@@ -110,7 +110,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
 
   const save = async () => {
     try {
-      const res = await asyncFn(() => axiosClient.put(`/api/kanban/${id}`, {
+      const res = await asyncFn(() => axiosClient.put(`/kanban/${id}`, {
         columns,
         blocks,
         style: funnelStyle
@@ -130,7 +130,7 @@ export default function KanbanFunnel({ id }: KanbanFunnelProps) {
   useEffect(() => {
     try {
       const fetch = async () => {
-        const res = await asyncFn(() => axiosClient.get(`/api/kanban/${id}`));
+        const res = await asyncFn(() => axiosClient.get(`/kanban/${id}`));
         if (!res || !res?.data) return;
 
         const resData: IKanbanFunnel = res.data;

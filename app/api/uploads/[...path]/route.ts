@@ -27,8 +27,6 @@ export async function GET(
     const decodedPath = pathParams.map(p => decodeURIComponent(p));
     const filePath = path.join(process.cwd(), "uploads", ...decodedPath);
 
-    console.log("Looking for file:", filePath); // Для отладки
-
     if (!fs.existsSync(filePath)) {
       console.log("File not found:", filePath);
       return new Response("File not found", { status: 404 });

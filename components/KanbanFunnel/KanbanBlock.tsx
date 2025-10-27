@@ -65,11 +65,9 @@ function KanbanBlock({ block, funnelStyle, onUpdate, color = '#222222', isDraggi
       onDoubleClick={() => setIsEditing(true)}
       onBlur={() => setIsEditing(false)}
       onClick={(e) => {
-        console.log('zxc');
         const target = e.target as HTMLElement
         if (target.closest('.no-focus')) return
         if (titleRef.current) {
-          console.log('zxc');
 
           titleRef.current.focus()
         }

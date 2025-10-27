@@ -29,7 +29,7 @@ const ModalFormSchemeCreate = ({ setSchemes, closeModal = () => { } }: ModalForm
     try {
       const isValid = validate();
       if (!isValid || !session?.user.id) return;
-      const res = await asyncFn(() => axiosClient.post(`/api/ontology/`, { userId: session?.user.id, title: data.title }));
+      const res = await asyncFn(() => axiosClient.post(`/ontology/`, { userId: session?.user.id, title: data.title }));
       if (!res) return;
       if (res?.data) {
         setSchemes((prev) => [...prev, { ...res?.data, isNew: true }]);
@@ -48,7 +48,7 @@ const ModalFormSchemeCreate = ({ setSchemes, closeModal = () => { } }: ModalForm
       <InputText disabled={loading} label='Название карты' placeholder='Название' {...formField('title')} />
       <Stack justifyContent='end' direction='row' spacing={2}>
         <Button disabled={loading} onClick={onCloseModal} color="error">Отмена</Button>
-        <Button disabled={loading} onClick={() => { handler(); console.log('Форма отправлена!'); }} color="primary" variant="contained">
+        <Button disabled={loading} onClick={() => { handler(); }} color="primary" variant="contained">
           <StackRow>Создать <Loader /></StackRow>
         </Button>
       </Stack>

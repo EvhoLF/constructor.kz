@@ -26,7 +26,7 @@ const ModalFormSchemeDelete = ({ id, title, setSchemes, closeModal = () => { } }
   const handler = async () => {
     try {
       if (!session?.user.id) return;
-      const res = await asyncFn(() => axiosClient.delete(`/api/ontology/${id}`));
+      const res = await asyncFn(() => axiosClient.delete(`/ontology/${id}`));
       if (!res || !res?.data.success) return
       setSchemes(prev => prev.filter(ontologys => ontologys.id !== id));
       onCloseModal();

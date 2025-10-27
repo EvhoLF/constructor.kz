@@ -12,7 +12,6 @@ export async function deleteFileIfExists(filePath: string): Promise<boolean> {
       return true;
     }
     await fs.unlink(fullPath);
-    console.log(`Файл удален: ${fullPath}`);
     return true;
   } catch (error) {
     console.error(`Ошибка при удалении файла ${filePath}:`, error);

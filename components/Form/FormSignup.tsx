@@ -22,7 +22,7 @@ const FormSignup = () => {
     const valid = validate();
     if (!valid) return;
     try {
-      await axiosClient.post('/api/signup', { name: data.name, email: data.email, password: data.password, });
+      await axiosClient.post('/signup', { name: data.name, email: data.email, password: data.password, });
       router.push('/auth/signin');
     } catch (err: any) {
       const message = err?.response?.data?.error || 'Ошибка регистрации';
