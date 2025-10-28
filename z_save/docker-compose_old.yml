@@ -1,7 +1,7 @@
 services:
   konstruktor-app:
+    build: .
     image: konstruktor:latest
-    container_name: konstruktor-app
     network_mode: host
     restart: always
     env_file:

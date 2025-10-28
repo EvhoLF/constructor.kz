@@ -8,23 +8,18 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Build production image
-        run: docker build --platform linux/amd64 -t konstruktor:latest .
-
-      - name: Save Docker image as tarball
+      - name: Build Docker image
+        run: docker build -t konstruktor:latest .
+      - name: Save Docker image
         run: |
           docker save konstruktor:latest -o konstruktor.tar
           chmod 644 konstruktor.tar
-
-      - name: Upload image and configs to server
+      - name: Copy image and configs to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.KLASTERWEB__SERVER_HOST }}
@@ -32,8 +27,7 @@ jobs:
           key: ${{ secrets.KLASTERWEB__SERVER_SSH_KEY }}
           source: "konstruktor.tar,docker-compose.yml,.env"
           target: "/var/www/konstruktor__usr/data/"
-
-      - name: Deploy container on server
+      - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.KLASTERWEB__SERVER_HOST }}
@@ -41,21 +35,10 @@ jobs:
           key: ${{ secrets.KLASTERWEB__SERVER_SSH_KEY }}
           timeout: 30m
           script: |
-            set -e
             cd /var/www/konstruktor__usr/data/
-
-            echo "Loading Docker image..."
             docker load -i konstruktor.tar
-            rm konstruktor.tar
-
-            echo "Running Prisma migrations..."
-            docker run --rm --network host --env-file .env konstruktor:latest npx prisma migrate deploy || true
-
-            echo "Starting updated container..."
-            docker compose -p konstruktor pull || true
+            rm -f konstruktor.tar
+            docker run --rm --network host --env-file .env konstruktor:latest npx prisma migrate deploy
+            docker rm -f konstruktor-app || true
             docker compose -p konstruktor up -d --force-recreate --remove-orphans
-
-            echo "Cleaning old images..."
-            docker image prune -f --filter "until=24h" || true
-
-            echo "✅ Deployment completed successfully!"
+            docker image prune -af || true
