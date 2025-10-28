@@ -3,7 +3,6 @@
 import { Button, Stack, Typography, CircularProgress, Box, Grid, } from "@mui/material";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import { useModal } from "@/hooks/useModal";
 import Icon from "../UI/Icon";
 import { useDiagramType } from "@/hooks/DiagramTypeContext";
@@ -33,7 +32,7 @@ const Templates = () => {
   useEffect(() => {
     if (!session?.user.id) return;
     setLoading(true);
-    axios
+    axiosClient
       .get(templateApi)
       .then((res) => {
         const templates = (res?.data || []).map((template: any) => ({
