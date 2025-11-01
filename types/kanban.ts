@@ -19,7 +19,7 @@ export interface IKanbanBlock {
   order: number;
 }
 
-export interface IKanbanFunnelStyle {
+export interface IKanbanStyle {
   colored: boolean;
   filled: boolean;
   textAlign: 'left' | 'center' | 'right';
@@ -29,12 +29,12 @@ export interface IKanbanFunnelStyle {
   blockHeight: number;
 }
 
-export interface IKanbanFunnel {
+export interface IKanban {
   id: number;
   title: string;
   columns: IKanbanColumn[];
   blocks: IKanbanBlock[];
-  style: IKanbanFunnelStyle;
+  style: IKanbanStyle;
   userId: number;
   createdAt: string;
   updatedAt: string;

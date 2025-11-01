@@ -1,4 +1,4 @@
-import { init_NodePoint } from "@/components/MapComponents/Nodes";
+import { init_NodePoint } from "@/components/Diagram/Nodes";
 import { EDGE_MODIFIERS_ADDITION, NODE_MODIFIERS, rootNodeID } from "./FormulaConfig";
 
 // Функция для парсинга префиксов по подстрокам (сначала самые длинные)

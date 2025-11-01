@@ -1,5 +1,5 @@
-import { TableEdge } from '@/components/MapComponents/Edges';
-import { TableNode } from '@/components/MapComponents/Nodes';
+import { TableEdge } from '@/components/Diagram/Edges';
+import { TableNode } from '@/components/Diagram/Nodes';
 import { Node, Edge } from '@xyflow/react';
 import { useEffect, useRef } from 'react';
 

@@ -3,7 +3,7 @@ import Head from "next/head";
 import { DnDProvider } from "@/hooks/DnDProvider";
 import { Box } from "@mui/material";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
-import MapTemplatesDiagram from "@/components/MapComponents/MapTemplatesDiagram";
+import MapTemplatesDiagram from "@/components/Diagram/MapTemplatesDiagram";
 
 import { PAGE_DATA } from '@/constants/pages';
 export const metadata = {

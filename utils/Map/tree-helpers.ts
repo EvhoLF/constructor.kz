@@ -1,4 +1,4 @@
-import { NodePoint } from "@/components/MapComponents/Nodes";
+import { NodePoint } from "@/components/Diagram/Nodes";
 import { Edge } from "@xyflow/react";
 import { rootNodeID } from '@/utils/Formula/FormulaConfig';
 

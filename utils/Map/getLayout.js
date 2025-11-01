@@ -1,4 +1,4 @@
-import { NODE_MIN_HEIGHT, NODE_MIN_WIDTH } from '@/components/MapComponents/Nodes';
+import { NODE_MIN_HEIGHT, NODE_MIN_WIDTH } from '@/components/Diagram/Nodes';
 import Dagre from '@dagrejs/dagre';
 
 const NODE_WIDTH = NODE_MIN_WIDTH;

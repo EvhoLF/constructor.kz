@@ -1,24 +1,62 @@
-// import { checkAccessFetch } from '@/libs/checkAccessFetch'
-import { ErrorWithStatus } from '@/libs/ErrorWithStatus'
-import { prisma } from '@/prisma/prisma'
-import { NextResponse } from 'next/server'
+// app/api/kanban/user/[userId]/route.ts
+import { NextResponse } from 'next/server';
+import { prisma } from '@/prisma/prisma';
+import { buildPaginationParams, buildSearchCondition, createApiResponse } from '@/libs/api-utils';
+import { getPrismaOrderBy } from '@/libs/sort-utils';
 
-export async function GET(_: Request, { params }: { params: Promise<{ userId: string }> }) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
   try {
-    const { userId } = await params
-    const requestedUserId = Number(userId)
+    const { userId } = await params;
+    const requestedUserId = Number(userId);
 
-    // const res = await checkAccessFetch(requestedUserId)
-
-    const kanbans = await prisma.kanban.findMany({
-      where: { userId: requestedUserId }
-    })
-
-    return NextResponse.json(kanbans)
-  } catch (err) {
-    if (err instanceof ErrorWithStatus) {
-      return NextResponse.json({ error: err.message }, { status: err.status })
+    if (isNaN(requestedUserId)) {
+      return NextResponse.json(
+        { error: 'Некорректный userId' }, 
+        { status: 400 }
+      );
     }
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+
+    const { searchParams } = new URL(req.url);
+    const { page, limit, skip, take, search, sortOption } = buildPaginationParams(searchParams);
+    const excludeId = searchParams.get('excludeId');
+
+    const where: any = {
+      userId: requestedUserId,
+      ...buildSearchCondition(search),
+      ...(excludeId ? { id: { not: Number(excludeId) } } : {}),
+    };
+
+    const orderBy = getPrismaOrderBy(sortOption);
+
+    const [kanbans, totalCount] = await Promise.all([
+      prisma.kanban.findMany({
+        where,
+        skip,
+        take,
+        orderBy,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            }
+          }
+        },
+      }),
+      prisma.kanban.count({ where })
+    ]);
+
+    const response = createApiResponse(kanbans, totalCount, page, limit, sortOption);
+    return NextResponse.json(response);
+  } catch (err) {
+    console.error('Ошибка при загрузке канбан досок пользователя:', err);
+    return NextResponse.json(
+      { error: 'Internal Server Error', details: err instanceof Error ? err.message : 'Unknown error' }, 
+      { status: 500 }
+    );
   }
 }

@@ -25,7 +25,7 @@ export default function Hero() {
                     </Typography>
                     <Typography>
                         Универсальная платформа для визуализации, анализа и систематизации данных.
-                        Создавайте схемы, воронки и канбан-доски — всё в одном интуитивном пространстве.
+                        Создавайте диаграммы, воронки и канбан-доски — всё в одном интуитивном пространстве.
                     </Typography>
                     <Stack direction="row" spacing={2} mt={2}>
                         <Button size='medium' variant="contained" LinkComponent={Link} href="/diagram">

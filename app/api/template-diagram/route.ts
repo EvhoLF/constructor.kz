@@ -1,38 +1,62 @@
+// app/api/template-diagram/route.ts
 import { prisma } from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { buildPaginationParams, buildSearchCondition, createApiResponse } from '@/libs/api-utils';
+import { getPrismaOrderBy } from '@/libs/sort-utils';
 
-// GET: Получение списка
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const category = searchParams.get('category');
-  const page = searchParams.get('page');
-  const limit = searchParams.get('limit');
+  try {
+    const { searchParams } = new URL(req.url);
+    const category = searchParams.get('category');
+    const { page, limit, skip, take, search, sortOption } = buildPaginationParams(searchParams);
 
-  const where = category ? { category } : {};
-  const skip = page && limit ? (parseInt(page) - 1) * parseInt(limit) : undefined;
-  const take = page && limit ? parseInt(limit) : undefined;
+    const where = {
+      ...(category ? { category } : {}),
+      ...buildSearchCondition(search)
+    };
 
-  const templates = await prisma.templateDiagram.findMany({
-    where,
-    skip,
-    take,
-    orderBy: { id: 'desc' },
-  });
+    const orderBy = getPrismaOrderBy(sortOption);
 
-  return NextResponse.json(templates);
+    const [templates, totalCount] = await Promise.all([
+      prisma.templateDiagram.findMany({
+        where,
+        skip,
+        take,
+        orderBy,
+      }),
+      prisma.templateDiagram.count({ where })
+    ]);
+
+    const response = createApiResponse(templates, totalCount, page, limit, sortOption);
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error fetching template diagrams:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
 }
 
-// POST: Создание
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { title, category, nodes, edges } = body;
+  try {
+    const body = await req.json();
+    const { title, category, nodes, edges } = body;
 
-  if (!title || !category)
-    return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+    if (!title || !category) {
+      return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+    }
 
-  const created = await prisma.templateDiagram.create({
-    data: { title, category, nodes, edges },
-  });
+    const created = await prisma.templateDiagram.create({
+      data: { title, category, nodes, edges },
+    });
 
-  return NextResponse.json(created);
+    return NextResponse.json(created);
+  } catch (error) {
+    console.error('Error creating template diagram:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
 }

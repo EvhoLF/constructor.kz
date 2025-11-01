@@ -1,10 +1,11 @@
 import { Node, Edge, useReactFlow } from "@xyflow/react";
 import { useCallback } from "react";
 import { useDnD } from "./DnDProvider";
-import { init_NodePoint } from "@/components/MapComponents/Nodes";
+import { init_NodePoint } from "@/components/Diagram/Nodes";
 import { v4 as uuidv4 } from 'uuid';
 import { useModal } from "@/hooks/useModal";
 import ModalDiagramImport from "@/components/Modals/ModalDiagramImport";
+import { useDiagramType } from "./DiagramTypeContext";
 
 interface SchemePayload {
   nodes: Node[];
@@ -12,6 +13,7 @@ interface SchemePayload {
 }
 
 export const useFlowDnD = () => {
+  const { type } = useDiagramType();
   const { screenToFlowPosition, addNodes, addEdges } = useReactFlow();
   const [dnd] = useDnD();
   const { showModal } = useModal();
@@ -62,6 +64,7 @@ export const useFlowDnD = () => {
         showModal({
           content: (
             <ModalDiagramImport
+              type={type}
               onCancel={() => { }}
               onSubmit={(baseName: string, autoRename: boolean) => {
                 const offsetX = position.x - (newAddScheme.nodes[0]?.position?.x || 0);

@@ -1,6 +1,6 @@
 import Head from "next/head";
 import WrapperHeader from '@/components/Header/WrapperHeader';
-import KanbanFunnel from '@/components/KanbanFunnel/KanbanFunnel';
+import Kanban from '@/components/Kanban/Kanban';
 import { prisma } from '@/prisma/prisma';
 import { Params } from 'next/dist/server/request/params';
 import { PAGE_DATA } from "@/constants/pages";
@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       </Head>
       <main>
         <WrapperHeader pageTitle={PAGE_DATA.kanban.title}>
-          <KanbanFunnel id={id} />
+          <Kanban id={id} />
         </WrapperHeader>
       </main>
     </>

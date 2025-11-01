@@ -12,6 +12,8 @@ export interface DiagramTypeProps {
   url: string;
   templateApi: string;
   templateUrl: string;
+  userApi: string;
+  userUrl: string;
   type: DiagramType;
   imageUploadType?: ImageUploadType
 }
@@ -29,6 +31,8 @@ export const getDiagramTypeProps = (
         type: 'ontology',
         templateApi: `/template-ontology/${id}`,
         templateUrl: `/admin/template-ontology/${id}`,
+        userApi: `/ontology/user/${id}`,
+        userUrl: `/ontology/user/${id}`,
         imageUploadType: isTemplate ? ImageUploadType.TEMPLATE_ONTOLOGY : ImageUploadType.ONTOLOGY,
       };
     case 'diagram':
@@ -39,6 +43,8 @@ export const getDiagramTypeProps = (
         type: 'diagram',
         templateApi: `/template-diagram/${id}`,
         templateUrl: `/admin/template-diagram/${id}`,
+        userApi: `/diagram/user/${id}`,
+        userUrl: `/diagram/user/${id}`,
         imageUploadType: isTemplate ? ImageUploadType.TEMPLATE_DIAGRAM : ImageUploadType.DIAGRAM,
       };
   }

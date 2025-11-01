@@ -44,12 +44,37 @@ const MuiTextField_extraSmall: MuiTextFieldVariant = {
   },
 }
 
+
+const components = {
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        '--Paper-overlay': 'none',
+        '--Paper-shadow': 'none',
+        backgroundImage: 'none',
+        boxShadow: 'none',
+      },
+    },
+  },
+  MuiCard: {
+    styleOverrides: {
+      root: {
+        '--Paper-overlay': 'none',
+        '--Paper-shadow': 'none',
+        backgroundImage: 'none',
+        boxShadow: 'none',
+      },
+    },
+  },
+}
+
 const lightTheme = createTheme({
   palette: {
     mode: "light",
     ...palette.light,
   },
   components: {
+    ...components,
     MuiTextField: {
       variants: [
         { ...MuiTextField_mediumSmall },
@@ -65,6 +90,7 @@ const darkTheme = createTheme({
     ...palette.dark,
   },
   components: {
+    ...components,
     MuiTextField: {
       variants: [
         { ...MuiTextField_mediumSmall },

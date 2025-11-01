@@ -1,12 +1,14 @@
 export enum UploadFolder {
-    imgsDiagram = "imgsDiagram",
-    imgsOntology = "imgsOntology",
+  imgsDiagram = "imgsDiagram",
+  imgsOntology = "imgsOntology",
 }
 export const ALLOWED_FOLDERS = Object.values(UploadFolder);
 
 export enum ImageUploadType {
-  DIAGRAM = "diagram",
-  ONTOLOGY = "ontology",
-  TEMPLATE_DIAGRAM = "templateDiagram",
-  TEMPLATE_ONTOLOGY = "templateOntology",
+  DIAGRAM = 'diagram',
+  TEMPLATE_DIAGRAM = 'template-diagram',
+  FUNNEL = 'funnel', // Добавлено
+  KANBAN = 'kanban', // Добавлено
+  ONTOLOGY = 'ontology',
+  TEMPLATE_ONTOLOGY = 'template-ontology'
 }

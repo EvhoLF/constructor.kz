@@ -40,7 +40,7 @@ function FunnelBlockSortable({
   }
 
   const color = colored ? block.color || '#2196f3' : 'uiPanel.reverse'
-  const textColor = colored ? (styleMode === 'filled' ? 'uiPanel.main' : block.color) : (styleMode === 'filled' ? 'uiPanel.reverse' : 'uiPanel.reverse')
+  const textColor = colored ? (styleMode === 'filled' ? 'uiPanel.reverse' : block.color) : (styleMode === 'filled' ? 'uiPanel.reverse' : 'uiPanel.reverse')
   const borderColor = colored ? (styleMode === 'filled' ? 'uiPanel.reverse' : block.color) : 'uiPanel.reverse'
   const dotsColor = colored ? (styleMode === 'filled' ? 'white' : block.color) : 'uiPanel.sub_main'
 

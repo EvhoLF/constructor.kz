@@ -1,4 +1,4 @@
-import { NODE_MIN_WIDTH } from "@/components/MapComponents/Nodes";
+import { NODE_MIN_WIDTH } from "@/components/Diagram/Nodes";
 
 interface NodeFitTextProps {
   text: string,

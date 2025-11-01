@@ -2,7 +2,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import Head from "next/head";
 import { DnDProvider } from "@/hooks/DnDProvider";
 import { Box } from "@mui/material";
-import MapDiagram from "@/components/MapComponents/MapDiagram";
+import MapDiagram from "@/components/Diagram/MapDiagram";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import { prisma } from '@/prisma/prisma';
 import { Params } from 'next/dist/server/request/params';
@@ -11,8 +11,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const diagram = await prisma.diagram.findUnique({ where: { id: Number(id) } });
   return {
-    title: diagram?.title || 'Схема',
-    description: 'Визуализация данных с помощью различных типов графиков и схем для анализа информации',
+    title: diagram?.title || 'Диаграмма',
+    description: 'Визуализация данных с помощью различных типов графиков и диаграмм для анализа информации',
   }
 }
 

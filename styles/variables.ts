@@ -1,5 +1,6 @@
 export const palette = {
   light: {
+    evholf: '#dddddd',
     uiPanel: {
       main: '#ffffff',
       reverse: '#222222',
@@ -10,6 +11,7 @@ export const palette = {
     transparent: { primaryMain: '#1976d220' },
   },
   dark: {
+    evholf: '#333333',
     uiPanel: {
       main: '#222222',
       reverse: '#ffffff',

@@ -1,24 +1,40 @@
-import { IconName } from "@/Icons";
+import { HeaderMenuItem } from "@/types/pages";
 
-export interface HeaderMenuItem {
-  id: string,
-  label: string,
-  icon: IconName,
-  href: string,
-}
-
-export const HeaderMenu: HeaderMenuItem[] = [
+export const MENU_CONFIG: HeaderMenuItem[] = [
   { id: 'main', label: 'Главная', icon: 'home', href: '/' },
+  // { id: 'divider-before-profile', label: '', icon: 'home', href: '', isDivider: true },
   { id: 'profile', label: 'Профиль', icon: 'user', href: '/profile' },
-  { id: 'diagram', label: 'Схемы', icon: 'mindMap', href: '/diagram' },
+  { id: 'diagram', label: 'Диаграмм', icon: 'mindMap', href: '/diagram' },
   { id: 'ontology', label: 'Онтологии', icon: 'layout_tree', href: '/ontology' },
   { id: 'funnel', label: 'Воронки', icon: 'filter', href: '/funnel' },
   { id: 'kanban', label: 'Канбан доски', icon: 'clipboard', href: '/kanban' },
+  { id: 'divider-admin', label: 'Админ', icon: 'home', href: '', isDivider: true, dividerLabel: 'Админ', adminOnly: true },
+  { id: 'template-diagram', label: 'Шаблоны диаграмм', icon: 'mindMap', href: '/admin/template-diagram', adminOnly: true },
+  { id: 'template-ontology', label: 'Шаблоны онтологий', icon: 'layout_tree', href: '/admin/template-ontology', adminOnly: true },
+  { id: 'divider-admin', label: 'Тема', icon: 'home', href: '', isDivider: true, dividerLabel: 'Тема' },
 ];
-export const HeaderMenuAdmin: HeaderMenuItem[] = [
-  { id: 'template-diagram', label: 'Шаблоны схем', icon: 'mindMap', href: '/admin/template-diagram' },
-  { id: 'template-ontology', label: 'Шаблоны онтологий', icon: 'layout_tree', href: '/admin/template-ontology' },
-];
+
+// Вспомогательные функции для работы с меню
+export const getMenuItems = (isAdmin: boolean = false): HeaderMenuItem[] => {
+  return MENU_CONFIG.filter(item => {
+    if (item.isDivider) {
+      const index = MENU_CONFIG.indexOf(item);
+      const nextItems = MENU_CONFIG.slice(index + 1);
+      return nextItems.some(nextItem =>
+        !nextItem.isDivider && (!nextItem.adminOnly || isAdmin)
+      );
+    }
+    return !item.adminOnly || isAdmin;
+  });
+};
+
+export const getRegularMenuItems = (): HeaderMenuItem[] => {
+  return MENU_CONFIG.filter(item => !item.isDivider && !item.adminOnly);
+};
+
+export const getAdminMenuItems = (): HeaderMenuItem[] => {
+  return MENU_CONFIG.filter(item => !item.isDivider && item.adminOnly);
+};
 
 export const PAGE_DATA = {
   home: {
@@ -30,8 +46,8 @@ export const PAGE_DATA = {
     description: 'Управление личными данными, настройками аккаунта и параметрами безопасности',
   },
   diagram: {
-    title: 'Схемы',
-    description: 'Визуализация данных с помощью различных типов графиков и схем для анализа информации',
+    title: 'Диаграммы',
+    description: 'Визуализация данных с помощью различных типов графиков и диаграмм для анализа информации',
   },
   ontology: {
     title: 'Онтологии',
@@ -58,7 +74,7 @@ export const PAGE_DATA = {
     description: 'Создание нового аккаунта в системе с заполнением основных данных',
   },
   templateDiagram: {
-    title: 'Шаблоны схем',
+    title: 'Шаблоны диаграмм',
     description: 'Страница администрирования шаблонов для формульных диаграмм',
   },
   templateOntology: {

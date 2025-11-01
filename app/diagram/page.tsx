@@ -1,9 +1,9 @@
-import Diagrams from "@/components/Diagram/Diagrams";
 import WrapperHeader from "@/components/Header/WrapperHeader";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import Head from "next/head";
 import { PAGE_DATA } from '@/constants/pages';
 import { ImageUploadType } from "@/constants/upload";
+import Diagrams from "@/components/Entity/Entitys/Diagrams";
 
 
 export const metadata = {

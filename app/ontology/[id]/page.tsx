@@ -1,7 +1,7 @@
 import { ReactFlowProvider } from "@xyflow/react";
 import Head from "next/head";
 import { DnDProvider } from "@/hooks/DnDProvider";
-import Map from "@/components/MapComponents/Map";
+import Map from "@/components/Diagram/Map";
 import { Box } from "@mui/material";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import { prisma } from '@/prisma/prisma';

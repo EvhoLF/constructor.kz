@@ -1,8 +1,8 @@
 import WrapperHeader from "@/components/Header/WrapperHeader";
-import NodeTemplates from "@/components/NodeTemplate/Templates";
 import { DiagramTypeWrapper } from "@/hooks/DiagramTypeContext";
 import Head from "next/head";
 import { PAGE_DATA } from '@/constants/pages';
+import TemplateDiagrams from "@/components/Entity/Entitys/TemplateDiagrams";
 export const metadata = {
   ...PAGE_DATA.templateDiagram
 }
@@ -15,7 +15,7 @@ export default function Page() {
       </Head>
       <WrapperHeader pageTitle={PAGE_DATA.templateDiagram.title}>
         <DiagramTypeWrapper type='diagram' isTemplate>
-          <NodeTemplates />
+          <TemplateDiagrams />
         </DiagramTypeWrapper>
       </WrapperHeader>
     </>

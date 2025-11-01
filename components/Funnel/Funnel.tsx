@@ -61,13 +61,13 @@ export default function Funnel({ id }: { id: string }) {
         enqueueSnackbar('Cхема обновлена успешно', { variant: 'success' });
       }
       else {
-        console.error('Ошибка при обновлении схемы');
-        enqueueSnackbar('Ошибка при обновлении схемы', { variant: 'error' });
+        console.error('Ошибка при обновлении диаграммы');
+        enqueueSnackbar('Ошибка при обновлении диаграммы', { variant: 'error' });
       }
     }
     catch (err) {
-      console.error('Ошибка при обновлении схемы:', err);
-      enqueueSnackbar('Ошибка при обновлении схемы', { variant: 'error' });
+      console.error('Ошибка при обновлении диаграммы:', err);
+      enqueueSnackbar('Ошибка при обновлении диаграммы', { variant: 'error' });
     }
   }
 

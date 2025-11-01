@@ -1,9 +1,9 @@
-import Diagrams from "@/components/Diagram/Diagrams";
 import WrapperHeader from "@/components/Header/WrapperHeader";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import Head from "next/head";
 import { PAGE_DATA } from '@/constants/pages';
 import { ImageUploadType } from "@/constants/upload";
+import Ontology from "@/components/Entity/Entitys/Ontology";
 
 
 export const metadata = {
@@ -18,7 +18,7 @@ export default async function Page() {
       </Head>
       <WrapperHeader pageTitle={PAGE_DATA.ontology.title}>
         <DiagramTypeProvider type={ImageUploadType.ONTOLOGY}>
-          <Diagrams />
+          <Ontology/>
         </DiagramTypeProvider>
       </WrapperHeader>
     </>

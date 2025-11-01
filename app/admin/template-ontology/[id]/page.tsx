@@ -2,7 +2,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import Head from "next/head";
 import { DnDProvider } from "@/hooks/DnDProvider";
 import { Box } from "@mui/material";
-import MapNodeTemplate from "@/components/MapComponents/MapTemplates";
+import MapNodeTemplate from "@/components/Diagram/MapTemplates";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 
 import { PAGE_DATA } from '@/constants/pages';
