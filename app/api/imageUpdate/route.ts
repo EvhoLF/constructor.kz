@@ -16,11 +16,13 @@ export const runtime = "nodejs";
  */
 
 function getModelByType(type: ImageUploadType) {
-    const modelMap = {
+    const modelMap: Record<ImageUploadType, any> = {
         [ImageUploadType.DIAGRAM]: prisma.diagram,
         [ImageUploadType.ONTOLOGY]: prisma.ontology,
         [ImageUploadType.TEMPLATE_DIAGRAM]: prisma.templateDiagram,
         [ImageUploadType.TEMPLATE_ONTOLOGY]: prisma.templateOntology,
+        [ImageUploadType.FUNNEL]: prisma.funnel,
+        [ImageUploadType.KANBAN]: prisma.kanban,
     };
 
     return modelMap[type];
@@ -46,7 +48,7 @@ export async function POST(req: NextRequest) {
         }
 
         const model: any = getModelByType(type);
-    
+
         const updated = await model.update({
             where: { id: Number(id) },
             data: { image: imageUrl },

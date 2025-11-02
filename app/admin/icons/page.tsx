@@ -1,7 +1,5 @@
 import WrapperHeader from "@/components/Header/WrapperHeader";
-import NodeTemplates from "@/components/NodeTemplate/Templates";
 import Icon from '@/components/UI/Icon';
-import { DiagramTypeWrapper } from "@/hooks/DiagramTypeContext";
 import { IconName, Icons } from '@/Icons';
 import { Box } from '@mui/material';
 import Head from "next/head";

@@ -37,7 +37,7 @@ export type TableNode = {
   data: Record<string, any>;
 };
 
-export const init_NodePoint_data = (fields?: NodePointData): NodePointData & { [key: string]: any } => ({
+export const init_NodePoint_data = (fields?: Partial<NodePointData>): NodePointData & { [key: string]: any } => ({
   label: 'С', icon: 'default', colorPrimary: '#ffffff', colorSecondary: '#222222', description: '',
   isRequired: true, isLabelVisible: true, isIconVisible: false, isBorderVisible: true, isAutoResize: true,
   ...fields
@@ -48,7 +48,7 @@ export const init_NodePoint = ({
   style = {},
   data = { label: "" },
   ...props
-}: NodePoint & { width?: number }) => {
+}: Partial<Node<NodePointData>> & { id: string }): Node<NodePointData> => {
   const baseData = init_NodePoint_data(data);
   const autoWidth =
     baseData.isAutoResize && baseData.label
@@ -57,7 +57,7 @@ export const init_NodePoint = ({
 
   return {
     position,
-    style: { width: autoWidth, height: NODE_MIN_HEIGHT, ...style },
+    style: { width: autoWidth ?? NODE_MIN_WIDTH, height: NODE_MIN_HEIGHT, ...style },
     data: baseData,
     ...props,
     type: "point",
@@ -69,5 +69,5 @@ export const init_root_NodePoint = (id: string = rootNodeID, label = 'Центр
   type: "point",
   width: NodeFitText({ text: label }) ?? NODE_MIN_WIDTH,
   position: { x: 0, y: 0 },
-  data: { label, required: true, isAutoResize: true, },
+  data: { label, isRequired: true, isAutoResize: true, },
 });
