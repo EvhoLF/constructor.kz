@@ -202,7 +202,6 @@ const EntityList = ({ entityType }: EntityListProps) => {
     
     if (isAtBottom && hasMore && !loadingMore && !loading && !isLoadingRef.current) {
       const nextPage = currentPage + 1;
-      console.log('📜 Скролл до низа, загружаем страницу:', nextPage);
       fetchData(nextPage, false);
     }
   }, [hasMore, loadingMore, loading, currentPage, fetchData]);
@@ -219,7 +218,6 @@ const EntityList = ({ entityType }: EntityListProps) => {
 
   // Обновление данных вручную
   const handleRefresh = useCallback(() => {
-    console.log('🔄 Ручное обновление');
     setCurrentPage(1);
     loadedPagesRef.current.clear();
     fetchData(1, true);
