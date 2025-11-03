@@ -50,14 +50,13 @@ const EntityList = ({ entityType }: EntityListProps) => {
   const autoFocusRef = useAutoFocus();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   
-  // Refs для предотвращения повторных запросов
+  // Refs для хранения состояний, которые не должны триггерить ререндеры
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const isLoadingRef = useRef(false);
   const loadedPagesRef = useRef(new Set<number>());
   const abortControllerRef = useRef<AbortController | null>(null);
-  const isInitialLoadRef = useRef(true);
 
-  // Единая функция загрузки данных
+  // Загрузка данных с пагинацией - ИСПРАВЛЕННАЯ ВЕРСИЯ
   const fetchData = useCallback(async (page: number, reset: boolean = false) => {
     if (!session?.user.id || isLoadingRef.current) return;
 
@@ -117,11 +116,11 @@ const EntityList = ({ entityType }: EntityListProps) => {
       const items = transform(responseData || []);
 
       if (reset) {
-        // Полная замена данных при сбросе
+        // Полная замена данных
         setEntities(items);
         setTotalCount(responseTotalCount);
-        setCurrentPage(page);
-        loadedPagesRef.current.add(page);
+        setCurrentPage(1);
+        loadedPagesRef.current.add(1);
       } else {
         // Добавление данных для пагинации
         setEntities(prev => {
@@ -136,16 +135,8 @@ const EntityList = ({ entityType }: EntityListProps) => {
       setHasMore(responseHasMore);
 
     } catch (err: any) {
-      if (err.name === 'AbortError') {
-        console.log('Запрос отменен');
-        return;
-      }
-      
-      console.error('Ошибка загрузки:', err);
-      setError('Не удалось загрузить данные');
-      
       if (reset) {
-        setEntities([]);
+        // setEntities([]);
         setCurrentPage(1);
       }
     } finally {
@@ -155,25 +146,29 @@ const EntityList = ({ entityType }: EntityListProps) => {
       abortControllerRef.current = null;
     }
   }, [session?.user.id, template.api.list, template.transformData, search, sortOption]);
+  // УБРАН entities из зависимостей!
 
-  // Первоначальная загрузка - только один раз
+  // Первоначальная загрузка
   useEffect(() => {
-    if (session?.user.id && isInitialLoadRef.current) {
-      isInitialLoadRef.current = false;
+    if (session?.user.id) {
       fetchData(1, true);
     }
-  }, [session?.user.id, fetchData]);
+  }, [session?.user.id]); // Только при изменении пользователя
 
-  // Эффект для поиска и сортировки - с дебаунсом
+  // Эффект для поиска и сортировки - ОБЪЕДИНЕННАЯ ВЕРСИЯ
   useEffect(() => {
-    if (!session?.user.id || isInitialLoadRef.current) return;
+    if (!session?.user.id) return;
 
-    // Очищаем предыдущий таймер
+    // Очищаем таймер
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    // Устанавливаем новый таймер
+    // Сбрасываем состояние
+    setCurrentPage(1);
+    loadedPagesRef.current.clear();
+
+    // Дебаунс для поиска
     searchTimeoutRef.current = setTimeout(() => {
       fetchData(1, true);
     }, 500);
@@ -183,7 +178,20 @@ const EntityList = ({ entityType }: EntityListProps) => {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [search, sortOption, session?.user.id, fetchData]);
+  }, [search, sortOption, session?.user.id]); // Объединили поиск и сортировку
+
+  // Автозагрузка при недостаточном количестве элементов - УПРОЩЕННАЯ ВЕРСИЯ
+  useEffect(() => {
+    if (loading || loadingMore || !hasMore || isLoadingRef.current) return;
+    if (entities.length === 0) return;
+
+    const needsMoreData = entities.length < totalCount && entities.length < PAGE_LIMIT * 2;
+    
+    if (needsMoreData) {
+      const nextPage = currentPage + 1;
+      fetchData(nextPage, false);
+    }
+  }, [entities.length, totalCount, hasMore, loading, loadingMore, currentPage, fetchData]);
 
   // Обработчик скролла для бесконечной загрузки
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
@@ -210,6 +218,8 @@ const EntityList = ({ entityType }: EntityListProps) => {
 
   // Обновление данных вручную
   const handleRefresh = useCallback(() => {
+    setCurrentPage(1);
+    loadedPagesRef.current.clear();
     fetchData(1, true);
   }, [fetchData]);
 
@@ -420,7 +430,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
               startIcon={<Icon icon="refresh" />}
               variant="outlined"
               onClick={handleRefresh}
-              disabled={loading}
+              // disabled={loading}
             >
               Обновить
             </Button>
