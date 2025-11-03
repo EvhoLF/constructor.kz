@@ -89,9 +89,9 @@ const EntityItem = ({
           >
             <CardMedia
               component="img"
-              image={entity.image || "/images/no-image.png"}
+              image={entity.image || "/images/no-image.jpg"}
               alt={entity.title}
-              onError={(e) => e.currentTarget.src = "/images/no-image.png"}
+              onError={(e) => e.currentTarget.src = "/images/no-image.jpg"}
             />
           </Skeleton>
 

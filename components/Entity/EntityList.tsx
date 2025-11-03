@@ -67,7 +67,9 @@ const EntityList = ({ entityType }: EntityListProps) => {
 
 
   // Единая функция загрузки данных
-  const fetchData = useCallback(async (page: number, reset: boolean = false) => {
+  const fetchData = useCallback(async (page: number, reset: boolean = false, str: string) => {
+    console.log(str || '');
+
     console.log('fetchData X1');
     if (!session?.user.id || isLoadingRef.current) {
       console.log('fetchData X1 IF-1');
@@ -189,7 +191,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
     setInitialLoading(true);
 
     const timeout = setTimeout(async () => {
-      await fetchData(1, true);
+      await fetchData(1, true, 'aaa');
       setInitialLoading(false);
     }, 0);
 
@@ -208,7 +210,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
 
     searchTimeoutRef.current = setTimeout(() => {
       console.log('useEffect X3 setTimeout');
-      fetchData(1, true);
+      fetchData(1, true, 'bbb');
     }, 500);
 
     return () => {
@@ -236,7 +238,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
 
   // Обновление данных вручную
   const handleRefresh = useCallback(() => {
-    fetchData(1, true);
+    fetchData(1, true, 'xxx');
   }, [fetchData]);
 
   // Обработчик скролла для бесконечной загрузки
@@ -248,7 +250,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
 
     if (isAtBottom && hasMore && !loadingMore && !loading && !isLoadingRef.current) {
       const nextPage = currentPage + 1;
-      fetchData(nextPage, false);
+      fetchData(nextPage, false, 'yyy');
     }
   }, [hasMore, loadingMore, loading, currentPage, fetchData]);
 
