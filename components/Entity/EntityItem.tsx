@@ -11,7 +11,6 @@ import {
   Tooltip,
   Chip,
   Paper,
-  Skeleton,
 } from "@mui/material";
 import React, { useCallback } from "react";
 import Icon from "../UI/Icon";
@@ -81,19 +80,18 @@ const EntityItem = ({
             />
           )}
 
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            height={180}
-            animation="wave"
-          >
-            <CardMedia
-              component="img"
-              image={entity.image || "/images/no-image.jpg"}
-              alt={entity.title}
-              onError={(e) => e.currentTarget.src = "/images/no-image.jpg"}
-            />
-          </Skeleton>
+          <CardMedia
+            component="img"
+            height="180"
+            image={image || "/images/no-image.jpg"}
+            alt={title}
+            sx={{ objectFit: "cover" }}
+            onError={(e) => {
+              const target = e.currentTarget;
+              target.onerror = null; // предотвращаем бесконечный цикл
+              target.src = "/images/no-image.jpg"; // путь к заглушке
+            }}
+          />
 
           <Box
             className="overlay"

@@ -34,12 +34,6 @@ const PAGE_LIMIT = 20;
 
 const EntityList = ({ entityType }: EntityListProps) => {
   const { data: session } = useSession({ required: true });
-
-  console.log('Render EntityList', session?.user?.id);
-  console.log(session);
-
-  console.log(entityType);
-
   const { showModal } = useModal();
 
   const [entities, setEntities] = useState<BaseEntity[]>([]);
@@ -55,54 +49,39 @@ const EntityList = ({ entityType }: EntityListProps) => {
   const template = useEntityTemplate(entityType, `${session?.user.id}`);
   const autoFocusRef = useAutoFocus();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  // Refs для предотвращения повторных запросов
+  
+  // Refs для хранения состояний, которые не должны триггерить ререндеры
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const isLoadingRef = useRef(false);
   const loadedPagesRef = useRef(new Set<number>());
   const abortControllerRef = useRef<AbortController | null>(null);
-  const isInitialLoadRef = useRef(true);
 
-  const [initialLoading, setInitialLoading] = useState(true);
-
-
-  // Единая функция загрузки данных
-  const fetchData = useCallback(async (page: number, reset: boolean = false, str: string) => {
-    console.log(str || '');
-
-    console.log('fetchData X1');
-    if (!session?.user.id || isLoadingRef.current) {
-      console.log('fetchData X1 IF-1');
-      return;
-    }
+  // Загрузка данных с пагинацией - ИСПРАВЛЕННАЯ ВЕРСИЯ
+  const fetchData = useCallback(async (page: number, reset: boolean = false) => {
+    if (!session?.user.id || isLoadingRef.current) return;
 
     // Отменяем предыдущий запрос
     if (abortControllerRef.current) {
-      console.log('fetchData X1 IF-2');
       abortControllerRef.current.abort();
     }
     abortControllerRef.current = new AbortController();
 
     // Проверяем, не загружали ли мы уже эту страницу
     if (!reset && loadedPagesRef.current.has(page)) {
-      console.log('fetchData X1 IF-3');
       return;
     }
 
     isLoadingRef.current = true;
 
     if (reset) {
-      console.log('fetchData X1 IF-4');
       setLoading(true);
       setError(null);
       loadedPagesRef.current.clear();
     } else {
-      console.log('fetchData X1 IF-4 ELSE');
       setLoadingMore(true);
     }
 
     try {
-      console.log('fetchData X1 TRY');
       const params = new URLSearchParams({
         page: page.toString(),
         limit: PAGE_LIMIT.toString(),
@@ -137,14 +116,12 @@ const EntityList = ({ entityType }: EntityListProps) => {
       const items = transform(responseData || []);
 
       if (reset) {
-        console.log('fetchData X1 TRY IF RESET');
-        // Полная замена данных при сбросе
+        // Полная замена данных
         setEntities(items);
         setTotalCount(responseTotalCount);
-        setCurrentPage(page);
-        loadedPagesRef.current.add(page);
+        setCurrentPage(1);
+        loadedPagesRef.current.add(1);
       } else {
-        console.log('fetchData X1 TRY IF-ELSE RESET');
         // Добавление данных для пагинации
         setEntities(prev => {
           const existingIds = new Set(prev.map(entity => entity.id));
@@ -158,59 +135,42 @@ const EntityList = ({ entityType }: EntityListProps) => {
       setHasMore(responseHasMore);
 
     } catch (err: any) {
-      if (err.name === 'AbortError') {
-        console.log('Запрос отменен');
-        return;
-      }
-
-      console.error('Ошибка загрузки:', err);
-      setError('Не удалось загрузить данные');
-
       if (reset) {
-        console.log('fetchData X1 CATCH IF RESET');
         setEntities([]);
         setCurrentPage(1);
       }
     } finally {
-      console.log('fetchData X1 FINALY');
       setLoading(false);
       setLoadingMore(false);
       isLoadingRef.current = false;
       abortControllerRef.current = null;
     }
   }, [session?.user.id, template.api.list, template.transformData, search, sortOption]);
+  // УБРАН entities из зависимостей!
 
-  // Первоначальная загрузка - только один раз
+  // Первоначальная загрузка
   useEffect(() => {
-    console.log('useEffect X2');
+    if (session?.user.id) {
+      fetchData(1, true);
+    }
+  }, [session?.user.id]); // Только при изменении пользователя
 
-    if (!session?.user?.id) return;
-    if (!isInitialLoadRef.current) return;
-
-    isInitialLoadRef.current = false;
-    setInitialLoading(true);
-
-    const timeout = setTimeout(async () => {
-      await fetchData(1, true, 'aaa');
-      setInitialLoading(false);
-    }, 0);
-
-    return () => clearTimeout(timeout);
-  }, [session?.user?.id, fetchData]);
-
-  // Эффект для поиска и сортировки - с дебаунсом
+  // Эффект для поиска и сортировки - ОБЪЕДИНЕННАЯ ВЕРСИЯ
   useEffect(() => {
-    console.log('useEffect X3');
-    if (!session?.user?.id) return;
-    if (isInitialLoadRef.current || initialLoading) return; // 👈 добавлено
+    if (!session?.user.id) return;
 
+    // Очищаем таймер
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
+    // Сбрасываем состояние
+    setCurrentPage(1);
+    loadedPagesRef.current.clear();
+
+    // Дебаунс для поиска
     searchTimeoutRef.current = setTimeout(() => {
-      console.log('useEffect X3 setTimeout');
-      fetchData(1, true, 'bbb');
+      fetchData(1, true);
     }, 500);
 
     return () => {
@@ -218,28 +178,20 @@ const EntityList = ({ entityType }: EntityListProps) => {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [search, sortOption, session?.user?.id, fetchData, initialLoading]);
+  }, [search, sortOption, session?.user.id]); // Объединили поиск и сортировку
 
-
-  // Cleanup при размонтировании
+  // Автозагрузка при недостаточном количестве элементов - УПРОЩЕННАЯ ВЕРСИЯ
   useEffect(() => {
-    return () => {
-      if (searchTimeoutRef.current) {
-        console.log('useEffect X4 RETURN IF - clearTimeout');
-        clearTimeout(searchTimeoutRef.current);
-      }
-      if (abortControllerRef.current) {
-        console.log('useEffect X4 - abortControllerRef');
-        abortControllerRef.current.abort();
-      }
-    };
-  }, []);
+    if (loading || loadingMore || !hasMore || isLoadingRef.current) return;
+    if (entities.length === 0) return;
 
-
-  // Обновление данных вручную
-  const handleRefresh = useCallback(() => {
-    fetchData(1, true, 'xxx');
-  }, [fetchData]);
+    const needsMoreData = entities.length < totalCount && entities.length < PAGE_LIMIT * 2;
+    
+    if (needsMoreData) {
+      const nextPage = currentPage + 1;
+      fetchData(nextPage, false);
+    }
+  }, [entities.length, totalCount, hasMore, loading, loadingMore, currentPage, fetchData]);
 
   // Обработчик скролла для бесконечной загрузки
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
@@ -247,10 +199,10 @@ const EntityList = ({ entityType }: EntityListProps) => {
     const scrollThreshold = 100;
 
     const isAtBottom = target.scrollTop + target.clientHeight >= target.scrollHeight - scrollThreshold;
-
+    
     if (isAtBottom && hasMore && !loadingMore && !loading && !isLoadingRef.current) {
       const nextPage = currentPage + 1;
-      fetchData(nextPage, false, 'yyy');
+      fetchData(nextPage, false);
     }
   }, [hasMore, loadingMore, loading, currentPage, fetchData]);
 
@@ -262,6 +214,25 @@ const EntityList = ({ entityType }: EntityListProps) => {
   // Обработчик изменения сортировки
   const handleSortChange = useCallback((option: SortOption) => {
     setSortOption(option);
+  }, []);
+
+  // Обновление данных вручную
+  const handleRefresh = useCallback(() => {
+    setCurrentPage(1);
+    loadedPagesRef.current.clear();
+    fetchData(1, true);
+  }, [fetchData]);
+
+  // Cleanup при размонтировании
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, []);
 
   // Остальные обработчики (create, edit, delete, imageUpload) остаются без изменений
@@ -459,7 +430,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
               startIcon={<Icon icon="refresh" />}
               variant="outlined"
               onClick={handleRefresh}
-              disabled={loading}
+              // disabled={loading}
             >
               Обновить
             </Button>

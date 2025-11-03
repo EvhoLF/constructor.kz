@@ -9,34 +9,30 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ path: string[] }> }
 ) {
-  // Получаем параметры из Promise
   const { path: pathParams } = await context.params;
-  
-  // Проверяем авторизацию пользователя
+
   const session = await getServerSession(authOptions);
-  
   if (!session) {
     return new Response("Forbidden", { status: 403 });
   }
 
   try {
+    let filePath: string;
+
     if (!pathParams || !Array.isArray(pathParams)) {
-      return new Response("File not found", { status: 404 });
-    }
+      // Если путь не указан, сразу берем заглушку
+      filePath = path.join(process.cwd(), "public", "images", "no-image.jpg");
+    } else {
+      const decodedPath = pathParams.map(p => decodeURIComponent(p));
+      filePath = path.join(process.cwd(), "uploads", ...decodedPath);
 
-    const decodedPath = pathParams.map(p => decodeURIComponent(p));
-    const filePath = path.join(process.cwd(), "uploads", ...decodedPath);
-
-    if (!fs.existsSync(filePath)) {
-      console.log("File not found:", filePath);
-      return new Response("File not found", { status: 404 });
+      if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+        // Если файл не найден или это не файл — берем заглушку
+        filePath = path.join(process.cwd(), "public", "images", "no-image.jpg");
+      }
     }
 
     const stats = fs.statSync(filePath);
-    if (!stats.isFile()) {
-      return new Response("Not a file", { status: 404 });
-    }
-
     const mimeType = getMimeType(filePath);
     const fileBuffer = fs.readFileSync(filePath);
 
@@ -52,6 +48,7 @@ export async function GET(
     return new Response("Internal server error", { status: 500 });
   }
 }
+
 
 function getMimeType(filePath: string): string {
   const ext = path.extname(filePath).toLowerCase();
