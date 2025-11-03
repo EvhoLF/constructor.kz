@@ -87,6 +87,11 @@ const EntityItem = ({
               image={image}
               alt={title}
               sx={{ objectFit: "cover" }}
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.onerror = null; // предотвращаем бесконечный цикл
+                target.src = "/images/no-image.jpg"; // путь к заглушке
+              }}
             />
           ) : (
             <Box

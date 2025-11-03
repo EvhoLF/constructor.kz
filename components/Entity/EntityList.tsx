@@ -34,6 +34,12 @@ const PAGE_LIMIT = 20;
 
 const EntityList = ({ entityType }: EntityListProps) => {
   const { data: session } = useSession({ required: true });
+
+  console.log('Render EntityList', session?.user?.id);
+  console.log(session);
+
+  console.log(entityType);
+
   const { showModal } = useModal();
 
   const [entities, setEntities] = useState<BaseEntity[]>([]);
@@ -56,6 +62,9 @@ const EntityList = ({ entityType }: EntityListProps) => {
   const loadedPagesRef = useRef(new Set<number>());
   const abortControllerRef = useRef<AbortController | null>(null);
   const isInitialLoadRef = useRef(true);
+
+  const [initialLoading, setInitialLoading] = useState(true);
+
 
   // Единая функция загрузки данных
   const fetchData = useCallback(async (page: number, reset: boolean = false) => {
@@ -173,26 +182,25 @@ const EntityList = ({ entityType }: EntityListProps) => {
   useEffect(() => {
     console.log('useEffect X2');
 
-    if (!session?.user.id) return;
+    if (!session?.user?.id) return;
     if (!isInitialLoadRef.current) return;
 
-    console.log('useEffect X2 IF');
     isInitialLoadRef.current = false;
+    setInitialLoading(true);
 
-    // Оборачиваем fetchData в setTimeout 0,
-    // чтобы исключить гонку с useEffect X3
-    const timeout = setTimeout(() => {
-      fetchData(1, true);
+    const timeout = setTimeout(async () => {
+      await fetchData(1, true);
+      setInitialLoading(false);
     }, 0);
 
     return () => clearTimeout(timeout);
-  }, [session?.user.id, fetchData]);
+  }, [session?.user?.id, fetchData]);
 
   // Эффект для поиска и сортировки - с дебаунсом
   useEffect(() => {
     console.log('useEffect X3');
-    if (!session?.user.id) return;
-    if (isInitialLoadRef.current) return; // <--- защита от раннего вызова
+    if (!session?.user?.id) return;
+    if (isInitialLoadRef.current || initialLoading) return; // 👈 добавлено
 
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
@@ -208,20 +216,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [search, sortOption, session?.user.id, fetchData]);
-
-  // Обработчик скролла для бесконечной загрузки
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const target = e.currentTarget;
-    const scrollThreshold = 100;
-
-    const isAtBottom = target.scrollTop + target.clientHeight >= target.scrollHeight - scrollThreshold;
-
-    if (isAtBottom && hasMore && !loadingMore && !loading && !isLoadingRef.current) {
-      const nextPage = currentPage + 1;
-      fetchData(nextPage, false);
-    }
-  }, [hasMore, loadingMore, loading, currentPage, fetchData]);
+  }, [search, sortOption, session?.user?.id, fetchData, initialLoading]);
 
 
   // Cleanup при размонтировании
@@ -239,6 +234,24 @@ const EntityList = ({ entityType }: EntityListProps) => {
   }, []);
 
 
+  // Обновление данных вручную
+  const handleRefresh = useCallback(() => {
+    fetchData(1, true);
+  }, [fetchData]);
+
+  // Обработчик скролла для бесконечной загрузки
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const scrollThreshold = 100;
+
+    const isAtBottom = target.scrollTop + target.clientHeight >= target.scrollHeight - scrollThreshold;
+
+    if (isAtBottom && hasMore && !loadingMore && !loading && !isLoadingRef.current) {
+      const nextPage = currentPage + 1;
+      fetchData(nextPage, false);
+    }
+  }, [hasMore, loadingMore, loading, currentPage, fetchData]);
+
   // Обработчик изменения поиска
   const handleSearchChange = useCallback((value: string) => {
     setSearch(value);
@@ -248,11 +261,6 @@ const EntityList = ({ entityType }: EntityListProps) => {
   const handleSortChange = useCallback((option: SortOption) => {
     setSortOption(option);
   }, []);
-
-  // Обновление данных вручную
-  const handleRefresh = useCallback(() => {
-    fetchData(1, true);
-  }, [fetchData]);
 
   // Остальные обработчики (create, edit, delete, imageUpload) остаются без изменений
   const handleCreate = useCallback(() => {
