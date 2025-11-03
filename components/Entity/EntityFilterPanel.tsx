@@ -26,16 +26,8 @@ const EntityFilterPanel: React.FC<EntityFilterPanelProps> = ({
     const [localSearch, setLocalSearch] = useState(search);
     const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
 
-    const handleSearchChange = useCallback((value: string) => {
-        setLocalSearch(value);
-        
-        if (searchTimeoutRef.current) {
-            clearTimeout(searchTimeoutRef.current);
-        }
-        
-        searchTimeoutRef.current = setTimeout(() => {
-            onSearchChange(value);
-        }, 500);
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        onSearchChange(e.target.value);
     }, [onSearchChange]);
 
     // Синхронизация с внешним состоянием
@@ -59,7 +51,7 @@ const EntityFilterPanel: React.FC<EntityFilterPanelProps> = ({
                     fullWidth
                     label={template.options?.searchPlaceholder || `Поиск по названию ${template.namePlural.toLowerCase()}`}
                     value={localSearch}
-                    onChange={(e) => handleSearchChange(e.target.value)}
+                    onChange={(e) => handleSearchChange(e)}
                     variant="outlined"
                     size="small"
                     placeholder="Введите для поиска..."
@@ -78,7 +70,7 @@ const EntityFilterPanel: React.FC<EntityFilterPanelProps> = ({
                             <MenuItem key={option.value} value={option.value}>
                                 <StackRow>
                                     <Icon icon={
-                                        option.value.includes('title') 
+                                        option.value.includes('title')
                                             ? (option.order === 'asc' ? 'sortAlphabetAsc' : 'sortAlphabetDesc')
                                             : (option.order === 'asc' ? 'sortAsc' : 'sortDesc')
                                     } />

@@ -40,7 +40,7 @@ const EdgePanelPoint = ({ id }) => {
         />
         <InputColorText label='Цвет линии' value={style?.stroke ?? '#000000'} pickColor={(e) => updateEdgeStyle({ stroke: e })} setColor={(e) => updateEdgeStyle({ stroke: e })} />
         <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-          <Typography variant='body2'>Альтернативный выбор</Typography>
+          <Typography variant='body2'>Прерывистая линия</Typography>
           <Switch checked={isAlternative ?? false} onChange={handlerIsAlternative} />
         </Stack>
       </Stack>

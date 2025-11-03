@@ -430,7 +430,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
               startIcon={<Icon icon="refresh" />}
               variant="outlined"
               onClick={handleRefresh}
-              disabled={loading}
+              // disabled={loading}
             >
               Обновить
             </Button>
