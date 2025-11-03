@@ -49,7 +49,7 @@ const EntityList = ({ entityType }: EntityListProps) => {
   const template = useEntityTemplate(entityType, `${session?.user.id}`);
   const autoFocusRef = useAutoFocus();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  
+
   // Refs для предотвращения повторных запросов
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const isLoadingRef = useRef(false);
@@ -59,30 +59,39 @@ const EntityList = ({ entityType }: EntityListProps) => {
 
   // Единая функция загрузки данных
   const fetchData = useCallback(async (page: number, reset: boolean = false) => {
-    if (!session?.user.id || isLoadingRef.current) return;
+    console.log('fetchData X1');
+    if (!session?.user.id || isLoadingRef.current) {
+      console.log('fetchData X1 IF-1');
+      return;
+    }
 
     // Отменяем предыдущий запрос
     if (abortControllerRef.current) {
+      console.log('fetchData X1 IF-2');
       abortControllerRef.current.abort();
     }
     abortControllerRef.current = new AbortController();
 
     // Проверяем, не загружали ли мы уже эту страницу
     if (!reset && loadedPagesRef.current.has(page)) {
+      console.log('fetchData X1 IF-3');
       return;
     }
 
     isLoadingRef.current = true;
 
     if (reset) {
+      console.log('fetchData X1 IF-4');
       setLoading(true);
       setError(null);
       loadedPagesRef.current.clear();
     } else {
+      console.log('fetchData X1 IF-4 ELSE');
       setLoadingMore(true);
     }
 
     try {
+      console.log('fetchData X1 TRY');
       const params = new URLSearchParams({
         page: page.toString(),
         limit: PAGE_LIMIT.toString(),
@@ -117,12 +126,14 @@ const EntityList = ({ entityType }: EntityListProps) => {
       const items = transform(responseData || []);
 
       if (reset) {
+        console.log('fetchData X1 TRY IF RESET');
         // Полная замена данных при сбросе
         setEntities(items);
         setTotalCount(responseTotalCount);
         setCurrentPage(page);
         loadedPagesRef.current.add(page);
       } else {
+        console.log('fetchData X1 TRY IF-ELSE RESET');
         // Добавление данных для пагинации
         setEntities(prev => {
           const existingIds = new Set(prev.map(entity => entity.id));
@@ -140,15 +151,17 @@ const EntityList = ({ entityType }: EntityListProps) => {
         console.log('Запрос отменен');
         return;
       }
-      
+
       console.error('Ошибка загрузки:', err);
       setError('Не удалось загрузить данные');
-      
+
       if (reset) {
+        console.log('fetchData X1 CATCH IF RESET');
         setEntities([]);
         setCurrentPage(1);
       }
     } finally {
+      console.log('fetchData X1 FINALY');
       setLoading(false);
       setLoadingMore(false);
       isLoadingRef.current = false;
@@ -158,23 +171,35 @@ const EntityList = ({ entityType }: EntityListProps) => {
 
   // Первоначальная загрузка - только один раз
   useEffect(() => {
-    if (session?.user.id && isInitialLoadRef.current) {
-      isInitialLoadRef.current = false;
+    console.log('useEffect X2');
+
+    if (!session?.user.id) return;
+    if (!isInitialLoadRef.current) return;
+
+    console.log('useEffect X2 IF');
+    isInitialLoadRef.current = false;
+
+    // Оборачиваем fetchData в setTimeout 0,
+    // чтобы исключить гонку с useEffect X3
+    const timeout = setTimeout(() => {
       fetchData(1, true);
-    }
+    }, 0);
+
+    return () => clearTimeout(timeout);
   }, [session?.user.id, fetchData]);
 
   // Эффект для поиска и сортировки - с дебаунсом
   useEffect(() => {
-    if (!session?.user.id || isInitialLoadRef.current) return;
+    console.log('useEffect X3');
+    if (!session?.user.id) return;
+    if (isInitialLoadRef.current) return; // <--- защита от раннего вызова
 
-    // Очищаем предыдущий таймер
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    // Устанавливаем новый таймер
     searchTimeoutRef.current = setTimeout(() => {
+      console.log('useEffect X3 setTimeout');
       fetchData(1, true);
     }, 500);
 
@@ -191,12 +216,28 @@ const EntityList = ({ entityType }: EntityListProps) => {
     const scrollThreshold = 100;
 
     const isAtBottom = target.scrollTop + target.clientHeight >= target.scrollHeight - scrollThreshold;
-    
+
     if (isAtBottom && hasMore && !loadingMore && !loading && !isLoadingRef.current) {
       const nextPage = currentPage + 1;
       fetchData(nextPage, false);
     }
   }, [hasMore, loadingMore, loading, currentPage, fetchData]);
+
+
+  // Cleanup при размонтировании
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        console.log('useEffect X4 RETURN IF - clearTimeout');
+        clearTimeout(searchTimeoutRef.current);
+      }
+      if (abortControllerRef.current) {
+        console.log('useEffect X4 - abortControllerRef');
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
 
   // Обработчик изменения поиска
   const handleSearchChange = useCallback((value: string) => {
@@ -212,18 +253,6 @@ const EntityList = ({ entityType }: EntityListProps) => {
   const handleRefresh = useCallback(() => {
     fetchData(1, true);
   }, [fetchData]);
-
-  // Cleanup при размонтировании
-  useEffect(() => {
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, []);
 
   // Остальные обработчики (create, edit, delete, imageUpload) остаются без изменений
   const handleCreate = useCallback(() => {
