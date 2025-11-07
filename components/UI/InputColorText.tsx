@@ -9,7 +9,7 @@ interface InputColorTextProps extends InputTextProps {
   pickColor: (e: string) => void,
   setColor: (value: string) => void,
   maxLength?: number,
-  textTransform: 'none' | 'capitalize' | 'uppercase' | 'lowercase' | 'full-width' | 'full-size-kan',
+  textTransform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase' | 'full-width' | 'full-size-kan',
 }
 const InputColorText = ({ label = '', maxLength = 7, value, pickColor, setColor, sx, textTransform = 'lowercase', ...props }: InputColorTextProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
