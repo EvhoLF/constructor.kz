@@ -72,22 +72,27 @@ export const init_NodePoint = ({
   };
 };
 
-export const init_root_NodePoint = ({ id = rootNodeID, label = 'Центральный узел', type }: {
+export const init_root_NodePoint = ({
+  id = rootNodeID,
+  label = 'Центральный узел',
+  type = 'diagram'
+}: {
   id?: string,
   label?: string,
   type?: DiagramType,
-}) => {
-  const id_value = id ?? rootNodeID;
-  const label_value = label ?? rootNodeID;
-  const type_value = type ?? 'diagram';
+} = {}) => {
+
+  const label_value = label === 'Центральный узел' ? label : (label || rootNodeID);
+  const width = NodeFitText({ text: label_value }) ?? NODE_MIN_WIDTH;
+
   return init_NodePoint({
-    id: id_value,
+    id: id || rootNodeID,
     type: "point",
-    width: NodeFitText({ text: label_value }) ?? NODE_MIN_WIDTH,
+    width,
     position: { x: 0, y: 0 },
     data: {
       colorPrimary: '#ffffff',
-      colorSecondary: type_value == 'ontology' ? '#c0c0c0' : '#222222',
+      colorSecondary: type === 'ontology' ? '#c0c0c0' : '#222222',
       colorTextPrimary: '#222222',
       colorTextSecondary: '#ffffff',
       label: label_value,
