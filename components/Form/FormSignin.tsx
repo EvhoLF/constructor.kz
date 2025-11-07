@@ -31,7 +31,6 @@ const FormSignin = () => {
             <InputPassword size='mediumSmall' startIcon='key' fullWidth label='Пароль' placeholder='Пароль' type='password' {...formField('password')} />
             {serverError && <Alert severity="error">{serverError}</Alert>}
             <Button fullWidth variant="contained" type="submit">Войти</Button>
-            <InputLink href='/auth/signup' textAlign='center' variant='body2'>Нет аккаунта? Зарегистрируйтесь</InputLink>
           </Stack>
         </form>
       </Stack>

@@ -56,6 +56,7 @@ import axiosClient from "@/libs/axiosClient";
 
 const Map = ({ id }: { id: string }) => {
   const { mode, toggleMode } = useContext(ThemeContext);
+  const { type: diagramType } = useDiagramType();
   const { api } = useDiagramType();
   const { asyncFn } = useAsync();
   const { fitView } = useReactFlow();
@@ -106,7 +107,7 @@ const Map = ({ id }: { id: string }) => {
         const resData: Ontology = res.data;
         const resNodes = resData?.nodes
           ? decompress(resData?.nodes)
-          : [init_root_NodePoint()];
+          : [init_root_NodePoint({ type: diagramType })];
         const resEdges = resData?.edges ? decompress(resData?.edges) : [];
         const resFormula = resData?.formula || "";
         setNodes(resNodes);
@@ -225,7 +226,7 @@ const Map = ({ id }: { id: string }) => {
         onDrop={onDrop}
         onDragOver={onDragOver}
         onSelectionChange={onSelectionChange}
-        connectionLineStyle={useMemo(() => ({ stroke: mode == 'light' ? '#eeeeee' : '#222222' }), [])}
+        connectionLineStyle={useMemo(() => ({ stroke: mode == 'light' ? '#222222' : '#eeeeee' }), [])}
         onConnect={handleOnConnect}
         proOptions={{ hideAttribution: true }}
         fitView

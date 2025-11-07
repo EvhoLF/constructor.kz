@@ -4,7 +4,7 @@ import { prisma } from "@/prisma/prisma";
 
 
 export async function POST(req: Request) {
-  const { name, email, password } = await req.json();
+  const { name, email, password, role = 'user' } = await req.json();
 
   if (!email || !password) {
     return NextResponse.json({ error: 'Все поля обязательны' }, { status: 400 });
@@ -23,6 +23,7 @@ export async function POST(req: Request) {
       name,
       email,
       password: hashedPassword,
+      role: role == 'admin' ? 'admin' : 'user',
     },
   });
 

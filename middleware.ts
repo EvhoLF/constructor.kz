@@ -2,7 +2,7 @@ import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
 const guestOnlyRoutes = ['/auth/signin', '/auth/signup'];
-const userOnlyRoutes = ['/profile',];
+const userOnlyRoutes = ['/profile', '/funnel', '/diagram', '/ontology', '/kanban'];
 const adminOnlyRoutes = ['/admin'];
 
 export default withAuth(
@@ -15,18 +15,20 @@ export default withAuth(
 
     const pathname = url.pathname;
 
+    console.log('Middleware check:', { pathname, isAuth, isAdmin }); // Для отладки
+
     // 1. Защита гостевых маршрутов от авторизованных пользователей
-    if (isAuth && guestOnlyRoutes.includes(pathname)) {
+    if (isAuth && guestOnlyRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.redirect(new URL('/profile', url));
     }
 
     // 2. Защита user-only маршрутов от гостей
-    if (!isAuth && userOnlyRoutes.some((route) => pathname.startsWith(route))) {
+    if (!isAuth && userOnlyRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.redirect(new URL('/auth/signin', url));
     }
 
     // 3. Защита admin-only маршрутов
-    if (!isAdmin && adminOnlyRoutes.some((route) => pathname.startsWith(route))) {
+    if (!isAdmin && adminOnlyRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.redirect(new URL('/profile', url));
     }
 
@@ -34,16 +36,20 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: () => true, // всегда вызываем middleware (даже если неавторизован)
+      authorized: () => true,
     },
   }
 );
 
-// ⚠️ Обрабатывай только страницы, которые действительно защищаешь
+// Расширенный matcher для всех защищаемых маршрутов
 export const config = {
   matcher: [
-    '/profile',
-    '/admin',
+    '/profile/:path*',
+    '/admin/:path*',
     '/auth/:path*',
+    '/funnel/:path*',
+    '/diagram/:path*',
+    '/ontology/:path*',
+    '/kanban/:path*',
   ],
 };

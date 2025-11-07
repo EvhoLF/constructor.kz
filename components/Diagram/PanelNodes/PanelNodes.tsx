@@ -49,7 +49,7 @@ const onDecompress = (data: string | null | undefined) =>
   data ? decompress(data) : [];
 
 const PanelNodes = ({ diagramId }: { diagramId: string | number }) => {
-  const { templateApi, userApi } = useDiagramType();
+  const { templateApi, userApi, type } = useDiagramType();
   const { userId } = useCurrentUser();
 
   const [activeTab, setActiveTab] = useState<'template' | 'user'>('template');
@@ -92,8 +92,8 @@ const PanelNodes = ({ diagramId }: { diagramId: string | number }) => {
         x: window.innerWidth / 2,
         y: window.innerHeight / 2,
       }),
-      data: { label: 'Новый узел' },
-    });
+      data: { label: 'Узел' },
+    }, type);
 
     addNodes(newNode);
   }, [addNodes, screenToFlowPosition]);
@@ -448,7 +448,7 @@ const PanelNodes = ({ diagramId }: { diagramId: string | number }) => {
             <DnD props={{
               type: 'ADD_NODE',
               data: {
-                label: 'Новый узел',
+                label: 'Узел',
                 type: 'default'
               }
             }}>

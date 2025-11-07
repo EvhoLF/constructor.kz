@@ -3,12 +3,13 @@ import { HeaderMenuItem } from "@/types/pages";
 export const MENU_CONFIG: HeaderMenuItem[] = [
   { id: 'main', label: 'Главная', icon: 'home', href: '/' },
   // { id: 'divider-before-profile', label: '', icon: 'home', href: '', isDivider: true },
-  { id: 'profile', label: 'Профиль', icon: 'user', href: '/profile' },
+  // { id: 'profile', label: 'Профиль', icon: 'user', href: '/profile' },
   { id: 'diagram', label: 'Диаграмм', icon: 'mindMap', href: '/diagram' },
   { id: 'ontology', label: 'Онтологии', icon: 'layout_tree', href: '/ontology' },
   { id: 'funnel', label: 'Воронки', icon: 'filter', href: '/funnel' },
   { id: 'kanban', label: 'Канбан доски', icon: 'clipboard', href: '/kanban' },
   { id: 'divider-admin', label: 'Админ', icon: 'home', href: '', isDivider: true, dividerLabel: 'Админ', adminOnly: true },
+  { id: 'create-user', label: 'Создать пользователя', icon: 'userAdd', href: '/admin/user-create', adminOnly: true },
   { id: 'template-diagram', label: 'Шаблоны диаграмм', icon: 'mindMap', href: '/admin/template-diagram', adminOnly: true },
   { id: 'template-ontology', label: 'Шаблоны онтологий', icon: 'layout_tree', href: '/admin/template-ontology', adminOnly: true },
   { id: 'divider-admin', label: 'Тема', icon: 'home', href: '', isDivider: true, dividerLabel: 'Тема' },
@@ -38,8 +39,8 @@ export const getAdminMenuItems = (): HeaderMenuItem[] => {
 
 export const PAGE_DATA = {
   home: {
-    title: 'Главная страница',
-    description: 'Обзорная панель с ключевыми метриками и быстрым доступом к основным функциям системы',
+    title: 'Бизнес конструктор',
+    description: 'Универсальная платформа для визуализации, анализа и систематизации данных. Создавайте диаграммы, воронки и канбан-доски — всё в одном интуитивном пространстве',
   },
   profile: {
     title: 'Профиль',
@@ -71,7 +72,11 @@ export const PAGE_DATA = {
   },
   authSignUp: {
     title: 'Регистрация',
-    description: 'Создание нового аккаунта в системе с заполнением основных данных',
+    description: 'Создание нового аккаунта в системе',
+  },
+  createUser: {
+    title: 'Создание пользователя',
+    description: 'Создание нового аккаунта в системе',
   },
   templateDiagram: {
     title: 'Шаблоны диаграмм',

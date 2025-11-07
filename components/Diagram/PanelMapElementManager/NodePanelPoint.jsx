@@ -11,24 +11,34 @@ import { init_NodePoint_data } from '../Nodes';
 import DropdownMenu from '@/components/UI/DropdownMenu';
 import Icon from '@/components/UI/Icon';
 import { DataIconsGrouped } from '@/Icons/IconsData';
+import { useDiagramType } from '@/hooks/DiagramTypeContext';
 
 const NodePanelPoint = ({ setFormulaError, id }) => {
-  const { updateNodeData, updateNode, deleteElements } = useReactFlow();
+  const { updateNodeData, updateNode, deleteElements, updateEdge } = useReactFlow();
   const labelRef = useRef(null)
+  const { type } = useDiagramType();
+
 
   useEffect(() => {
     if (id && labelRef.current) labelRef.current.focus()
   }, [id])
 
+  // Получаем данные узла и все связи
   const storeData = useStore(e => {
-    const res = e.nodes.find(n => n.id === id);
-    if (!res) return null;
+    const node = e.nodes.find(n => n.id === id);
+    if (!node) return null;
+
+    // Находим родительские связи (edges где этот узел является target)
+    const parentEdges = e.edges.filter(edge => edge.target === id);
+
     return {
-      data: res?.data || '',
-      width: res?.width || res.measured?.width,
-      height: res?.height || res.measured?.height
+      data: node?.data || '',
+      width: node?.width || node.measured?.width,
+      height: node?.height || node.measured?.height,
+      parentEdges: parentEdges // Добавляем родительские связи
     };
   });
+
   if (!storeData) return null;
 
   const data = { ...init_NodePoint_data(), ...storeData.data };
@@ -57,8 +67,32 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
     deleteElements({ nodes: [{ id }] });
   };
 
+  // Функция для обновления родительских связей
+  const updateParentEdges = (isAlternative) => {
+    storeData.parentEdges.forEach(edge => {
+      updateEdge(edge.id, (oldEdge) => ({
+        ...oldEdge,
+        data: { ...oldEdge.data, isAlternative },
+        style: {
+          ...oldEdge.style,
+          strokeDasharray: isAlternative ? '10 10' : null
+        }
+      }));
+    });
+  };
+
+  // Обработчик переключателя для родительских связей
+  const handleParentEdgesAlternative = (e) => {
+    const isAlternative = e.target.checked;
+    updateParentEdges(isAlternative);
+  };
+
+  // Проверяем состояние родительских связей (если все одинаковые - показываем это состояние)
+  const areAllParentEdgesAlternative = storeData.parentEdges.length > 0 &&
+    storeData.parentEdges.every(edge => edge.data?.isAlternative === true);
+
   return (
-    <Frame sx={{ padding: '1rem', maxWidth: '250px' }}>
+    <Frame sx={{ padding: '1rem', maxWidth: '300px' }}>
       <Stack spacing={0.5}>
         <Stack direction='row' justifyContent='space-between' gap={1}>
           <Typography variant='h6'>Параметры</Typography>
@@ -72,10 +106,11 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
           </Stack>
         </Stack>
 
-        <Grid container spacing={1} pt={1.5}>
+        <Grid container spacing={2} columnSpacing={1} pt={1.5}>
           <Grid size={6}>
             <InputColorText
-              label='1й цвет'
+              textTransform='uppercase'
+              label='Цвет блока 1'
               value={data.colorPrimary}
               pickColor={(e) => updateData({ colorPrimary: e })}
               setColor={(e) => updateData({ colorPrimary: e })}
@@ -83,10 +118,29 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
           </Grid>
           <Grid size={6}>
             <InputColorText
-              label='2й цвет'
+              textTransform='uppercase'
+              label='Цвет блока 2'
               value={data.colorSecondary}
               pickColor={(e) => updateData({ colorSecondary: e })}
               setColor={(e) => updateData({ colorSecondary: e })}
+            />
+          </Grid>
+          <Grid size={6}>
+            <InputColorText
+              textTransform='uppercase'
+              label='Цвет текста 1й'
+              value={data.colorTextPrimary}
+              pickColor={(e) => updateData({ colorTextPrimary: e })}
+              setColor={(e) => updateData({ colorTextPrimary: e })}
+            />
+          </Grid>
+          <Grid size={6}>
+            <InputColorText
+              textTransform='uppercase'
+              label='Цвет текста 2й'
+              value={data.colorTextSecondary}
+              pickColor={(e) => updateData({ colorTextSecondary: e })}
+              setColor={(e) => updateData({ colorTextSecondary: e })}
             />
           </Grid>
         </Grid>
@@ -103,10 +157,8 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
                   <IconButton onClick={() => updateData({ icon: item.id, isIconVisible: true, })} color='primary'>
                     <Icon icon={item.icon} />
                   </IconButton>
-                  {/* <Typography fontSize="0.75rem" width='100%' textOverflow='ellipsis' overflow='hidden' align="center">{item.label}</Typography> */}
                 </Box>
               )}
-            // onChange={(id) => updateData({ icon: id })}
             >
               <Icon icon={data.icon || "default"} />
             </DropdownMenu>
@@ -121,7 +173,7 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
 
         <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
           <label htmlFor="required-switch" style={{ cursor: 'pointer' }}>
-            <Typography sx={{ userSelect: 'none' }}>Инверсия</Typography>
+            <Typography sx={{ userSelect: 'none' }}>Агрегация</Typography>
           </label>
           <Switch id="required-switch" checked={data.isRequired} onChange={e => updateData({ isRequired: e.target.checked })} />
         </Stack>
@@ -132,6 +184,20 @@ const NodePanelPoint = ({ setFormulaError, id }) => {
           </label>
           <Switch id='borderVisible-switch' checked={data.isBorderVisible} onChange={e => updateData({ isBorderVisible: e.target.checked })} />
         </Stack>
+
+        {/* НОВЫЙ ПУНКТ: Переключатель для родительских связей */}
+        {storeData.parentEdges.length > 0 && (
+          <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
+            <label htmlFor="parent-edges-alternative" style={{ cursor: 'pointer' }}>
+              <Typography sx={{ userSelect: 'none' }}>{type == 'ontology' ? 'Альтернативный выбор' : 'Связи прерывистые'}</Typography>
+            </label>
+            <Switch
+              id='parent-edges-alternative'
+              checked={areAllParentEdgesAlternative}
+              onChange={handleParentEdgesAlternative}
+            />
+          </Stack>
+        )}
 
         <Grid container spacing={1} pt={1}>
           <Grid size={6}>

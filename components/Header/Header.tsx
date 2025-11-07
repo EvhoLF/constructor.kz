@@ -70,7 +70,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
         }
       }}>
         <Frame
-          sx={{ height: '100%', width: 250, padding: 1 }}
+          sx={{ height: '100%', width: 300, padding: 1 }}
           role="presentation"
           onClick={closeHeader}
           onKeyDown={closeHeader}

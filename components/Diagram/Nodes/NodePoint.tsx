@@ -15,7 +15,9 @@ const NodePoint = ({ data, selected }: Props) => {
   const {
     label = '',
     colorPrimary = '#ffffff',
-    colorSecondary = '#000000',
+    colorSecondary = '#c0c0c0',
+    colorTextPrimary = '#000000',
+    colorTextSecondary = '#ffffff',
     icon = null,
     isLabelVisible = true,
     isIconVisible = false,
@@ -26,7 +28,7 @@ const NodePoint = ({ data, selected }: Props) => {
 
   const borderColor = isRequired ? colorSecondary : colorPrimary;
   const backgroundColor = isRequired ? colorPrimary : colorSecondary;
-  const textColor = isRequired ? colorSecondary : colorPrimary;
+  const textColor = isRequired ? colorTextPrimary : colorTextSecondary;
 
   return (
     <>
