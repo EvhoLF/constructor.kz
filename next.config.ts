@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   async redirects() {
     return [
-      // Редирект с HTTP на HTTPS для основного домена
+      // Редирект с HTTP на HTTPS (только для HTTP запросов)
       {
         source: '/:path*',
         has: [
@@ -13,16 +13,11 @@ const nextConfig: NextConfig = {
             value: 'konstruktor.kz',
           },
         ],
-        permanent: true,
-        destination: 'https://konstruktor.kz/:path*',
-      },
-      // Редирект с www на без www + HTTPS (опционально)
-      {
-        source: '/:path*',
-        has: [
+        missing: [
           {
-            type: 'host',
-            value: 'www.konstruktor.kz',
+            type: 'header',
+            key: 'x-forwarded-proto',
+            value: 'https',
           },
         ],
         permanent: true,
@@ -35,11 +30,6 @@ const nextConfig: NextConfig = {
       {
         source: '/uploads/:path*',
         destination: '/api/uploads/:path*',
-      },
-      // Добавьте явное исключение для API routes
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
       },
     ];
   },
