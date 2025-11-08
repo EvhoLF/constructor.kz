@@ -1,4 +1,4 @@
-name: CI/CD Next.js Docker
+name: Deploy konstruktor.kz
 
 on:
   push:
@@ -6,56 +6,25 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Sync project files to server
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -avz --delete --exclude ".env" --exclude "uploads/" --exclude "logs/" --exclude "node_modules/"
+          path: ./
+          remote_path: /var/www/konstruktor__usr/data/project/
+          remote_host: ${{ secrets.SERVER_HOST }}
+          remote_user: ${{ secrets.SERVER_USER }}
+          remote_key: ${{ secrets.SSH_KEY }}
 
-      - name: Build production image
-        run: docker build --platform linux/amd64 -t konstruktor:latest .
-
-      - name: Save Docker image as tarball
+      - name: Run remote update script
         run: |
-          docker save konstruktor:latest -o konstruktor.tar
-          chmod 644 konstruktor.tar
-
-      - name: Upload image and configs to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.KLASTERWEB__SERVER_HOST }}
-          username: ${{ secrets.KLASTERWEB__SERVER_USER }}
-          key: ${{ secrets.KLASTERWEB__SERVER_SSH_KEY }}
-          source: "konstruktor.tar,docker-compose.yml,.env"
-          target: "/var/www/konstruktor__usr/data/"
-
-      - name: Deploy container on server
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.KLASTERWEB__SERVER_HOST }}
-          username: ${{ secrets.KLASTERWEB__SERVER_USER }}
-          key: ${{ secrets.KLASTERWEB__SERVER_SSH_KEY }}
-          timeout: 30m
-          script: |
-            set -e
-            cd /var/www/konstruktor__usr/data/
-
-            echo "Loading Docker image..."
-            docker load -i konstruktor.tar
-            rm konstruktor.tar
-
-            echo "Running Prisma migrations..."
-            docker run --rm --network host --env-file .env konstruktor:latest npx prisma migrate deploy || true
-
-            echo "Starting updated container..."
-            docker compose -p konstruktor pull || true
-            docker compose -p konstruktor up -d --force-recreate --remove-orphans
-
-            echo "Cleaning old images..."
-            docker image prune -f --filter "until=24h" || true
-
-            echo "✅ Deployment completed successfully!"
+          ssh -i ${{ secrets.SSH_KEY }} -o StrictHostKeyChecking=no \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+            "bash /var/www/konstruktor__usr/data/update.sh"

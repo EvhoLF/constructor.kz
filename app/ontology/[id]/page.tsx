@@ -5,6 +5,7 @@ import Map from "@/components/Diagram/Map";
 import { Box } from "@mui/material";
 import { DiagramTypeProvider } from "@/hooks/DiagramTypeContext";
 import { prisma } from '@/prisma/prisma';
+import { ensureOwnership } from "@/libs/ensureOwnership";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-
+  await ensureOwnership('ontology', id);
   return (
     <>
       <Head>

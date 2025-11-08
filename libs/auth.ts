@@ -1,4 +1,4 @@
-import { NextAuthOptions } from 'next-auth';
+import { getServerSession, NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import { prisma } from '@/prisma/prisma';
@@ -49,3 +49,10 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+
+export async function getCurrentUser() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return null;
+  return session.user;
+}

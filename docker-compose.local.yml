@@ -7,4 +7,4 @@ services:
     env_file:
       - .env
     volumes:
-      - /var/www/konstruktor__usr/uploads:/app/public/uploads
+      - /var/www/konstruktor__usr/data/uploads:/app/public/uploads
