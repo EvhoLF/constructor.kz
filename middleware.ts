@@ -15,8 +15,6 @@ export default withAuth(
 
     const pathname = url.pathname;
 
-    // console.log('Middleware check:', { pathname, isAuth, isAdmin }); // Для отладки
-
     // 1. Защита гостевых маршрутов от авторизованных пользователей
     if (isAuth && guestOnlyRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.redirect(new URL('/profile', url));
