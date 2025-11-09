@@ -151,14 +151,14 @@ sudo systemctl start docker
 
 #### Настройка `.env` на проде
 
-Создать файл `/var/www/konstruktor__usr/data/.env` со следующими переменными:
+Создать файл `/.../.env` со следующими переменными:
 
 ```env
-NEXTAUTH_SECRET=ZXCCONSSEC2025
-SECRET=ZXCCONSSEC2025
-NEXT_PUBLIC_BASE_URL=http://185.125.90.92:8080
-NEXTAUTH_URL=http://185.125.90.92:8080
-DATABASE_URL=mysql://konstruktor_:5yeWcbNiqg3snYd3@127.0.0.1:3306/konstruktor_
+NEXTAUTH_SECRET=secret
+SECRET=secret
+NEXT_PUBLIC_BASE_URL=url
+NEXTAUTH_URL=url
+DATABASE_URL=mysql://USER:PASSWORD@127.0.0.1:3306/DATABASE
 ```
 
 > Важно: **не публикуйте эти данные публично**, храните их безопасно.
@@ -212,7 +212,7 @@ docker run --rm --network host --env-file .env konstruktor:latest npx prisma mig
 docker ps
 ```
 
-> Приложение будет доступно по адресу: `http://185.125.90.92:8080`.
+> Приложение будет доступно по адресу: `URL`.
 
 ---
 
